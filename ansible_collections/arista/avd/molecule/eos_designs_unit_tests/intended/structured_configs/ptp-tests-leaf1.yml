@@ -99,7 +99,7 @@ management_api_http:
   enable_https: true
 ptp:
   mode: boundary
-  clock_identity: '11:11:11:11:11:11'
+  clock_identity: 00:1C:73:1e:00:01
   priority1: 30
   priority2: 1
   domain: 127
@@ -181,7 +181,7 @@ ethernet_interfaces:
     vlans: 11
     ptp:
       announce:
-        interval: -1
+        interval: -2
         timeout: 3
       delay_req: -4
       sync_message:

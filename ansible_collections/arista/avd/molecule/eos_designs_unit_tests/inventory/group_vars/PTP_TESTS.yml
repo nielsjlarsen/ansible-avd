@@ -8,11 +8,31 @@ mgmt_gateway: 192.168.0.1
 # P2P links between leaf switches, connecting to the PTP Grandmaster.
 # Note that the config below will result in interfaces being configured as "no switchport", without an IP address.
 # This makes it possible to only forward PTP packets and nothing more.
+#
+# Expected config:
+#
+# interface Ethernet6
+#    description P2P_LINK_TO_ptp-tests-spine2_Ethernet6
+#    no shutdown
+#    mtu 9000
+#    no switchport
+#    ptp enable
+#    ptp sync-message interval -3
+#    ptp announce interval 0
+#    ptp transport ipv4
+#    ptp announce timeout 3
+#    ptp delay-req interval -3
+#
 core_interfaces:
   p2p_links:
     - id: 1
       nodes: [ ptp-tests-spine1, ptp-tests-spine2 ]
       interfaces: [ Ethernet6, Ethernet6 ]
+      ptp_enable: true
+      include_in_underlay_protocol: false
+    - id: 2
+      nodes: [ ptp-tests-spine1, ptp-tests-spine2 ]
+      interfaces: [ Ethernet7, Ethernet7 ]
       ptp_enable: true
       include_in_underlay_protocol: false
 

@@ -1,0 +1,38 @@
+all:
+  children:
+    FABRIC:
+      children:
+
+        # AMBER:
+        #   children:
+        #     AMBER_SPINES:
+        #       hosts:
+        #         amber-spine1:
+        #     AMBER_LEAVES:
+        #       hosts:
+        #         amber-leaf1:
+        #         amber-leaf2:
+
+        BLUE:
+          children:
+            BLUE_SPINES:
+              hosts:
+                blue-spine1:
+            BLUE_LEAVES:
+              hosts:
+                blue-leaf1:
+                blue-leaf2:
+                blue-leaf3:
+                blue-leaf4:
+
+        NETWORK_SERVICES:
+          children:
+            BLUE_LEAVES:
+            # AMBER_LEAVES:
+
+        CONNECTED_ENDPOINTS:
+          children:
+            # AMBER_SPINES:
+            BLUE_SPINES:
+            # AMBER_LEAVES:
+            BLUE_LEAVES:

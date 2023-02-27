@@ -1,0 +1,18 @@
+---
+type: spine
+
+spine:
+  defaults:
+    platform: vEOS-lab
+    loopback_ipv4_pool: 10.254.0.0/27
+    bgp_as: 65200
+    # ptp:
+    #   priority1: 5
+    #   priority2: 1
+    #   source_ip: 10.254.0.1
+
+
+  nodes:
+    amber-spine1:
+      id: 1
+      mgmt_ip: 192.168.1.11/24

@@ -1,0 +1,43 @@
+---
+# Port Profiles
+# Common settings inherited to network_ports
+port_profiles:
+  MEDIA_11:
+    mode: access
+    vlans: "11"
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      enable: true
+
+  MEDIA_12:
+    mode: access
+    vlans: "12"
+
+# Network Ports
+# All switch_ports ranges are expanded into individual port configurations
+# Switches are matched with regex matching the full hostname.
+network_ports:
+  - switches:
+      - blue-leaf.*
+    switch_ports:
+      - Ethernet1-48
+    profile: MEDIA_11
+    description: MEDIA
+
+  - switches:
+      - blue-leaf1
+    switch_ports:
+      - Ethernet1
+    profile: MEDIA_11
+    description: GM-Meinberg_NIC
+    ptp:
+      enable: true
+      endpoint_role: bmca
+
+  - switches:
+      - blue-leaf1
+    switch_ports:
+      - Ethernet2
+    profile: MEDIA_11
+    description: PHABRIX_MGMT

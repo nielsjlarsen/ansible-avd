@@ -1,0 +1,30 @@
+tenants:
+  MEDIA:
+    vrfs:
+      # VRF definitions inside the tenant.
+      default:
+        svis:
+          11:
+            name: VLAN11
+            enabled: true
+            nodes:
+              blue-leaf1:
+                ip_address: 10.1.11.1/24
+              blue-leaf2:
+                ip_address: 10.2.11.1/24
+              blue-leaf3:
+                ip_address: 10.3.11.1/24
+              blue-leaf4:
+                ip_address: 10.4.11.1/24
+          12:
+            name: VLAN12
+            enabled: true
+            nodes:
+              blue-leaf1:
+                ip_address: 10.1.12.1/24
+              blue-leaf2:
+                ip_address: 10.2.12.1/24
+              blue-leaf3:
+                ip_address: 10.3.12.1/24
+              blue-leaf4:
+                ip_address: 10.4.12.1/24

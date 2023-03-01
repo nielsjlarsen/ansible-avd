@@ -8,6 +8,8 @@
 - [Authentication](#authentication)
   - [Local Users](#local-users)
 - [Monitoring](#monitoring)
+- [Hardware TCAM Profile](#hardware-tcam-profile)
+  - [Hardware TCAM configuration](#hardware-tcam-configuration)
 - [Spanning Tree](#spanning-tree)
   - [Spanning Tree Summary](#spanning-tree-summary)
   - [Spanning Tree Device Configuration](#spanning-tree-device-configuration)
@@ -37,7 +39,11 @@
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
   - [VRF Instances Device Configuration](#vrf-instances-device-configuration)
+- [Platform](#platform)
+  - [Platform Summary](#platform-summary)
+  - [Platform Configuration](#platform-configuration)
 - [Quality Of Service](#quality-of-service)
+- [EOS CLI](#eos-cli)
 
 # Management
 
@@ -49,7 +55,7 @@
 
 | Management Interface | description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1 | oob_management | oob | MGMT | 192.168.1.22/24 | 192.168.1.1 |
+| Management1 | oob_management | oob | MGMT | 10.252.0.23/24 | 10.252.0.1 |
 
 #### IPv6
 
@@ -65,7 +71,7 @@ interface Management1
    description oob_management
    no shutdown
    vrf MGMT
-   ip address 192.168.1.22/24
+   ip address 10.252.0.23/24
 ```
 
 ## PTP
@@ -74,29 +80,24 @@ interface Management1
 
 | Clock ID | Source IP | Priority 1 | Priority 2 | TTL | Domain | Mode | Forward Unicast |
 | -------- | --------- | ---------- | ---------- | --- | ------ | ---- | --------------- |
-| 00:1C:73:1e:00:02 | - | 30 | 2 | - | 127 | boundary | - |
+| 00:1C:73:0a:00:02 | - | 10 | 2 | - | 0 | boundary | - |
 
 ### PTP Device Configuration
 
 ```eos
 !
-ptp clock-identity 00:1C:73:1e:00:02
-ptp priority1 30
+ptp clock-identity 00:1C:73:0a:00:02
+ptp priority1 10
 ptp priority2 2
-ptp domain 127
-ptp message-type general dscp 46 default
-ptp message-type event dscp 48 default
+ptp domain 0
 ptp mode boundary
-ptp monitor threshold offset-from-master 1234
-ptp monitor threshold mean-path-delay 4567
-ptp monitor threshold missing-message announce 10 intervals
-ptp monitor threshold missing-message follow-up 9 intervals
-ptp monitor threshold missing-message sync 8 intervals
+ptp monitor threshold offset-from-master 250
+ptp monitor threshold mean-path-delay 1500
 ptp monitor sequence-id
-ptp monitor threshold missing-message announce 11 sequence-ids
-ptp monitor threshold missing-message delay-resp 12 sequence-ids
-ptp monitor threshold missing-message follow-up 13 sequence-ids
-ptp monitor threshold missing-message sync 14 sequence-ids
+ptp monitor threshold missing-message announce 3 sequence-ids
+ptp monitor threshold missing-message delay-resp 3 sequence-ids
+ptp monitor threshold missing-message follow-up 3 sequence-ids
+ptp monitor threshold missing-message sync 3 sequence-ids
 ```
 
 ## Management API HTTP
@@ -146,6 +147,18 @@ username ansible privilege 15 secret sha512 $6$7u4j1rkb3VELgcZE$EJt2Qff8kd/TapRo
 
 # Monitoring
 
+# Hardware TCAM Profile
+
+TCAM profile __`vxlan-routing`__ is active
+
+## Hardware TCAM configuration
+
+```eos
+!
+hardware tcam
+   system profile vxlan-routing
+```
+
 # Spanning Tree
 
 ## Spanning Tree Summary
@@ -187,18 +200,14 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 11 | VLAN11 | - |
-| 12 | VLAN12 | - |
+| 112 | VLAN112 | - |
 
 ## VLANs Device Configuration
 
 ```eos
 !
-vlan 11
-   name VLAN11
-!
-vlan 12
-   name VLAN12
+vlan 112
+   name VLAN112
 ```
 
 # Interfaces
@@ -211,7 +220,53 @@ vlan 12
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet5 |  endpoint-without-ptp_eth0 | access | 11 | - | - | - |
+| Ethernet1 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet2 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet3 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet4 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet5 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet6 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet7 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet8 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet9 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet10 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet11 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet12 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet13 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet14 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet15 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet16 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet17 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet18 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet19 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet20 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet21 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet22 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet23 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet24 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet25 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet26 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet27 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet28 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet29 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet30 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet31 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet32 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet33 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet34 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet35 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet36 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet37 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet38 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet39 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet40 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet41 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet42 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet43 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet44 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet45 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet46 |  MEDIA_VLAN112 | access | 112 | - | - | - |
+| Ethernet47 |  GM-Meinberg_NIC | access | 112 | - | - | - |
 
 *Inherited from Port-Channel Interface
 
@@ -219,48 +274,825 @@ vlan 12
 
 | Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
-| Ethernet1 | P2P_LINK_TO_AMBER-SPINE1_Ethernet3 | routed | - | 10.254.2.5/31 | default | 1500 | False | - | - |
-| Ethernet2 | P2P_LINK_TO_AMBER-SPINE1_Ethernet4 | routed | - | 10.254.2.7/31 | default | 1500 | False | - | - |
+| Ethernet49 | P2P_LINK_TO_AMBER-SPINE1_Ethernet3/1 | routed | - | 10.252.11.9/31 | default | 9214 | False | - | - |
+| Ethernet50 | P2P_LINK_TO_AMBER-SPINE1_Ethernet3/2 | routed | - | 10.252.11.11/31 | default | 9214 | False | - | - |
+| Ethernet51 | P2P_LINK_TO_AMBER-SPINE1_Ethernet3/3 | routed | - | 10.252.11.13/31 | default | 9214 | False | - | - |
+| Ethernet52 | P2P_LINK_TO_AMBER-SPINE1_Ethernet3/4 | routed | - | 10.252.11.15/31 | default | 9214 | False | - | - |
 
 ### Ethernet Interfaces Device Configuration
 
 ```eos
 !
 interface Ethernet1
-   description P2P_LINK_TO_AMBER-SPINE1_Ethernet3
+   description MEDIA_VLAN112
    no shutdown
-   mtu 1500
-   no switchport
-   ip address 10.254.2.5/31
-   pim ipv4 sparse-mode
-   ptp enable
-   ptp sync-message interval -4
-   ptp announce interval -2
-   ptp transport ipv4
-   ptp announce timeout 3
-   ptp delay-req interval -4
-!
-interface Ethernet2
-   description P2P_LINK_TO_AMBER-SPINE1_Ethernet4
-   no shutdown
-   mtu 1500
-   no switchport
-   ip address 10.254.2.7/31
-   pim ipv4 sparse-mode
-   ptp enable
-   ptp sync-message interval -4
-   ptp announce interval -2
-   ptp transport ipv4
-   ptp announce timeout 3
-   ptp delay-req interval -4
-!
-interface Ethernet5
-   description endpoint-without-ptp_eth0
-   no shutdown
-   switchport access vlan 11
+   switchport access vlan 112
    switchport mode access
    switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
    spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet2
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet3
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet4
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet5
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet6
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet7
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet8
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet9
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet10
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet11
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet12
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet13
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet14
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet15
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet16
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet17
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet18
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet19
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet20
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet21
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet22
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet23
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet24
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet25
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet26
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet27
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet28
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet29
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet30
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet31
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet32
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet33
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet34
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet35
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet36
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet37
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet38
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet39
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet40
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet41
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet42
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet43
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet44
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet45
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet46
+   description MEDIA_VLAN112
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   ptp role master
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet47
+   description GM-Meinberg_NIC
+   no shutdown
+   switchport access vlan 112
+   switchport mode access
+   switchport
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+   spanning-tree portfast
+   spanning-tree bpdufilter enable
+!
+interface Ethernet49
+   description P2P_LINK_TO_AMBER-SPINE1_Ethernet3/1
+   no shutdown
+   mtu 9214
+   speed 10g
+   no switchport
+   ip address 10.252.11.9/31
+   pim ipv4 sparse-mode
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+!
+interface Ethernet50
+   description P2P_LINK_TO_AMBER-SPINE1_Ethernet3/2
+   no shutdown
+   mtu 9214
+   speed 10g
+   no switchport
+   ip address 10.252.11.11/31
+   pim ipv4 sparse-mode
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+!
+interface Ethernet51
+   description P2P_LINK_TO_AMBER-SPINE1_Ethernet3/3
+   no shutdown
+   mtu 9214
+   speed 10g
+   no switchport
+   ip address 10.252.11.13/31
+   pim ipv4 sparse-mode
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
+!
+interface Ethernet52
+   description P2P_LINK_TO_AMBER-SPINE1_Ethernet3/4
+   no shutdown
+   mtu 9214
+   speed 10g
+   no switchport
+   ip address 10.252.11.15/31
+   pim ipv4 sparse-mode
+   ptp enable
+   ptp sync-message interval -3
+   ptp announce interval 0
+   ptp transport ipv4
+   ptp announce timeout 3
+   ptp delay-req interval -3
 ```
 
 ## Loopback Interfaces
@@ -271,7 +1103,7 @@ interface Ethernet5
 
 | Interface | Description | VRF | IP Address |
 | --------- | ----------- | --- | ---------- |
-| Loopback0 | Router-id | default | 10.254.1.2/32 |
+| Loopback0 | Router-id | default | 10.252.8.4/32 |
 
 #### IPv6
 
@@ -287,7 +1119,7 @@ interface Ethernet5
 interface Loopback0
    description Router-id
    no shutdown
-   ip address 10.254.1.2/32
+   ip address 10.252.8.4/32
 ```
 
 ## VLAN Interfaces
@@ -296,27 +1128,22 @@ interface Loopback0
 
 | Interface | Description | VRF |  MTU | Shutdown |
 | --------- | ----------- | --- | ---- | -------- |
-| Vlan11 | VLAN11 | default | - | False |
-| Vlan12 | VLAN12 | default | - | False |
+| Vlan112 | VLAN112 | default | - | False |
 
 #### IPv4
 
 | Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan11 |  default  |  -  |  -  |  -  |  -  |  -  |  -  |
-| Vlan12 |  default  |  -  |  -  |  -  |  -  |  -  |  -  |
+| Vlan112 |  default  |  10.252.10.1/24  |  -  |  -  |  -  |  -  |  -  |
 
 ### VLAN Interfaces Device Configuration
 
 ```eos
 !
-interface Vlan11
-   description VLAN11
+interface Vlan112
+   description VLAN112
    no shutdown
-!
-interface Vlan12
-   description VLAN12
-   no shutdown
+   ip address 10.252.10.1/24
 ```
 
 # Routing
@@ -373,13 +1200,13 @@ no ip routing vrf MGMT
 
 | VRF | Destination Prefix | Next Hop IP             | Exit interface      | Administrative Distance       | Tag               | Route Name                    | Metric         |
 | --- | ------------------ | ----------------------- | ------------------- | ----------------------------- | ----------------- | ----------------------------- | -------------- |
-| MGMT | 0.0.0.0/0 | 192.168.1.1 | - | 1 | - | - | - |
+| MGMT | 0.0.0.0/0 | 10.252.0.1 | - | 1 | - | - | - |
 
 ### Static Routes Device Configuration
 
 ```eos
 !
-ip route vrf MGMT 0.0.0.0/0 192.168.1.1
+ip route vrf MGMT 0.0.0.0/0 10.252.0.1
 ```
 
 ## Router BGP
@@ -388,7 +1215,7 @@ ip route vrf MGMT 0.0.0.0/0 192.168.1.1
 
 | BGP AS | Router ID |
 | ------ | --------- |
-| 65202|  10.254.1.2 |
+| 65102|  10.252.8.4 |
 
 | BGP Tuning |
 | ---------- |
@@ -408,26 +1235,34 @@ ip route vrf MGMT 0.0.0.0/0 192.168.1.1
 
 | Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain | Route-Reflector Client |
 | -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- | ---------------------- |
-| 10.254.2.4 | 65200 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.254.2.6 | 65200 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.11.8 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.11.10 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.11.12 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.11.14 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
 
 ### Router BGP Device Configuration
 
 ```eos
 !
-router bgp 65202
-   router-id 10.254.1.2
+router bgp 65102
+   router-id 10.252.8.4
    maximum-paths 4 ecmp 4
    neighbor IPv4-UNDERLAY-PEERS peer group
    neighbor IPv4-UNDERLAY-PEERS password 7 7x4B4rnJhZB438m9+BrBfQ==
    neighbor IPv4-UNDERLAY-PEERS send-community
    neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000
-   neighbor 10.254.2.4 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.254.2.4 remote-as 65200
-   neighbor 10.254.2.4 description amber-spine1_Ethernet3
-   neighbor 10.254.2.6 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.254.2.6 remote-as 65200
-   neighbor 10.254.2.6 description amber-spine1_Ethernet4
+   neighbor 10.252.11.8 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.11.8 remote-as 65100
+   neighbor 10.252.11.8 description amber-spine1_Ethernet3/1
+   neighbor 10.252.11.10 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.11.10 remote-as 65100
+   neighbor 10.252.11.10 description amber-spine1_Ethernet3/2
+   neighbor 10.252.11.12 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.11.12 remote-as 65100
+   neighbor 10.252.11.12 description amber-spine1_Ethernet3/3
+   neighbor 10.252.11.14 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.11.14 remote-as 65100
+   neighbor 10.252.11.14 description amber-spine1_Ethernet3/4
    redistribute connected
    !
    address-family ipv4
@@ -471,8 +1306,10 @@ router multicast
 
 | Interface Name | VRF Name | IP Version | DR Priority | Local Interface |
 | -------------- | -------- | ---------- | ----------- | --------------- |
-| Ethernet1 | - | IPv4 | - | - |
-| Ethernet2 | - | IPv4 | - | - |
+| Ethernet49 | - | IPv4 | - | - |
+| Ethernet50 | - | IPv4 | - | - |
+| Ethernet51 | - | IPv4 | - | - |
+| Ethernet52 | - | IPv4 | - | - |
 
 # Filters
 
@@ -493,4 +1330,37 @@ router multicast
 vrf instance MGMT
 ```
 
+# Platform
+
+## Platform Summary
+
+### Platform Sand Summary
+
+| Settings | Value |
+| -------- | ----- |
+| Hardware Only Lag | True |
+
+## Platform Configuration
+
+```eos
+!
+platform sand lag hardware-only
+```
+
 # Quality Of Service
+
+# EOS CLI
+
+```eos
+!
+dhcp server
+  lease time ipv4 0 days 1 hours 0 minutes
+  !
+  subnet 10.252.10.0/24
+      range 10.252.10.100 10.252.10.254
+      default-gateway 10.252.10.1
+interface Vlan112
+  dhcp server ipv4
+  pim ipv4 sparse-mode
+
+```

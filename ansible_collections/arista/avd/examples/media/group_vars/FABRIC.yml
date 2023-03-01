@@ -21,7 +21,7 @@ local_users:
   admin:
     privilege: 15
     role: network-admin
-    no_password: true
+    sha512_password: $6$43V1UjA4289H9/7r$yKimvqizvD3lVjvJFGgHNlEz2aFTkJvIl9w/vRkZUwd9ZLisYs66U138d4p13js8AgIh3HlzCaOYS4EQROCK.1
 # BGP peer groups passwords
 bgp_peer_groups:
   # all passwords set to "arista"
@@ -32,9 +32,9 @@ bgp_peer_groups:
   mlag_ipv4_underlay_peer:
     password: 4b21pAdCvWeAqpcKDFMdWw==
 # P2P interfaces MTU, includes VLANs 4093 and 4094 that are over peer-link
-# p2p_uplinks_mtu: 9214
+p2p_uplinks_mtu: 9214
 # If you're running vEOS-lab or cEOS, you should use MTU of 1500 instead as shown in the following line
-p2p_uplinks_mtu: 1500
+# p2p_uplinks_mtu: 1500
 # Custom node_type_keys to:
 # - Enable connected_endpoints on spines (for connectivity to GrandMaster)
 # - Disable VTEP and MLAG on leaf switches
@@ -42,7 +42,7 @@ p2p_uplinks_mtu: 1500
 node_type_keys:
   spine:
     type: spine
-    connected_endpoints: true
+    connected_endpoints: false
     default_ptp_priority1: 20
   leaf:
     type: leaf
@@ -50,16 +50,23 @@ node_type_keys:
     network_services:
       l2: true
       l3: true
-    default_ptp_priority1: 30
+    default_ptp_priority1: 10
 # Enable PTP for the entire fabric
 ptp:
   enabled: true
+  domain: 0
   # profile: smpte2059-2 # "Fast" profile
   # profile: aes67 # "Slow" profile
   profile: aes67-r16-2016 # used by default if no profile is specified
 # Underlay multicast (SSM)
 underlay_multicast: true
 overlay_loopback_description: "Router-id"
+custom_structured_configuration_aaa_authentication:
+  login:
+    default: local
+custom_structured_configuration_aaa_authorization:
+  exec:
+    default: local
 # Disable route-map for "redistribute connected"
 custom_structured_configuration_router_bgp:
   redistribute_routes:
@@ -89,3 +96,22 @@ custom_structured_configuration_prefix_lists: null
 # custom_structured_configuration_tcam_profile:
 #   profiles:
 #     multicast-counters: "{{ lookup('file', 'tcam-profile-multicast-counters.cfg') }}"
+core_interfaces:
+  p2p_links:
+    - id: 1
+      nodes: [ amber-leaf2, fw ]
+      interfaces: [ Ethernet48, ethernet1 ]
+      ip: [ 10.252.1.20/28, 10.252.1.17/28 ]
+      ptp_enable: false
+      include_in_underlay_protocol: false
+    - id: 2
+      nodes: [ blue-leaf2, fw ]
+      interfaces: [ Ethernet48, ethernet2 ]
+      ip: [ 10.252.1.36/28, 10.252.1.33/28 ]
+      ptp_enable: false
+      include_in_underlay_protocol: false
+    # - id: 2
+    #   nodes: [ amber-spine1, blue-spine1 ]
+    #   interfaces: [ Ethernet7, Ethernet7 ]
+    #   ptp_enable: true
+    #   include_in_underlay_protocol: false

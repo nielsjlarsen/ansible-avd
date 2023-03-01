@@ -1,6 +1,6 @@
 router_bgp:
-  as: '65104'
-  router_id: 10.255.1.4
+  as: '65101'
+  router_id: 10.252.8.3
   bgp_defaults:
   - maximum-paths 4 ecmp 4
   peer_groups:
@@ -17,18 +17,18 @@ router_bgp:
     connected:
       route_map: null
   neighbors:
-    10.255.2.12:
+    10.252.11.0:
       peer_group: IPv4-UNDERLAY-PEERS
       remote_as: '65100'
-      description: blue-spine1_Ethernet5/1
-    10.255.2.14:
+      description: amber-spine1_Ethernet1/1
+    10.252.11.2:
       peer_group: IPv4-UNDERLAY-PEERS
       remote_as: '65100'
-      description: blue-spine1_Ethernet6/1
+      description: amber-spine1_Ethernet2/1
 static_routes:
 - vrf: MGMT
   destination_address_prefix: 0.0.0.0/0
-  gateway: 192.168.0.1
+  gateway: 10.252.0.1
 service_routing_protocols_model: multi-agent
 ip_routing: true
 router_multicast:
@@ -48,7 +48,7 @@ local_users:
   admin:
     privilege: 15
     role: network-admin
-    no_password: true
+    sha512_password: $6$43V1UjA4289H9/7r$yKimvqizvD3lVjvJFGgHNlEz2aFTkJvIl9w/vRkZUwd9ZLisYs66U138d4p13js8AgIh3HlzCaOYS4EQROCK.1
   ansible:
     privilege: 15
     sha512_password: $6$7u4j1rkb3VELgcZE$EJt2Qff8kd/TapRoci0XaIZsL4tFzgq1YZBLD9c6f/knXzvcYY0NcMKndZeCv0T268knGKhOEwZAxqKjlMm920
@@ -60,19 +60,25 @@ management_interfaces:
     description: oob_management
     shutdown: false
     vrf: MGMT
-    ip_address: 192.168.0.22/24
-    gateway: 192.168.0.1
+    ip_address: 10.252.0.22/24
+    gateway: 10.252.0.1
     type: oob
+tcam_profile:
+  system: vxlan-routing
+platform:
+  sand:
+    lag:
+      hardware_only: true
 management_api_http:
   enable_vrfs:
     MGMT: {}
   enable_https: true
 ptp:
   mode: boundary
-  clock_identity: 00:1C:73:1e:00:04
+  clock_identity: 00:1C:73:1e:00:01
   priority1: 30
-  priority2: 4
-  domain: 127
+  priority2: 1
+  domain: 0
   monitor:
     enabled: true
     threshold:
@@ -85,14 +91,15 @@ ptp:
         delay_resp: 3
         follow_up: 3
         sync: 3
+eos_cli: "interface Vlan111\n  ip helper-address 10.252.4.253\n  pim ipv4 sparse-mode\n"
 ethernet_interfaces:
-  Ethernet51/1:
-    peer: blue-spine1
-    peer_interface: Ethernet5/1
+  Ethernet49/1:
+    peer: amber-spine1
+    peer_interface: Ethernet1/1
     peer_type: spine
-    description: P2P_LINK_TO_BLUE-SPINE1_Ethernet5/1
+    description: P2P_LINK_TO_AMBER-SPINE1_Ethernet1/1
     shutdown: false
-    mtu: 1500
+    mtu: 9214
     type: routed
     ptp:
       announce:
@@ -103,17 +110,17 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.255.2.13/31
+    ip_address: 10.252.11.1/31
     pim:
       ipv4:
         sparse_mode: true
-  Ethernet52/1:
-    peer: blue-spine1
-    peer_interface: Ethernet6/1
+  Ethernet50/1:
+    peer: amber-spine1
+    peer_interface: Ethernet2/1
     peer_type: spine
-    description: P2P_LINK_TO_BLUE-SPINE1_Ethernet6/1
+    description: P2P_LINK_TO_AMBER-SPINE1_Ethernet2/1
     shutdown: false
-    mtu: 1500
+    mtu: 9214
     type: routed
     ptp:
       announce:
@@ -124,18 +131,18 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.255.2.15/31
+    ip_address: 10.252.11.3/31
     pim:
       ipv4:
         sparse_mode: true
   Ethernet1:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -149,13 +156,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet2:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -169,13 +176,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet3:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -189,13 +196,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet4:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -209,13 +216,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet5:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -229,13 +236,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet6:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -249,13 +256,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet7:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -269,13 +276,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet8:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -289,13 +296,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet9:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -309,13 +316,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet10:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -329,13 +336,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet11:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -349,13 +356,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet12:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -369,13 +376,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet13:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -389,13 +396,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet14:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -409,13 +416,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet15:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -429,13 +436,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet16:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -449,13 +456,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet17:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -469,13 +476,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet18:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -489,13 +496,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet19:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -509,13 +516,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet20:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -529,13 +536,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet21:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -549,13 +556,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet22:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -569,13 +576,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet23:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -589,13 +596,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet24:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -609,13 +616,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet25:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -629,13 +636,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet26:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -649,13 +656,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet27:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -669,13 +676,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet28:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -689,13 +696,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet29:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -709,13 +716,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet30:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -729,13 +736,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet31:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -749,13 +756,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet32:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -769,13 +776,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet33:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -789,13 +796,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet34:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -809,13 +816,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet35:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -829,13 +836,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet36:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -849,13 +856,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet37:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -869,13 +876,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet38:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -889,13 +896,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet39:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -909,13 +916,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet40:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -929,13 +936,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet41:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -949,13 +956,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet42:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -969,13 +976,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet43:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -989,13 +996,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet44:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -1009,13 +1016,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet45:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -1029,13 +1036,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet46:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -1049,13 +1056,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet47:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -1069,13 +1076,13 @@ ethernet_interfaces:
       enable: true
       role: master
   Ethernet48:
-    peer: MEDIA
+    peer: MEDIA_VLAN111
     peer_type: network_port
-    description: MEDIA
+    description: MEDIA_VLAN111
     type: switched
     shutdown: false
     mode: access
-    vlans: '11'
+    vlans: '111'
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
@@ -1092,31 +1099,31 @@ loopback_interfaces:
   Loopback0:
     description: Router-id
     shutdown: false
-    ip_address: 10.255.1.4/32
+    ip_address: 10.252.8.3/32
 prefix_lists: null
 route_maps: null
 vlans:
-  11:
-    tenant: MEDIA
-    name: VLAN11
-  12:
-    tenant: MEDIA
-    name: VLAN12
+  111:
+    tenant: amber
+    name: VLAN111
 ip_igmp_snooping:
   globally_enabled: true
 ip_virtual_router_mac_address: 00:1c:73:00:00:99
 vlan_interfaces:
-  Vlan11:
-    tenant: MEDIA
-    description: VLAN11
+  Vlan111:
+    tenant: amber
+    tags:
+    - amber-leaf1
+    description: VLAN111
     shutdown: false
-    ip_address: 10.4.11.1/24
-  Vlan12:
-    tenant: MEDIA
-    description: VLAN12
-    shutdown: false
-    ip_address: 10.4.12.1/24
+    ip_address: 10.252.9.1/24
 router_pim_sparse_mode:
   ipv4:
     rp_addresses:
-      10.255.0.1: null
+      10.252.8.1: null
+aaa_authentication:
+  login:
+    default: local
+aaa_authorization:
+  exec:
+    default: local

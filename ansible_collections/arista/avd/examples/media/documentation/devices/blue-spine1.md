@@ -43,7 +43,7 @@
 
 | Management Interface | description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1 | oob_management | oob | MGMT | 192.168.0.11/24 | 192.168.0.1 |
+| Management1 | oob_management | oob | MGMT | 10.252.0.24/24 | 10.252.0.1 |
 
 #### IPv6
 
@@ -59,7 +59,7 @@ interface Management1
    description oob_management
    no shutdown
    vrf MGMT
-   ip address 192.168.0.11/24
+   ip address 10.252.0.24/24
 ```
 
 ## PTP
@@ -68,7 +68,7 @@ interface Management1
 
 | Clock ID | Source IP | Priority 1 | Priority 2 | TTL | Domain | Mode | Forward Unicast |
 | -------- | --------- | ---------- | ---------- | --- | ------ | ---- | --------------- |
-| 00:1C:73:14:00:01 | - | 20 | 1 | - | 127 | boundary | - |
+| 00:1C:73:14:00:01 | - | 20 | 1 | - | 0 | boundary | - |
 
 ### PTP Device Configuration
 
@@ -77,7 +77,7 @@ interface Management1
 ptp clock-identity 00:1C:73:14:00:01
 ptp priority1 20
 ptp priority2 1
-ptp domain 127
+ptp domain 0
 ptp mode boundary
 ptp monitor threshold offset-from-master 250
 ptp monitor threshold mean-path-delay 1500
@@ -180,25 +180,23 @@ vlan internal order ascending range 1006 1199
 
 | Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
-| Ethernet1/1 | P2P_LINK_TO_BLUE-LEAF1_Ethernet51/1 | routed | - | 10.255.2.0/31 | default | 1500 | False | - | - |
-| Ethernet1/2 | P2P_LINK_TO_BLUE-LEAF1_Ethernet52/1 | routed | - | 10.255.2.2/31 | default | 1500 | False | - | - |
-| Ethernet1/3 | P2P_LINK_TO_BLUE-LEAF2_Ethernet51/1 | routed | - | 10.255.2.4/31 | default | 1500 | False | - | - |
-| Ethernet1/4 | P2P_LINK_TO_BLUE-LEAF2_Ethernet52/1 | routed | - | 10.255.2.6/31 | default | 1500 | False | - | - |
-| Ethernet3/1 | P2P_LINK_TO_BLUE-LEAF3_Ethernet51/1 | routed | - | 10.255.2.8/31 | default | 1500 | False | - | - |
-| Ethernet4/1 | P2P_LINK_TO_BLUE-LEAF3_Ethernet52/1 | routed | - | 10.255.2.10/31 | default | 1500 | False | - | - |
-| Ethernet5/1 | P2P_LINK_TO_BLUE-LEAF4_Ethernet51/1 | routed | - | 10.255.2.12/31 | default | 1500 | False | - | - |
-| Ethernet6/1 | P2P_LINK_TO_BLUE-LEAF4_Ethernet52/1 | routed | - | 10.255.2.14/31 | default | 1500 | False | - | - |
+| Ethernet1/1 | P2P_LINK_TO_BLUE-LEAF1_Ethernet49/1 | routed | - | 10.252.15.0/31 | default | 9214 | False | - | - |
+| Ethernet2/1 | P2P_LINK_TO_BLUE-LEAF1_Ethernet50/1 | routed | - | 10.252.15.2/31 | default | 9214 | False | - | - |
+| Ethernet3/1 | P2P_LINK_TO_BLUE-LEAF2_Ethernet49 | routed | - | 10.252.15.8/31 | default | 9214 | False | - | - |
+| Ethernet3/2 | P2P_LINK_TO_BLUE-LEAF2_Ethernet50 | routed | - | 10.252.15.10/31 | default | 9214 | False | - | - |
+| Ethernet3/3 | P2P_LINK_TO_BLUE-LEAF2_Ethernet51 | routed | - | 10.252.15.12/31 | default | 9214 | False | - | - |
+| Ethernet3/4 | P2P_LINK_TO_BLUE-LEAF2_Ethernet52 | routed | - | 10.252.15.14/31 | default | 9214 | False | - | - |
 
 ### Ethernet Interfaces Device Configuration
 
 ```eos
 !
 interface Ethernet1/1
-   description P2P_LINK_TO_BLUE-LEAF1_Ethernet51/1
+   description P2P_LINK_TO_BLUE-LEAF1_Ethernet49/1
    no shutdown
-   mtu 1500
+   mtu 9214
    no switchport
-   ip address 10.255.2.0/31
+   ip address 10.252.15.0/31
    pim ipv4 sparse-mode
    ptp enable
    ptp sync-message interval -3
@@ -207,40 +205,12 @@ interface Ethernet1/1
    ptp announce timeout 3
    ptp delay-req interval -3
 !
-interface Ethernet1/2
-   description P2P_LINK_TO_BLUE-LEAF1_Ethernet52/1
+interface Ethernet2/1
+   description P2P_LINK_TO_BLUE-LEAF1_Ethernet50/1
    no shutdown
-   mtu 1500
+   mtu 9214
    no switchport
-   ip address 10.255.2.2/31
-   pim ipv4 sparse-mode
-   ptp enable
-   ptp sync-message interval -3
-   ptp announce interval 0
-   ptp transport ipv4
-   ptp announce timeout 3
-   ptp delay-req interval -3
-!
-interface Ethernet1/3
-   description P2P_LINK_TO_BLUE-LEAF2_Ethernet51/1
-   no shutdown
-   mtu 1500
-   no switchport
-   ip address 10.255.2.4/31
-   pim ipv4 sparse-mode
-   ptp enable
-   ptp sync-message interval -3
-   ptp announce interval 0
-   ptp transport ipv4
-   ptp announce timeout 3
-   ptp delay-req interval -3
-!
-interface Ethernet1/4
-   description P2P_LINK_TO_BLUE-LEAF2_Ethernet52/1
-   no shutdown
-   mtu 1500
-   no switchport
-   ip address 10.255.2.6/31
+   ip address 10.252.15.2/31
    pim ipv4 sparse-mode
    ptp enable
    ptp sync-message interval -3
@@ -250,11 +220,12 @@ interface Ethernet1/4
    ptp delay-req interval -3
 !
 interface Ethernet3/1
-   description P2P_LINK_TO_BLUE-LEAF3_Ethernet51/1
+   description P2P_LINK_TO_BLUE-LEAF2_Ethernet49
    no shutdown
-   mtu 1500
+   mtu 9214
+   speed 10g
    no switchport
-   ip address 10.255.2.8/31
+   ip address 10.252.15.8/31
    pim ipv4 sparse-mode
    ptp enable
    ptp sync-message interval -3
@@ -263,12 +234,13 @@ interface Ethernet3/1
    ptp announce timeout 3
    ptp delay-req interval -3
 !
-interface Ethernet4/1
-   description P2P_LINK_TO_BLUE-LEAF3_Ethernet52/1
+interface Ethernet3/2
+   description P2P_LINK_TO_BLUE-LEAF2_Ethernet50
    no shutdown
-   mtu 1500
+   mtu 9214
+   speed 10g
    no switchport
-   ip address 10.255.2.10/31
+   ip address 10.252.15.10/31
    pim ipv4 sparse-mode
    ptp enable
    ptp sync-message interval -3
@@ -277,12 +249,13 @@ interface Ethernet4/1
    ptp announce timeout 3
    ptp delay-req interval -3
 !
-interface Ethernet5/1
-   description P2P_LINK_TO_BLUE-LEAF4_Ethernet51/1
+interface Ethernet3/3
+   description P2P_LINK_TO_BLUE-LEAF2_Ethernet51
    no shutdown
-   mtu 1500
+   mtu 9214
+   speed 10g
    no switchport
-   ip address 10.255.2.12/31
+   ip address 10.252.15.12/31
    pim ipv4 sparse-mode
    ptp enable
    ptp sync-message interval -3
@@ -291,12 +264,13 @@ interface Ethernet5/1
    ptp announce timeout 3
    ptp delay-req interval -3
 !
-interface Ethernet6/1
-   description P2P_LINK_TO_BLUE-LEAF4_Ethernet52/1
+interface Ethernet3/4
+   description P2P_LINK_TO_BLUE-LEAF2_Ethernet52
    no shutdown
-   mtu 1500
+   mtu 9214
+   speed 10g
    no switchport
-   ip address 10.255.2.14/31
+   ip address 10.252.15.14/31
    pim ipv4 sparse-mode
    ptp enable
    ptp sync-message interval -3
@@ -314,7 +288,7 @@ interface Ethernet6/1
 
 | Interface | Description | VRF | IP Address |
 | --------- | ----------- | --- | ---------- |
-| Loopback0 | Router-id | default | 10.255.0.1/32 |
+| Loopback0 | Router-id | default | 10.252.12.1/32 |
 
 #### IPv6
 
@@ -330,7 +304,7 @@ interface Ethernet6/1
 interface Loopback0
    description Router-id
    no shutdown
-   ip address 10.255.0.1/32
+   ip address 10.252.12.1/32
 ```
 
 # Routing
@@ -374,13 +348,13 @@ no ip routing vrf MGMT
 
 | VRF | Destination Prefix | Next Hop IP             | Exit interface      | Administrative Distance       | Tag               | Route Name                    | Metric         |
 | --- | ------------------ | ----------------------- | ------------------- | ----------------------------- | ----------------- | ----------------------------- | -------------- |
-| MGMT | 0.0.0.0/0 | 192.168.0.1 | - | 1 | - | - | - |
+| MGMT | 0.0.0.0/0 | 10.252.0.1 | - | 1 | - | - | - |
 
 ### Static Routes Device Configuration
 
 ```eos
 !
-ip route vrf MGMT 0.0.0.0/0 192.168.0.1
+ip route vrf MGMT 0.0.0.0/0 10.252.0.1
 ```
 
 ## Router BGP
@@ -389,7 +363,7 @@ ip route vrf MGMT 0.0.0.0/0 192.168.0.1
 
 | BGP AS | Router ID |
 | ------ | --------- |
-| 65100|  10.255.0.1 |
+| 65200|  10.252.12.1 |
 
 | BGP Tuning |
 | ---------- |
@@ -409,50 +383,42 @@ ip route vrf MGMT 0.0.0.0/0 192.168.0.1
 
 | Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain | Route-Reflector Client |
 | -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- | ---------------------- |
-| 10.255.2.1 | 65101 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.3 | 65101 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.5 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.7 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.9 | 65103 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.11 | 65103 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.13 | 65104 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
-| 10.255.2.15 | 65104 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.15.1 | 65201 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.15.3 | 65201 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.15.9 | 65202 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.15.11 | 65202 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.15.13 | 65202 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 10.252.15.15 | 65202 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
 
 ### Router BGP Device Configuration
 
 ```eos
 !
-router bgp 65100
-   router-id 10.255.0.1
+router bgp 65200
+   router-id 10.252.12.1
    maximum-paths 4 ecmp 4
    neighbor IPv4-UNDERLAY-PEERS peer group
    neighbor IPv4-UNDERLAY-PEERS password 7 7x4B4rnJhZB438m9+BrBfQ==
    neighbor IPv4-UNDERLAY-PEERS send-community
    neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000
-   neighbor 10.255.2.1 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.1 remote-as 65101
-   neighbor 10.255.2.1 description blue-leaf1_Ethernet51/1
-   neighbor 10.255.2.3 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.3 remote-as 65101
-   neighbor 10.255.2.3 description blue-leaf1_Ethernet52/1
-   neighbor 10.255.2.5 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.5 remote-as 65102
-   neighbor 10.255.2.5 description blue-leaf2_Ethernet51/1
-   neighbor 10.255.2.7 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.7 remote-as 65102
-   neighbor 10.255.2.7 description blue-leaf2_Ethernet52/1
-   neighbor 10.255.2.9 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.9 remote-as 65103
-   neighbor 10.255.2.9 description blue-leaf3_Ethernet51/1
-   neighbor 10.255.2.11 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.11 remote-as 65103
-   neighbor 10.255.2.11 description blue-leaf3_Ethernet52/1
-   neighbor 10.255.2.13 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.13 remote-as 65104
-   neighbor 10.255.2.13 description blue-leaf4_Ethernet51/1
-   neighbor 10.255.2.15 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.2.15 remote-as 65104
-   neighbor 10.255.2.15 description blue-leaf4_Ethernet52/1
+   neighbor 10.252.15.1 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.15.1 remote-as 65201
+   neighbor 10.252.15.1 description blue-leaf1_Ethernet49/1
+   neighbor 10.252.15.3 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.15.3 remote-as 65201
+   neighbor 10.252.15.3 description blue-leaf1_Ethernet50/1
+   neighbor 10.252.15.9 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.15.9 remote-as 65202
+   neighbor 10.252.15.9 description blue-leaf2_Ethernet49
+   neighbor 10.252.15.11 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.15.11 remote-as 65202
+   neighbor 10.252.15.11 description blue-leaf2_Ethernet50
+   neighbor 10.252.15.13 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.15.13 remote-as 65202
+   neighbor 10.252.15.13 description blue-leaf2_Ethernet51
+   neighbor 10.252.15.15 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.252.15.15 remote-as 65202
+   neighbor 10.252.15.15 description blue-leaf2_Ethernet52
    redistribute connected
    !
    address-family ipv4
@@ -505,13 +471,11 @@ router pim sparse-mode
 | Interface Name | VRF Name | IP Version | DR Priority | Local Interface |
 | -------------- | -------- | ---------- | ----------- | --------------- |
 | Ethernet1/1 | - | IPv4 | - | - |
-| Ethernet1/2 | - | IPv4 | - | - |
-| Ethernet1/3 | - | IPv4 | - | - |
-| Ethernet1/4 | - | IPv4 | - | - |
+| Ethernet2/1 | - | IPv4 | - | - |
 | Ethernet3/1 | - | IPv4 | - | - |
-| Ethernet4/1 | - | IPv4 | - | - |
-| Ethernet5/1 | - | IPv4 | - | - |
-| Ethernet6/1 | - | IPv4 | - | - |
+| Ethernet3/2 | - | IPv4 | - | - |
+| Ethernet3/3 | - | IPv4 | - | - |
+| Ethernet3/4 | - | IPv4 | - | - |
 
 # Filters
 

@@ -1,6 +1,6 @@
 router_bgp:
-  as: '65200'
-  router_id: 10.252.12.1
+  as: '65100'
+  router_id: 10.252.8.1
   bgp_defaults:
   - maximum-paths 4 ecmp 4
   peer_groups:
@@ -17,30 +17,30 @@ router_bgp:
     connected:
       route_map: null
   neighbors:
-    10.252.15.1:
+    10.252.11.1:
       peer_group: IPv4-UNDERLAY-PEERS
-      remote_as: '65201'
-      description: blue-leaf1_Ethernet49/1
-    10.252.15.3:
+      remote_as: '65101'
+      description: amber-leaf1_Ethernet49/1
+    10.252.11.3:
       peer_group: IPv4-UNDERLAY-PEERS
-      remote_as: '65201'
-      description: blue-leaf1_Ethernet50/1
-    10.252.15.9:
+      remote_as: '65101'
+      description: amber-leaf1_Ethernet50/1
+    10.252.11.9:
       peer_group: IPv4-UNDERLAY-PEERS
-      remote_as: '65202'
-      description: blue-leaf2_Ethernet49
-    10.252.15.11:
+      remote_as: '65102'
+      description: amber-leaf2_Ethernet49
+    10.252.11.11:
       peer_group: IPv4-UNDERLAY-PEERS
-      remote_as: '65202'
-      description: blue-leaf2_Ethernet50
-    10.252.15.13:
+      remote_as: '65102'
+      description: amber-leaf2_Ethernet50
+    10.252.11.13:
       peer_group: IPv4-UNDERLAY-PEERS
-      remote_as: '65202'
-      description: blue-leaf2_Ethernet51
-    10.252.15.15:
+      remote_as: '65102'
+      description: amber-leaf2_Ethernet51
+    10.252.11.15:
       peer_group: IPv4-UNDERLAY-PEERS
-      remote_as: '65202'
-      description: blue-leaf2_Ethernet52
+      remote_as: '65102'
+      description: amber-leaf2_Ethernet52
 static_routes:
 - vrf: MGMT
   destination_address_prefix: 0.0.0.0/0
@@ -73,7 +73,7 @@ management_interfaces:
     description: oob_management
     shutdown: false
     vrf: MGMT
-    ip_address: 10.252.0.24/24
+    ip_address: 10.252.0.21/24
     gateway: 10.252.0.1
     type: oob
 management_api_http:
@@ -100,10 +100,10 @@ ptp:
         sync: 3
 ethernet_interfaces:
   Ethernet1/1:
-    peer: blue-leaf1
+    peer: amber-leaf1
     peer_interface: Ethernet49/1
     peer_type: leaf
-    description: P2P_LINK_TO_BLUE-LEAF1_Ethernet49/1
+    description: P2P_LINK_TO_AMBER-LEAF1_Ethernet49/1
     shutdown: false
     mtu: 9214
     type: routed
@@ -116,15 +116,15 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.252.15.0/31
+    ip_address: 10.252.11.0/31
     pim:
       ipv4:
         sparse_mode: true
   Ethernet2/1:
-    peer: blue-leaf1
+    peer: amber-leaf1
     peer_interface: Ethernet50/1
     peer_type: leaf
-    description: P2P_LINK_TO_BLUE-LEAF1_Ethernet50/1
+    description: P2P_LINK_TO_AMBER-LEAF1_Ethernet50/1
     shutdown: false
     mtu: 9214
     type: routed
@@ -137,15 +137,15 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.252.15.2/31
+    ip_address: 10.252.11.2/31
     pim:
       ipv4:
         sparse_mode: true
   Ethernet3/1:
-    peer: blue-leaf2
+    peer: amber-leaf2
     peer_interface: Ethernet49
     peer_type: leaf
-    description: P2P_LINK_TO_BLUE-LEAF2_Ethernet49
+    description: P2P_LINK_TO_AMBER-LEAF2_Ethernet49
     speed: 10g
     shutdown: false
     mtu: 9214
@@ -159,15 +159,15 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.252.15.8/31
+    ip_address: 10.252.11.8/31
     pim:
       ipv4:
         sparse_mode: true
   Ethernet3/2:
-    peer: blue-leaf2
+    peer: amber-leaf2
     peer_interface: Ethernet50
     peer_type: leaf
-    description: P2P_LINK_TO_BLUE-LEAF2_Ethernet50
+    description: P2P_LINK_TO_AMBER-LEAF2_Ethernet50
     speed: 10g
     shutdown: false
     mtu: 9214
@@ -181,15 +181,15 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.252.15.10/31
+    ip_address: 10.252.11.10/31
     pim:
       ipv4:
         sparse_mode: true
   Ethernet3/3:
-    peer: blue-leaf2
+    peer: amber-leaf2
     peer_interface: Ethernet51
     peer_type: leaf
-    description: P2P_LINK_TO_BLUE-LEAF2_Ethernet51
+    description: P2P_LINK_TO_AMBER-LEAF2_Ethernet51
     speed: 10g
     shutdown: false
     mtu: 9214
@@ -203,15 +203,15 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.252.15.12/31
+    ip_address: 10.252.11.12/31
     pim:
       ipv4:
         sparse_mode: true
   Ethernet3/4:
-    peer: blue-leaf2
+    peer: amber-leaf2
     peer_interface: Ethernet52
     peer_type: leaf
-    description: P2P_LINK_TO_BLUE-LEAF2_Ethernet52
+    description: P2P_LINK_TO_AMBER-LEAF2_Ethernet52
     speed: 10g
     shutdown: false
     mtu: 9214
@@ -225,7 +225,7 @@ ethernet_interfaces:
         interval: -3
       transport: ipv4
       enable: true
-    ip_address: 10.252.15.14/31
+    ip_address: 10.252.11.14/31
     pim:
       ipv4:
         sparse_mode: true
@@ -233,13 +233,13 @@ loopback_interfaces:
   Loopback0:
     description: Router-id
     shutdown: false
-    ip_address: 10.252.12.1/32
+    ip_address: 10.252.8.1/32
 prefix_lists: null
 route_maps: null
 router_pim_sparse_mode:
   ipv4:
     rp_addresses:
-      10.252.12.1: null
+      10.252.8.1: null
 aaa_authentication:
   login:
     default: local

@@ -3,48 +3,66 @@ type: leaf
 
 leaf:
   defaults:
-    platform: vEOS-lab
-    loopback_ipv4_pool: 10.254.1.0/27
-    uplink_interfaces: ['Ethernet1', 'Ethernet2']
+    platform: 7280CR3K
+    loopback_ipv4_pool: 10.252.8.0/26
+    loopback_ipv4_offset: 2
+    uplink_interfaces: ['Ethernet49/1', 'Ethernet50/1']
     uplink_switches: ['amber-spine1', 'amber-spine1']
-    uplink_ipv4_pool: 10.254.2.0/24
+    uplink_ipv4_pool: 10.252.11.0/24
     virtual_router_mac_address: 00:1c:73:00:00:99
     spanning_tree_priority: 4096
     spanning_tree_mode: mstp
     ptp:
-      dscp:
-        general_messages: 46
-        event_messages: 48
-      monitor:
-        enabled: true
-        threshold:
-          offset_from_master: 1234
-          mean_path_delay: 4567
-        missing_message:
-          intervals:
-            sync: 8
-            follow_up: 9
-            announce: 10
-          sequence_ids:
-            enabled: true
-            announce: 11
-            delay_resp: 12
-            follow_up: 13
-            sync: 14
-
+      priority2: 1
+    filter:
+      tenants: [ amber ]
+    structured_config:
+      router_pim_sparse_mode:
+        ipv4:
+          rp_addresses:
+            10.252.8.1:
   nodes:
     amber-leaf1:
       id: 1
-      bgp_as: 65201
-      mgmt_ip: 192.168.1.21/24
+      bgp_as: 65101
+      platform: 7280R2
+      mgmt_ip: 10.252.0.22/24
+      ptp:
+        priority1: 30
+      filter:
+        tags: [ amber-leaf1 ]
       uplink_switch_interfaces:
-        - Ethernet1
-        - Ethernet2
+        - Ethernet1/1
+        - Ethernet2/1
+      raw_eos_cli: |
+        interface Vlan111
+          ip helper-address 10.252.4.253
+          pim ipv4 sparse-mode
 
     amber-leaf2:
       id: 2
-      bgp_as: 65202
-      mgmt_ip: 192.168.1.22/24
+      platform: 7020R
+      bgp_as: 65102
+      mgmt_ip: 10.252.0.23/24
+      filter:
+        tags: [ amber-leaf2 ]
+      uplink_interfaces: ['Ethernet49', 'Ethernet50', 'Ethernet51', 'Ethernet52']
+      uplink_switches: ['amber-spine1', 'amber-spine1', 'amber-spine1', 'amber-spine1']
+      uplink_interface_speed: 10g
       uplink_switch_interfaces:
-        - Ethernet3
-        - Ethernet4
+        - Ethernet3/1
+        - Ethernet3/2
+        - Ethernet3/3
+        - Ethernet3/4
+      structured_config:
+        static_routes:
+          - vrf: default
+            destination_address_prefix: 0.0.0.0/0
+            gateway: 10.252.1.17
+          - vrf: MGMT
+            destination_address_prefix: 0.0.0.0/0
+            gateway: 10.252.0.1
+      raw_eos_cli: |
+        interface Vlan112
+          ip helper-address 10.252.4.253
+          pim ipv4 sparse-mode

@@ -3,9 +3,14 @@ type: spine
 
 spine:
   defaults:
-    platform: vEOS-lab
-    loopback_ipv4_pool: 10.254.0.0/27
-    bgp_as: 65200
+    platform: 7280R3
+    loopback_ipv4_pool: 10.252.8.0/26
+    bgp_as: 65100
+    structured_config:
+      router_pim_sparse_mode:
+        ipv4:
+          rp_addresses:
+            10.252.8.1:
     # ptp:
     #   priority1: 5
     #   priority2: 1
@@ -15,4 +20,4 @@ spine:
   nodes:
     amber-spine1:
       id: 1
-      mgmt_ip: 192.168.1.11/24
+      mgmt_ip: 10.252.0.21/24

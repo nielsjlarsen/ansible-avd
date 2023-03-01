@@ -2,42 +2,108 @@
 # Port Profiles
 # Common settings inherited to network_ports
 port_profiles:
-  MEDIA_11:
+  MEDIA_111:
     mode: access
-    vlans: "11"
+    vlans: "111"
     spanning_tree_portfast: edge
     spanning_tree_bpdufilter: enabled
     ptp:
       enable: true
 
-  MEDIA_12:
+  MEDIA_112:
     mode: access
-    vlans: "12"
+    vlans: "112"
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      enable: true
+
+  MEDIA_121:
+    mode: access
+    vlans: "121"
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      enable: true
+
+  MEDIA_122:
+    mode: access
+    vlans: "122"
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      enable: true
 
 # Network Ports
 # All switch_ports ranges are expanded into individual port configurations
 # Switches are matched with regex matching the full hostname.
 network_ports:
   - switches:
-      - blue-leaf.*
+      - amber-leaf1
     switch_ports:
       - Ethernet1-48
-    profile: MEDIA_11
-    description: MEDIA
+    profile: MEDIA_111
+    description: MEDIA_VLAN111
+
+  - switches:
+      - amber-leaf2
+    switch_ports:
+      - Ethernet1-46
+    profile: MEDIA_112
+    description: MEDIA_VLAN112
 
   - switches:
       - blue-leaf1
     switch_ports:
-      - Ethernet1
-    profile: MEDIA_11
+      - Ethernet1-48
+    profile: MEDIA_121
+    description: MEDIA_VLAN121
+
+  - switches:
+      - blue-leaf2
+    switch_ports:
+      - Ethernet1-46
+    profile: MEDIA_122
+    description: MEDIA_VLAN122
+
+  - switches:
+      - amber-leaf2
+    switch_ports:
+      - Ethernet47
+    profile: MEDIA_112
     description: GM-Meinberg_NIC
     ptp:
       enable: true
       endpoint_role: bmca
 
   - switches:
-      - blue-leaf1
+      - blue-leaf2
     switch_ports:
-      - Ethernet2
-    profile: MEDIA_11
-    description: PHABRIX_MGMT
+      - Ethernet47
+    profile: MEDIA_122
+    description: GM-Meinberg_NIC
+    ptp:
+      enable: true
+      endpoint_role: bmca
+
+  # - switches:
+  #     - amber-leaf2
+  #   switch_ports:
+  #     - Ethernet48
+  #   profile: MEDIA_112
+  #   description: FW
+  #   structured_config:
+  #     type: routed
+  #   ptp:
+  #     enable: false
+
+  # - switches:
+  #     - blue-leaf2
+  #   switch_ports:
+  #     - Ethernet48
+  #   profile: MEDIA_122
+  #   description: FW
+  #   structured_config:
+  #     type: routed
+  #   ptp:
+  #     enable: false

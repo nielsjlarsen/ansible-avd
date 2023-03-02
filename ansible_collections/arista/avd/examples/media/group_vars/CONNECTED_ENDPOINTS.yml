@@ -42,6 +42,10 @@ network_ports:
       - amber-leaf1
     switch_ports:
       - Ethernet1-48
+      - Ethernet51/1
+      - Ethernet52/1
+      - Ethernet53/1
+      - Ethernet54/1
     profile: MEDIA_111
     description: MEDIA_VLAN111
 
@@ -56,6 +60,10 @@ network_ports:
       - blue-leaf1
     switch_ports:
       - Ethernet1-48
+      - Ethernet51/1
+      - Ethernet52/1
+      - Ethernet53/1
+      - Ethernet54/1
     profile: MEDIA_121
     description: MEDIA_VLAN121
 

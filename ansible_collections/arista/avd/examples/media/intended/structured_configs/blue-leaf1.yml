@@ -1095,6 +1095,86 @@ ethernet_interfaces:
       transport: ipv4
       enable: true
       role: master
+  Ethernet51/1:
+    peer: MEDIA_VLAN121
+    peer_type: network_port
+    description: MEDIA_VLAN121
+    type: switched
+    shutdown: false
+    mode: access
+    vlans: '121'
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      announce:
+        interval: 0
+        timeout: 3
+      delay_req: -3
+      sync_message:
+        interval: -3
+      transport: ipv4
+      enable: true
+      role: master
+  Ethernet52/1:
+    peer: MEDIA_VLAN121
+    peer_type: network_port
+    description: MEDIA_VLAN121
+    type: switched
+    shutdown: false
+    mode: access
+    vlans: '121'
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      announce:
+        interval: 0
+        timeout: 3
+      delay_req: -3
+      sync_message:
+        interval: -3
+      transport: ipv4
+      enable: true
+      role: master
+  Ethernet53/1:
+    peer: MEDIA_VLAN121
+    peer_type: network_port
+    description: MEDIA_VLAN121
+    type: switched
+    shutdown: false
+    mode: access
+    vlans: '121'
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      announce:
+        interval: 0
+        timeout: 3
+      delay_req: -3
+      sync_message:
+        interval: -3
+      transport: ipv4
+      enable: true
+      role: master
+  Ethernet54/1:
+    peer: MEDIA_VLAN121
+    peer_type: network_port
+    description: MEDIA_VLAN121
+    type: switched
+    shutdown: false
+    mode: access
+    vlans: '121'
+    spanning_tree_portfast: edge
+    spanning_tree_bpdufilter: enabled
+    ptp:
+      announce:
+        interval: 0
+        timeout: 3
+      delay_req: -3
+      sync_message:
+        interval: -3
+      transport: ipv4
+      enable: true
+      role: master
 loopback_interfaces:
   Loopback0:
     description: Router-id

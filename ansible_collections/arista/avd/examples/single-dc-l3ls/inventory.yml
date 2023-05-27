@@ -1,17 +1,17 @@
 ---
 all:
   children:
-    CLOUDVISION:
-      hosts:
-        cvp:
-          # Ansible variables used by the ansible_avd and ansible_cvp roles to push configuration to devices via CVP
-          ansible_host: www.cv-prod-euwest-2.arista.io
-          ansible_user: cvaas
-          ansible_password: "{{ lookup('file', 'cvaas.token')}}"
-          ansible_connection: httpapi
-          ansible_httpapi_use_ssl: true
-          ansible_httpapi_validate_certs: false
-          ansible_network_os: eos
+    # CLOUDVISION:
+    #   hosts:
+    #     cvp:
+    #       # Ansible variables used by the ansible_avd and ansible_cvp roles to push configuration to devices via CVP
+    #       ansible_host: www.cv-prod-euwest-2.arista.io
+    #       ansible_user: cvaas
+    #       ansible_password: "{{ lookup('file', 'cvaas.token')}}"
+    #       ansible_connection: httpapi
+    #       ansible_httpapi_use_ssl: true
+    #       ansible_httpapi_validate_certs: false
+    #       ansible_network_os: eos
 
     FABRIC:
       children:
@@ -19,34 +19,18 @@ all:
           children:
             DC1_SPINES:
               hosts:
-                vx-spine1:
-                  serial_number: JMX2304A4RT
-                vx-spine2:
-                  serial_number: JMX2304A237
+                spine1:
+                  ansible_host: 172.16.60.100
             DC1_L3_LEAVES:
               hosts:
-                vx-borderleaf1a:
-                  serial_number: JMX2304A20L
-                vx-borderleaf1b:
-                  serial_number: JMX2304A22D
-                vx-borderleaf2a:
-                  serial_number: JMX2304A1PE
-                vx-borderleaf2b:
-                  serial_number: JMX2304A235
-                vx-accessleaf3a:
-                  serial_number: JMX2304A1QJ
-                vx-accessleaf3b:
-                  serial_number: JMX2303A6SE
+                leaf1:
+                  ansible_host: 172.16.60.101
+                leaf2:
+                  ansible_host: 172.16.60.102
             DC1_L2_LEAVES:
               hosts:
-                vx-subleaf4a:
-                  serial_number: HBG231201ET
-                vx-subleaf4b:
-                  serial_number: HBG231201J4
-                vx-subleaf5a:
-                  serial_number: HNN20505070
-                vx-subleaf5b:
-                  serial_number: HNN21045125
+                subleaf1:
+                  ansible_host: 172.16.60.103
 
     NETWORK_SERVICES:
       children:

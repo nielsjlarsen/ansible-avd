@@ -22,21 +22,21 @@ tenants:
           # SVI definitions.
           "10":
             # SVI Description
-            name: VRF10_VLAN10
+            name: VLAN10-AP
             enabled: true
             # vxlan: false
             # IP anycast gateway to be used in the SVI in every leaf.
             ip_address_virtual: 10.100.54.193/27
             mtu: 9214
-            ip_helpers:
-              10.100.54.225:
+            # ip_helpers:
+            #   172.16.61.1:
             tags: [ accessleaf ]
-          "11":
+          "61":
             # SVI Description
-            name: VRF10_VLAN11
+            name: VLAN61-Linknet
             enabled: true
             # IP anycast gateway to be used in the SVI in every leaf.
-            ip_address_virtual: 10.100.54.226/27
+            ip_address_virtual: 172.16.61.2/24
             mtu: 9214
             tags: [ borderleaf ]
       # VRF11:
@@ -54,9 +54,9 @@ tenants:
       # These are pure L2 vlans. They do not have a SVI defined in the l3leafs and they will be bridged inside the VXLAN fabric
       # "1202":
       #   name: mgmt-accesspoint
-      "1213":
-        name: mobile-prod-device
-        tags: [ borderleaf ]
-      "1250":
+      # "1213":
+      #   name: mobile-prod-device
+      #   tags: [ borderleaf ]
+      "62":
         name: enterprisenet
         tags: [ borderleaf ]

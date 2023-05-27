@@ -1,0 +1,8 @@
+---
+- name: Run AVD # (1)!
+  hosts: [ leaf1, leaf2 ]
+  gather_facts: false
+  tasks:
+    - name: Deploy Configurations to Devices # (4)!
+      ansible.builtin.import_role:
+        name: arista.avd.eos_config_deploy_eapi

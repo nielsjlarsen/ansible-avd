@@ -1,49 +1,33 @@
 ---
 # Default gateway used for the management interface
-mgmt_gateway: 10.151.11.1
+mgmt_gateway: 172.16.60.1
 
 # Spine switch group
 spine:
   # Definition of default values that will be configured to all nodes defined in this group
   defaults:
     # Set the relevant platform as each platform has different default values in Ansible AVD
-    platform: 7050X3
+    platform: 7050T
     # Pool of IPv4 addresses to configure interface Loopback0 used for BGP EVPN sessions
     loopback_ipv4_pool: 10.100.160.0/27
     # ASN to be used by BGP
     bgp_as: 65100
-    structured_config:
-      ntp:
-        local_interface:
-          name: Management1
-          vrf: MGMT
-        servers:
-          - name: utc1.corp.lego.com
-            vrf: MGMT
-          - name: utc2.corp.lego.com
-            vrf: MGMT
-          - name: utcd.corp.lego.com
-            vrf: MGMT
 
   # Definition of nodes contained in this group.
   # Specific configuration of device must take place under the node definition. Each node inherites all values defined under 'defaults'
   nodes:
     # Name of the node to be defined (must be consistent with definition in inventory)
-    vx-spine1:
+    spine1:
       # Device ID definition. An integer number used for internal calculations (ie. IPv4 address of the loopback_ipv4_pool among others)
       id: 1
       # Management IP to be assigned to the management interface
-      mgmt_ip: 10.151.11.17/26
-
-    vx-spine2:
-      id: 2
-      mgmt_ip: 10.151.11.18/26
+      mgmt_ip: 172.16.60.100/24
 
 # L3 Leaf switch group
 l3leaf:
   defaults:
     # Set the relevant platform as each platform has different default values in Ansible AVD
-    platform: 7050X3
+    platform: 720XP
     # Pool of IPv4 addresses to configure interface Loopback0 used for BGP EVPN sessions
     loopback_ipv4_pool: 10.100.160.0/27
     # Offset all assigned loopback IP addresses.
@@ -53,39 +37,21 @@ l3leaf:
     # Definition of pool of IPs to be used as Virtual Tunnel EndPoint (VXLAN origin and destination IPs)
     vtep_loopback_ipv4_pool: 10.100.54.16/28
     # Interfaces connecting this device towards the upper level of the hierarchy (Spines in this case)
-    uplink_interfaces: ['Ethernet1', 'Ethernet2']
+    uplink_interfaces: ['Ethernet1']
     # Ansible hostname of the devices used to establish neighborship (IP assignments and BGP peering)
-    uplink_switches: ['vx-spine1', 'vx-spine2']
+    uplink_switches: ['spine1']
     # Definition of pool of IPs to be used in P2P links
     uplink_ipv4_pool: 10.100.54.32/27
-    # MLAG Peer link physical interface definition
-    mlag_interfaces: ['Ethernet49/1', 'Ethernet50/1']
-    # Definition of pool of IPs to be used for MLAG peer-link connectivity
-    mlag_peer_ipv4_pool: 10.100.54.96/28
-    # iBGP Peering between MLAG peers
-    mlag_peer_l3_ipv4_pool: 10.100.54.112/28
     # Virtual router mac for VNIs assigned to Leaf switches in format xx:xx:xx:xx:xx:xx
     virtual_router_mac_address: 00:1c:73:00:00:99
     spanning_tree_priority: 4096
     spanning_tree_mode: mstp
-    structured_config:
-      ntp:
-        local_interface:
-          name: Management1
-          vrf: MGMT
-        servers:
-          - name: utc1.corp.lego.com
-            vrf: MGMT
-          - name: utc2.corp.lego.com
-            vrf: MGMT
-          - name: utcd.corp.lego.com
-            vrf: MGMT
 
   # If two nodes (and only two) are in the same node_group, they will automatically form an MLAG pair
   node_groups:
     # Definition of a node group that will include two devices in MLAG.
     # Definitions under the group will be inherited by both nodes in the group
-    BORDERLEAF1:
+    LEAF1:
       # ASN to be used by BGP for the group. Both devices in the MLAG pair will use the same BGP ASN
       bgp_as: 65101
       filter:
@@ -94,7 +60,7 @@ l3leaf:
         static_routes:
           - vrf: default
             destination_address_prefix: 0.0.0.0/0
-            gateway: 10.100.54.225
+            gateway: 172.16.61.1
         router_bgp:
           vrfs:
             default:
@@ -103,139 +69,59 @@ l3leaf:
       raw_eos_cli: |-
         router bgp 65101
           no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
+          no vlan 61
+          no vlan 62
         interface Vxlan1
           no vxlan vrf default vni 1010
-        monitor session niels source Ethernet48
-        monitor session niels destination tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT
       nodes:
         # Definition of hostnames under the node_group
-        vx-borderleaf1a:
+        leaf1:
           id: 1
-          mgmt_ip: 10.151.11.23/26
+          mgmt_ip: 172.16.60.101/24
           # Definition of the port to be used in the uplink device facing this device.
           # Note that the number of elements in this list must match the length of 'uplink_switches' as well as 'uplink_interfaces'
           uplink_switch_interfaces:
-            - Ethernet5
-            - Ethernet5
+            - Ethernet1
           structured_config:
             vxlan_interface:
               Vxlan1:
                 vxlan:
                   flood_vtep_learned_data_plane: true
-                eos_cli: "vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21"
-            # vlan_interfaces:
-            #   - name: Vlan1202
-            #     shutdown: false
-            #     ip_address_virtual: 10.100.55.2/26
-        vx-borderleaf1b:
-          id: 2
-          mgmt_ip: 10.151.11.24/26
-          uplink_switch_interfaces:
-            - Ethernet6
-            - Ethernet6
-          structured_config:
-            vxlan_interface:
-              Vxlan1:
-                vxlan:
-                  flood_vtep_learned_data_plane: true
-                eos_cli: "vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21"
-            # vlan_interfaces:
-            #   - name: Vlan1202
-            #     shutdown: false
-            #     ip_address_virtual: 10.100.55.2/26
+                eos_cli: "vxlan bridging vtep-to-vtep"
 
-    BORDERLEAF2:
+    LEAF2:
       bgp_as: 65102
-      filter:
-        tags: [ borderleaf ]
-      structured_config:
-        static_routes:
-          - vrf: default
-            destination_address_prefix: 0.0.0.0/0
-            gateway: 10.100.54.225
-        router_bgp:
-          vrfs:
-            default:
-              redistribute_routes:
-                static:
-      raw_eos_cli: |-
-        router bgp 65102
-          no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
-        interface Vxlan1
-          no vxlan vrf default vni 1010
-      nodes:
-        vx-borderleaf2a:
-          id: 3
-          mgmt_ip: 10.151.11.21/26
-          uplink_switch_interfaces:
-            - Ethernet3
-            - Ethernet3
-          structured_config:
-            vxlan_interface:
-              Vxlan1:
-                vxlan:
-                  flood_vtep_learned_data_plane: true
-                eos_cli: "vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19"
-        vx-borderleaf2b:
-          id: 4
-          mgmt_ip: 10.151.11.22/26
-          uplink_switch_interfaces:
-            - Ethernet4
-            - Ethernet4
-          structured_config:
-            vxlan_interface:
-              Vxlan1:
-                vxlan:
-                  flood_vtep_learned_data_plane: true
-                eos_cli: "vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19"
-
-    ACCESSLEAF3:
-      bgp_as: 65103
       filter:
         tags: [ accessleaf ]
       raw_eos_cli: |-
-        router bgp 65103
+        router bgp 65102
           no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
           no vlan 10
         interface Vxlan1
           no vxlan vrf default vni 1010
+        dhcp server
+          subnet 10.100.54.192/27
+              dns server 8.8.8.8
+              lease time 0 days 1 hours 0 minutes
+              default-gateway 10.100.54.193
+              range 10.100.54.194 10.100.54.222
+        interface vlan 10
+          dhcp server ipv4
       nodes:
-        vx-accessleaf3a:
-          id: 5
-          mgmt_ip: 10.151.11.19/26
+        leaf2:
+          id: 2
+          mgmt_ip: 172.16.60.102/24
           uplink_switch_interfaces:
-            - Ethernet1
-            - Ethernet1
-        vx-accessleaf3b:
-          id: 6
-          mgmt_ip: 10.151.11.20/26
-          uplink_switch_interfaces:
-            - Ethernet2
             - Ethernet2
 
 # L2 Leaf switch group
 l2leaf:
   defaults:
-    # Definition of pool of IPs to be used for MLAG peer-link connectivity
-    mlag_peer_ipv4_pool: 10.100.54.128/28
-    # iBGP Peering between MLAG peers
-    mlag_peer_l3_ipv4_pool: 10.100.54.144/28
     # Virtual router mac for VNIs assigned to Leaf switches in format xx:xx:xx:xx:xx:xx
     virtual_router_mac_address: 00:1c:73:00:00:99
     spanning_tree_priority: 4096
     spanning_tree_mode: mstp
     structured_config:
-      ntp:
-        local_interface:
-          name: Management1
-          vrf: MGMT
-        servers:
-          - name: utc1.corp.lego.com
-            vrf: MGMT
-          - name: utc2.corp.lego.com
-            vrf: MGMT
-          - name: utcd.corp.lego.com
-            vrf: MGMT
       poe:
         reboot:
           action: power-off
@@ -243,126 +129,19 @@ l2leaf:
           action: power-off
 
   node_groups:
-    VX-SUBLEAF4:
-      platform: 722XPM
-      uplink_interfaces: ['Ethernet56', 'Ethernet55']
-      uplink_switches: ['vx-accessleaf3a', 'vx-accessleaf3b']
-      # MLAG Peer link physical interface definition
-      mlag_interfaces: ['Ethernet49', 'Ethernet50']
+    SUBLEAF:
+      platform: 710P
+      uplink_interfaces: ['Ethernet1']
+      uplink_switches: ['leaf2']
       nodes:
-        vx-subleaf4a:
+        subleaf1:
           id: 1
-          mgmt_ip: 10.151.11.15/26
+          mgmt_ip: 172.16.60.103/24
           uplink_switch_interfaces:
-            - Ethernet48
-            - Ethernet48
+            - Ethernet2
           structured_config:
             ethernet_interfaces:
               - name: Ethernet1
                 speed: auto 1000full
                 vlans: 10
                 mode: access
-              - name: Ethernet2
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-            port_channel_interfaces:
-              - name: Port-Channel1
-                lacp_fallback_mode: individual
-              - name: Port-Channel2
-                lacp_fallback_mode: individual
-        vx-subleaf4b:
-          id: 2
-          mgmt_ip: 10.151.11.16/26
-          uplink_switch_interfaces:
-            - Ethernet47
-            - Ethernet47
-          structured_config:
-            ethernet_interfaces:
-              - name: Ethernet1
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-              - name: Ethernet2
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-            port_channel_interfaces:
-              - name: Port-Channel1
-                lacp_fallback_mode: individual
-              - name: Port-Channel2
-                lacp_fallback_mode: individual
-
-    VX-SUBLEAF5:
-      platform: 755XP
-      uplink_interfaces: ['Ethernet1/1', 'Ethernet1/2']
-      uplink_switches: ['vx-accessleaf3a', 'vx-accessleaf3b']
-      # MLAG Peer link physical interface definition
-      mlag_interfaces: ['Ethernet1/3', 'Ethernet1/4']
-      mgmt_interface: Management1/1
-      nodes:
-        vx-subleaf5a:
-          id: 3
-          mgmt_ip: 10.151.11.12/26
-          uplink_switch_interfaces:
-            - Ethernet46
-            - Ethernet46
-          structured_config:
-            ethernet_interfaces:
-              - name: Ethernet3/1
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-              - name: Ethernet3/2
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-            ntp:
-              local_interface:
-                name: Management1/1
-                vrf: MGMT
-              servers:
-                - name: utc1.corp.lego.com
-                  vrf: MGMT
-                - name: utc2.corp.lego.com
-                  vrf: MGMT
-                - name: utcd.corp.lego.com
-                  vrf: MGMT
-            port_channel_interfaces:
-              - name: Port-Channel31
-                lacp_fallback_mode: individual
-              - name: Port-Channel32
-                lacp_fallback_mode: individual
-
-        vx-subleaf5b:
-          id: 4
-          mgmt_ip: 10.151.11.11/26
-          uplink_switch_interfaces:
-            - Ethernet45
-            - Ethernet45
-          structured_config:
-            ethernet_interfaces:
-              - name: Ethernet3/1
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-              - name: Ethernet3/2
-                speed: auto 1000full
-                vlans: 10
-                mode: access
-            ntp:
-              local_interface:
-                name: Management1/1
-                vrf: MGMT
-              servers:
-                - name: utc1.corp.lego.com
-                  vrf: MGMT
-                - name: utc2.corp.lego.com
-                  vrf: MGMT
-                - name: utcd.corp.lego.com
-                  vrf: MGMT
-            port_channel_interfaces:
-              - name: Port-Channel31
-                lacp_fallback_mode: individual
-              - name: Port-Channel32
-                lacp_fallback_mode: individual

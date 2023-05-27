@@ -2,53 +2,143 @@
 # Definition of connected endpoints in the fabric.
 servers:
   # Name of the defined server.
-  dc1-leaf1-server1:
-    # Definition of adapters on the server.
+  # dc1-leaf1-server1:
+  #   # Definition of adapters on the server.
+  #   adapters:
+  #     # Name of the server interfaces that will be used in the description of each interface
+  #   - endpoint_ports: [ PCI1, PCI2 ]
+  #     # Device ports where the server ports are connected.
+  #     switch_ports: [ Ethernet5, Ethernet5 ]
+  #     # Device names where the server ports are connected.
+  #     switches: [ dc1-leaf1a, dc1-leaf1b ]
+  #     # VLANs that will be configured on these ports.
+  #     vlans: 11-12,21-22
+  #     # Native VLAN to be used on these ports.
+  #     native_vlan: 4092
+  #     # L2 mode of the port.
+  #     mode: trunk
+  #     # Spanning tree portfast configuration on this port.
+  #     spanning_tree_portfast: edge
+  #     # Definition of the pair of ports as port channel.
+  #     port_channel:
+  #       # Description of the port channel interface.
+  #       description: PortChannel dc1-leaf1-server1
+  #       # Port channel mode for LACP.
+  #       mode: active
+
+  #   - endpoint_ports: [ iLO ]
+  #     switch_ports: [ Ethernet5 ]
+  #     switches: [ dc1-leaf1c ]
+  #     vlans: 11
+  #     mode: access
+  #     spanning_tree_portfast: edge
+
+  palo1:
     adapters:
-      # Name of the server interfaces that will be used in the description of each interface
-    - endpoint_ports: [ PCI1, PCI2 ]
-      # Device ports where the server ports are connected.
-      switch_ports: [ Ethernet5, Ethernet5 ]
-      # Device names where the server ports are connected.
-      switches: [ dc1-leaf1a, dc1-leaf1b ]
-      # VLANs that will be configured on these ports.
-      vlans: 11-12,21-22
-      # Native VLAN to be used on these ports.
-      native_vlan: 4092
-      # L2 mode of the port.
+    - endpoint_ports: [ Ethernet1/11, Ethernet1/12 ]
+      switch_ports: [ Ethernet48, Ethernet48 ]
+      switches: [ vx-borderleaf1a, vx-borderleaf1b ]
+      vlans: 11,1213,1250
+      # native_vlan: 4092
       mode: trunk
-      # Spanning tree portfast configuration on this port.
       spanning_tree_portfast: edge
-      # Definition of the pair of ports as port channel.
       port_channel:
-        # Description of the port channel interface.
-        description: PortChannel dc1-leaf1-server1
-        # Port channel mode for LACP.
+        description: PortChannel palo1
         mode: active
 
-    - endpoint_ports: [ iLO ]
-      switch_ports: [ Ethernet5 ]
-      switches: [ dc1-leaf1c ]
-      vlans: 11
+  palo2:
+    adapters:
+    - endpoint_ports: [ Ethernet1/11, Ethernet1/12 ]
+      switch_ports: [ Ethernet48, Ethernet48 ]
+      switches: [ vx-borderleaf2a, vx-borderleaf2b ]
+      vlans: 11,1213,1250
+      # native_vlan: 4092
+      mode: trunk
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel palo2
+        mode: active
+
+  ap1:
+    adapters:
+    - endpoint_ports: [ LAN1, LAN2 ]
+      switch_ports: [ Ethernet1, Ethernet1 ]
+      switches: [ vx-subleaf4a, vx-subleaf4b ]
+      vlans: 10
+      mode: access
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel AP1
+        mode: active
+
+  ap2:
+    adapters:
+    - endpoint_ports: [ LAN1, LAN2 ]
+      switch_ports: [ Ethernet2, Ethernet2 ]
+      switches: [ vx-subleaf4a, vx-subleaf4b ]
+      vlans: 10
+      mode: access
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel AP2
+        mode: active
+
+  ap3:
+    adapters:
+    - endpoint_ports: [ LAN1, LAN2 ]
+      switch_ports: [ Ethernet3/1, Ethernet3/1 ]
+      switches: [ vx-subleaf5a, vx-subleaf5b ]
+      vlans: 10
+      mode: access
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel AP3
+        mode: active
+
+  ap4:
+    adapters:
+    - endpoint_ports: [ LAN1, LAN2 ]
+      switch_ports: [ Ethernet3/2, Ethernet3/2 ]
+      switches: [ vx-subleaf5a, vx-subleaf5b ]
+      vlans: 10
+      mode: access
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel AP4
+        mode: active
+
+  pc1:
+    adapters:
+    - endpoint_ports: [ LAN1 ]
+      switch_ports: [ Ethernet3 ]
+      switches: [ vx-subleaf4a ]
+      vlans: 10
       mode: access
       spanning_tree_portfast: edge
 
-  dc1-leaf2-server1:
+  pc2:
     adapters:
-    - endpoint_ports: [ PCI1, PCI2 ]
-      switch_ports: [ Ethernet5, Ethernet5 ]
-      switches: [ dc1-leaf2a, dc1-leaf2b ]
-      vlans: 11-12,21-22
-      native_vlan: 4092
-      mode: trunk
+    - endpoint_ports: [ LAN1 ]
+      switch_ports: [ Ethernet3 ]
+      switches: [ vx-subleaf4b ]
+      vlans: 10
+      mode: access
       spanning_tree_portfast: edge
-      port_channel:
-        description: PortChannel dc1-leaf2-server1
-        mode: active
 
-    - endpoint_ports: [ iLO ]
-      switch_ports: [ Ethernet5 ]
-      switches: [ dc1-leaf2c ]
-      vlans: 11
+  pc3:
+    adapters:
+    - endpoint_ports: [ LAN1 ]
+      switch_ports: [ Ethernet3 ]
+      switches: [ vx-borderleaf1a ]
+      vlans: 1250
+      mode: access
+      spanning_tree_portfast: edge
+
+  pc4:
+    adapters:
+    - endpoint_ports: [ LAN1 ]
+      switch_ports: [ Ethernet3 ]
+      switches: [ vx-borderleaf1b ]
+      vlans: 1250
       mode: access
       spanning_tree_portfast: edge

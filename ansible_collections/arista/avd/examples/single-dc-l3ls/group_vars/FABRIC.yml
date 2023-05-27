@@ -1,19 +1,19 @@
 ---
-# Ansible connectivity definitions
-# eAPI connectivity via HTTPS is specified (as opposed to CLI via SSH)
-ansible_connection: ansible.netcommon.httpapi
-# Specifies that we are indeed using Arista EOS
-ansible_network_os: arista.eos.eos
-# This user/password must exist on the switches to enable Ansible access
-ansible_user: ansible
-ansible_password: ansible
-# User escalation (to enter enable mode)
-ansible_become: true
-ansible_become_method: enable
-# Use SSL (HTTPS)
-ansible_httpapi_use_ssl: true
-# Do not try to validate certs
-ansible_httpapi_validate_certs: false
+# # Ansible connectivity definitions
+# # eAPI connectivity via HTTPS is specified (as opposed to CLI via SSH)
+# ansible_connection: ansible.netcommon.httpapi
+# # Specifies that we are indeed using Arista EOS
+# ansible_network_os: arista.eos.eos
+# # This user/password must exist on the switches to enable Ansible access
+# ansible_user: ansible
+# ansible_password: ansible
+# # User escalation (to enter enable mode)
+# ansible_become: true
+# ansible_become_method: enable
+# # Use SSL (HTTPS)
+# ansible_httpapi_use_ssl: true
+# # Do not try to validate certs
+# ansible_httpapi_validate_certs: false
 
 # Common AVD group variables
 fabric_name: FABRIC
@@ -24,16 +24,10 @@ overlay_routing_protocol: ebgp
 
 # Local users
 local_users:
-  # Define a new user, which is called "ansible"
-  ansible:
+  netmanager:
     privilege: 15
     role: network-admin
-    # Password set to "ansible". Same string as the device generates when configuring a username.
-    sha512_password: $6$7u4j1rkb3VELgcZE$EJt2Qff8kd/TapRoci0XaIZsL4tFzgq1YZBLD9c6f/knXzvcYY0NcMKndZeCv0T268knGKhOEwZAxqKjlMm920
-  admin:
-    privilege: 15
-    role: network-admin
-    no_password: true
+    sha512_password: $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.
 
 # BGP peer groups passwords
 bgp_peer_groups:
@@ -48,4 +42,88 @@ bgp_peer_groups:
 # P2P interfaces MTU, includes VLANs 4093 and 4094 that are over peer-link
 # If you're running vEOS-lab or cEOS, you should use MTU of 1500 instead as shown in the following line
 # p2p_uplinks_mtu: 1500
-p2p_uplinks_mtu: 1500
+p2p_uplinks_mtu: 9214
+
+# DNS Server
+name_servers:
+  - 10.148.30.200
+  - 10.149.30.200
+
+# DNS Domain
+custom_structured_configuration_dns_domain: sdn.lego.com
+
+# sFlow
+custom_structured_configuration_sflow:
+  sample: 16384
+  polling_interval: 10
+  destinations:
+    - destination: 127.0.0.1
+  extensions:
+    - name: bgp
+      enabled: true
+  run: true
+
+# Radius
+custom_structured_configuration_radius_server:
+  hosts:
+    - host: 10.148.56.50
+      vrf: MGMT
+      key: 070D2E5E41075422240A284D
+    - host: 10.149.56.50
+      vrf: MGMT
+      key: 070D2E5E41075422240A284D
+    - host: 10.150.56.50
+      vrf: MGMT
+      key: 070D2E5E41075422240A284D
+
+# TACACS+
+custom_structured_configuration_tacacs_servers:
+  hosts:
+    - host: 10.148.56.50
+      vrf: MGMT
+      key: 070D2E5E41075422240A284D
+      key_type: 7
+    - host: 10.149.56.50
+      vrf: MGMT
+      key: 070D2E5E41075422240A284D
+      key_type: 7
+    - host: 10.150.56.50
+      vrf: MGMT
+      key: 070D2E5E41075422240A284D
+      key_type: 7
+
+# AAA
+custom_structured_configuration_aaa_authentication:
+  login:
+    default: group tacacs+ local
+  enable:
+    default: group tacacs+ local
+  dot1x:
+    default: group radius
+
+custom_structured_configuration_aaa_authorization:
+  exec:
+    default: group tacacs+ local
+  commands:
+    all_default: group tacacs+ local
+
+custom_structured_configuration_aaa_accounting:
+  exec:
+    default:
+      type: start-stop
+      group: tacacs+
+  dot1x:
+    default:
+      type: start-stop
+      group: radius
+  commands:
+    default:
+      - commands: 15
+        type: start-stop
+        group: tacacs+
+
+# CVaaS definitions
+cvp_instance_ip: apiserver.arista.io
+terminattr_smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+terminattr_ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+# terminattr_disable_aaa: true

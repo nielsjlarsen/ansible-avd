@@ -1,32 +1,52 @@
 ---
 all:
   children:
+    CLOUDVISION:
+      hosts:
+        cvp:
+          # Ansible variables used by the ansible_avd and ansible_cvp roles to push configuration to devices via CVP
+          ansible_host: www.cv-prod-euwest-2.arista.io
+          ansible_user: cvaas
+          ansible_password: "{{ lookup('file', 'cvaas.token')}}"
+          ansible_connection: httpapi
+          ansible_httpapi_use_ssl: true
+          ansible_httpapi_validate_certs: false
+          ansible_network_os: eos
+
     FABRIC:
       children:
         DC1:
           children:
             DC1_SPINES:
               hosts:
-                dc1-spine1:
-                  ansible_host: 172.16.1.11
-                dc1-spine2:
-                  ansible_host: 172.16.1.12
+                vx-spine1:
+                  serial_number: JMX2304A4RT
+                vx-spine2:
+                  serial_number: JMX2304A237
             DC1_L3_LEAVES:
               hosts:
-                dc1-leaf1a:
-                  ansible_host: 172.16.1.101
-                dc1-leaf1b:
-                  ansible_host: 172.16.1.102
-                dc1-leaf2a:
-                  ansible_host: 172.16.1.103
-                dc1-leaf2b:
-                  ansible_host: 172.16.1.104
+                vx-borderleaf1a:
+                  serial_number: JMX2304A20L
+                vx-borderleaf1b:
+                  serial_number: JMX2304A22D
+                vx-borderleaf2a:
+                  serial_number: JMX2304A1PE
+                vx-borderleaf2b:
+                  serial_number: JMX2304A235
+                vx-accessleaf3a:
+                  serial_number: JMX2304A1QJ
+                vx-accessleaf3b:
+                  serial_number: JMX2303A6SE
             DC1_L2_LEAVES:
               hosts:
-                dc1-leaf1c:
-                  ansible_host: 172.16.1.151
-                dc1-leaf2c:
-                  ansible_host: 172.16.1.152
+                vx-subleaf4a:
+                  serial_number: HBG231201ET
+                vx-subleaf4b:
+                  serial_number: HBG231201J4
+                vx-subleaf5a:
+                  serial_number: HNN20505070
+                vx-subleaf5b:
+                  serial_number: HNN21045125
 
     NETWORK_SERVICES:
       children:

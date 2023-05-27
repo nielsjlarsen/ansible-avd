@@ -1,12 +1,23 @@
-# dc1-leaf2b
+# vx-borderleaf1a
 
 ## Table of Contents
 
 - [Management](#management)
   - [Management Interfaces](#management-interfaces)
+  - [DNS Domain](#dns-domain)
+  - [IP Name Servers](#ip-name-servers)
+  - [NTP](#ntp)
   - [Management API HTTP](#management-api-http)
 - [Authentication](#authentication)
   - [Local Users](#local-users)
+  - [TACACS Servers](#tacacs-servers)
+  - [RADIUS Server](#radius-server)
+  - [AAA Authentication](#aaa-authentication)
+  - [AAA Authorization](#aaa-authorization)
+  - [AAA Accounting](#aaa-accounting)
+- [Monitoring](#monitoring)
+  - [TerminAttr Daemon](#terminattr-daemon)
+  - [SFlow](#sflow)
 - [MLAG](#mlag)
   - [MLAG Summary](#mlag-summary)
   - [MLAG Device Configuration](#mlag-device-configuration)
@@ -42,9 +53,6 @@
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
   - [VRF Instances Device Configuration](#vrf-instances-device-configuration)
-- [Virtual Source NAT](#virtual-source-nat)
-  - [Virtual Source NAT Summary](#virtual-source-nat-summary)
-  - [Virtual Source NAT Configuration](#virtual-source-nat-configuration)
 
 ## Management
 
@@ -56,7 +64,7 @@
 
 | Management Interface | description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1 | oob_management | oob | MGMT | 172.16.1.104/24 | 172.16.1.1 |
+| Management1 | oob_management | oob | MGMT | 10.151.11.23/26 | 10.151.11.1 |
 
 ##### IPv6
 
@@ -72,7 +80,62 @@ interface Management1
    description oob_management
    no shutdown
    vrf MGMT
-   ip address 172.16.1.104/24
+   ip address 10.151.11.23/26
+```
+
+### DNS Domain
+
+#### DNS domain: sdn.lego.com
+
+#### DNS Domain Device Configuration
+
+```eos
+dns domain sdn.lego.com
+!
+```
+
+### IP Name Servers
+
+#### IP Name Servers Summary
+
+| Name Server | VRF | Priority |
+| ----------- | --- | -------- |
+| 10.148.30.200 | MGMT | - |
+| 10.149.30.200 | MGMT | - |
+
+#### IP Name Servers Device Configuration
+
+```eos
+ip name-server vrf MGMT 10.148.30.200
+ip name-server vrf MGMT 10.149.30.200
+```
+
+### NTP
+
+#### NTP Summary
+
+##### NTP Local Interface
+
+| Interface | VRF |
+| --------- | --- |
+| Management1 | MGMT |
+
+##### NTP Servers
+
+| Server | VRF | Preferred | Burst | iBurst | Version | Min Poll | Max Poll | Local-interface | Key |
+| ------ | --- | --------- | ----- | ------ | ------- | -------- | -------- | --------------- | --- |
+| utc1.corp.lego.com | MGMT | - | - | - | - | - | - | - | - |
+| utc2.corp.lego.com | MGMT | - | - | - | - | - | - | - | - |
+| utcd.corp.lego.com | MGMT | - | - | - | - | - | - | - | - |
+
+#### NTP Device Configuration
+
+```eos
+!
+ntp local-interface vrf MGMT Management1
+ntp server vrf MGMT utc1.corp.lego.com
+ntp server vrf MGMT utc2.corp.lego.com
+ntp server vrf MGMT utcd.corp.lego.com
 ```
 
 ### Management API HTTP
@@ -109,15 +172,160 @@ management api http-commands
 
 | User | Privilege | Role | Disabled | Shell |
 | ---- | --------- | ---- | -------- | ----- |
-| admin | 15 | network-admin | False | - |
-| ansible | 15 | network-admin | False | - |
+| netmanager | 15 | network-admin | False | - |
 
 #### Local Users Device Configuration
 
 ```eos
 !
-username admin privilege 15 role network-admin nopassword
-username ansible privilege 15 role network-admin secret sha512 <removed>
+username netmanager privilege 15 role network-admin secret sha512 <removed>
+```
+
+### TACACS Servers
+
+#### TACACS Servers
+
+| VRF | TACACS Servers | Single-Connection |
+| --- | -------------- | ----------------- |
+| MGMT | 10.148.56.50 | False |
+| MGMT | 10.149.56.50 | False |
+| MGMT | 10.150.56.50 | False |
+
+#### TACACS Servers Device Configuration
+
+```eos
+!
+tacacs-server host 10.148.56.50 vrf MGMT key 7 <removed>
+tacacs-server host 10.149.56.50 vrf MGMT key 7 <removed>
+tacacs-server host 10.150.56.50 vrf MGMT key 7 <removed>
+```
+
+### RADIUS Server
+
+#### RADIUS Server Hosts
+
+| VRF | RADIUS Servers | Timeout | Retransmit |
+| --- | -------------- | ------- | ---------- |
+| MGMT | 10.148.56.50 | - | - |
+| MGMT | 10.149.56.50 | - | - |
+| MGMT | 10.150.56.50 | - | - |
+
+#### RADIUS Server Device Configuration
+
+```eos
+!
+radius-server host 10.148.56.50 vrf MGMT key 7 <removed>
+radius-server host 10.149.56.50 vrf MGMT key 7 <removed>
+radius-server host 10.150.56.50 vrf MGMT key 7 <removed>
+```
+
+### AAA Authentication
+
+#### AAA Authentication Summary
+
+| Type | Sub-type | User Stores |
+| ---- | -------- | ---------- |
+| Login | default | group tacacs+ local |
+
+#### AAA Authentication Device Configuration
+
+```eos
+aaa authentication login default group tacacs+ local
+aaa authentication enable default group tacacs+ local
+aaa authentication dot1x default group radius
+!
+```
+
+### AAA Authorization
+
+#### AAA Authorization Summary
+
+| Type | User Stores |
+| ---- | ----------- |
+| Exec | group tacacs+ local |
+
+Authorization for configuration commands is disabled.
+
+#### AAA Authorization Privilege Levels Summary
+
+| Privilege Level | User Stores |
+| --------------- | ----------- |
+| all | group tacacs+ local |
+
+#### AAA Authorization Device Configuration
+
+```eos
+aaa authorization exec default group tacacs+ local
+aaa authorization commands all default group tacacs+ local
+!
+```
+
+### AAA Accounting
+
+#### AAA Accounting Summary
+
+| Type | Commands | Record type | Group | Logging |
+| ---- | -------- | ----------- | ----- | ------- |
+| Exec - Default | - | start-stop | tacacs+ | - |
+| Dot1x - Default  | - | start-stop | radius | - |
+| Commands - Default | 15 | start-stop | tacacs+ | False |
+
+#### AAA Accounting Device Configuration
+
+```eos
+aaa accounting exec default start-stop group tacacs+
+aaa accounting dot1x default start-stop group radius
+aaa accounting commands 15 default start-stop group tacacs+
+```
+
+## Monitoring
+
+### TerminAttr Daemon
+
+#### TerminAttr Daemon Summary
+
+| CV Compression | CloudVision Servers | VRF | Authentication | Smash Excludes | Ingest Exclude | Bypass AAA |
+| -------------- | ------------------- | --- | -------------- | -------------- | -------------- | ---------- |
+| gzip | apiserver.arista.io:443 | MGMT | token-secure,/tmp/cv-onboarding-token | ale,flexCounter,hardware,kni,pulse,strata | /Sysdb/cell/1/agent,/Sysdb/cell/2/agent | False |
+
+#### TerminAttr Daemon Device Configuration
+
+```eos
+!
+daemon TerminAttr
+   exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent -taillogs
+   no shutdown
+```
+
+### SFlow
+
+#### SFlow Summary
+
+| VRF | SFlow Source | SFlow Destination | Port |
+| --- | ------------ | ----------------- | ---- |
+| default | - | 127.0.0.1 | 6343 |
+
+sFlow Sample Rate: 16384
+
+sFlow Polling Interval: 10
+
+sFlow is enabled.
+
+#### SFlow Extensions
+
+| Extension | Enabled |
+| --------- | ------- |
+| bgp | True |
+
+#### SFlow Device Configuration
+
+```eos
+!
+sflow sample 16384
+sflow polling-interval 10
+sflow destination 127.0.0.1
+sflow extension bgp
+sflow run
 ```
 
 ## MLAG
@@ -126,7 +334,7 @@ username ansible privilege 15 role network-admin secret sha512 <removed>
 
 | Domain-id | Local-interface | Peer-address | Peer-link |
 | --------- | --------------- | ------------ | --------- |
-| DC1_L3_LEAF2 | Vlan4094 | 10.255.1.68 | Port-Channel3 |
+| BORDERLEAF1 | Vlan4094 | 10.100.54.97 | Port-Channel491 |
 
 Dual primary detection is disabled.
 
@@ -135,10 +343,10 @@ Dual primary detection is disabled.
 ```eos
 !
 mlag configuration
-   domain-id DC1_L3_LEAF2
+   domain-id BORDERLEAF1
    local-interface Vlan4094
-   peer-address 10.255.1.68
-   peer-link Port-Channel3
+   peer-address 10.100.54.97
+   peer-link Port-Channel491
    reload-delay mlag 300
    reload-delay non-mlag 330
 ```
@@ -189,14 +397,11 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 11 | VRF10_VLAN11 | - |
-| 12 | VRF10_VLAN12 | - |
-| 21 | VRF11_VLAN21 | - |
-| 22 | VRF11_VLAN22 | - |
+| 10 | VRF10_VLAN10 | - |
+| 1202 | mgmt-accesspoint | - |
+| 1213 | mobile-prod-device | - |
+| 1250 | enterprisenet | - |
 | 3009 | MLAG_iBGP_VRF10 | LEAF_PEER_L3 |
-| 3010 | MLAG_iBGP_VRF11 | LEAF_PEER_L3 |
-| 3401 | L2_VLAN3401 | - |
-| 3402 | L2_VLAN3402 | - |
 | 4093 | LEAF_PEER_L3 | LEAF_PEER_L3 |
 | 4094 | MLAG_PEER | MLAG |
 
@@ -204,31 +409,21 @@ vlan internal order ascending range 1006 1199
 
 ```eos
 !
-vlan 11
-   name VRF10_VLAN11
+vlan 10
+   name VRF10_VLAN10
 !
-vlan 12
-   name VRF10_VLAN12
+vlan 1202
+   name mgmt-accesspoint
 !
-vlan 21
-   name VRF11_VLAN21
+vlan 1213
+   name mobile-prod-device
 !
-vlan 22
-   name VRF11_VLAN22
+vlan 1250
+   name enterprisenet
 !
 vlan 3009
    name MLAG_iBGP_VRF10
    trunk group LEAF_PEER_L3
-!
-vlan 3010
-   name MLAG_iBGP_VRF11
-   trunk group LEAF_PEER_L3
-!
-vlan 3401
-   name L2_VLAN3401
-!
-vlan 3402
-   name L2_VLAN3402
 !
 vlan 4093
    name LEAF_PEER_L3
@@ -249,10 +444,9 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet3 | MLAG_PEER_dc1-leaf2a_Ethernet3 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 3 |
-| Ethernet4 | MLAG_PEER_dc1-leaf2a_Ethernet4 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 3 |
-| Ethernet5 | dc1-leaf2-server1_PCI2 | *trunk | *11-12,21-22 | *4092 | *- | 5 |
-| Ethernet8 | DC1-LEAF2C_Ethernet2 | *trunk | *11-12,21-22,3401-3402 | *- | *- | 8 |
+| Ethernet48 | palo1_Ethernet1/11 | *trunk | *1202,1213,1250 | *- | *- | 48 |
+| Ethernet49/1 | MLAG_PEER_vx-borderleaf1b_Ethernet49/1 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 491 |
+| Ethernet50/1 | MLAG_PEER_vx-borderleaf1b_Ethernet50/1 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 491 |
 
 *Inherited from Port-Channel Interface
 
@@ -260,46 +454,41 @@ vlan 4094
 
 | Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
-| Ethernet1 | P2P_LINK_TO_DC1-SPINE1_Ethernet4 | routed | - | 10.255.255.13/31 | default | 1500 | False | - | - |
-| Ethernet2 | P2P_LINK_TO_DC1-SPINE2_Ethernet4 | routed | - | 10.255.255.15/31 | default | 1500 | False | - | - |
+| Ethernet1 | P2P_LINK_TO_VX-SPINE1_Ethernet5 | routed | - | 10.100.54.33/31 | default | 9214 | False | - | - |
+| Ethernet2 | P2P_LINK_TO_VX-SPINE2_Ethernet5 | routed | - | 10.100.54.35/31 | default | 9214 | False | - | - |
 
 #### Ethernet Interfaces Device Configuration
 
 ```eos
 !
 interface Ethernet1
-   description P2P_LINK_TO_DC1-SPINE1_Ethernet4
+   description P2P_LINK_TO_VX-SPINE1_Ethernet5
    no shutdown
-   mtu 1500
+   mtu 9214
    no switchport
-   ip address 10.255.255.13/31
+   ip address 10.100.54.33/31
 !
 interface Ethernet2
-   description P2P_LINK_TO_DC1-SPINE2_Ethernet4
+   description P2P_LINK_TO_VX-SPINE2_Ethernet5
    no shutdown
-   mtu 1500
+   mtu 9214
    no switchport
-   ip address 10.255.255.15/31
+   ip address 10.100.54.35/31
 !
-interface Ethernet3
-   description MLAG_PEER_dc1-leaf2a_Ethernet3
+interface Ethernet48
+   description palo1_Ethernet1/11
    no shutdown
-   channel-group 3 mode active
+   channel-group 48 mode active
 !
-interface Ethernet4
-   description MLAG_PEER_dc1-leaf2a_Ethernet4
+interface Ethernet49/1
+   description MLAG_PEER_vx-borderleaf1b_Ethernet49/1
    no shutdown
-   channel-group 3 mode active
+   channel-group 491 mode active
 !
-interface Ethernet5
-   description dc1-leaf2-server1_PCI2
+interface Ethernet50/1
+   description MLAG_PEER_vx-borderleaf1b_Ethernet50/1
    no shutdown
-   channel-group 5 mode active
-!
-interface Ethernet8
-   description DC1-LEAF2C_Ethernet2
-   no shutdown
-   channel-group 8 mode active
+   channel-group 491 mode active
 ```
 
 ### Port-Channel Interfaces
@@ -310,39 +499,29 @@ interface Ethernet8
 
 | Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
 | --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel3 | MLAG_PEER_dc1-leaf2a_Po3 | switched | trunk | - | - | ['LEAF_PEER_L3', 'MLAG'] | - | - | - | - |
-| Port-Channel5 | dc1-leaf2-server1_PortChannel dc1-leaf2-server1 | switched | trunk | 11-12,21-22 | 4092 | - | - | - | 5 | - |
-| Port-Channel8 | DC1-LEAF2C_Po1 | switched | trunk | 11-12,21-22,3401-3402 | - | - | - | - | 8 | - |
+| Port-Channel48 | palo1_PortChannel palo1 | switched | trunk | 1202,1213,1250 | - | - | - | - | 48 | - |
+| Port-Channel491 | MLAG_PEER_vx-borderleaf1b_Po491 | switched | trunk | - | - | ['LEAF_PEER_L3', 'MLAG'] | - | - | - | - |
 
 #### Port-Channel Interfaces Device Configuration
 
 ```eos
 !
-interface Port-Channel3
-   description MLAG_PEER_dc1-leaf2a_Po3
+interface Port-Channel48
+   description palo1_PortChannel palo1
+   no shutdown
+   switchport
+   switchport trunk allowed vlan 1202,1213,1250
+   switchport mode trunk
+   mlag 48
+   spanning-tree portfast
+!
+interface Port-Channel491
+   description MLAG_PEER_vx-borderleaf1b_Po491
    no shutdown
    switchport
    switchport mode trunk
    switchport trunk group LEAF_PEER_L3
    switchport trunk group MLAG
-!
-interface Port-Channel5
-   description dc1-leaf2-server1_PortChannel dc1-leaf2-server1
-   no shutdown
-   switchport
-   switchport trunk allowed vlan 11-12,21-22
-   switchport trunk native vlan 4092
-   switchport mode trunk
-   mlag 5
-   spanning-tree portfast
-!
-interface Port-Channel8
-   description DC1-LEAF2C_Po1
-   no shutdown
-   switchport
-   switchport trunk allowed vlan 11-12,21-22,3401-3402
-   switchport mode trunk
-   mlag 8
 ```
 
 ### Loopback Interfaces
@@ -353,10 +532,8 @@ interface Port-Channel8
 
 | Interface | Description | VRF | IP Address |
 | --------- | ----------- | --- | ---------- |
-| Loopback0 | EVPN_Overlay_Peering | default | 10.255.0.6/32 |
-| Loopback1 | VTEP_VXLAN_Tunnel_Source | default | 10.255.1.5/32 |
-| Loopback10 | VRF10_VTEP_DIAGNOSTICS | VRF10 | 10.255.10.6/32 |
-| Loopback11 | VRF11_VTEP_DIAGNOSTICS | VRF11 | 10.255.11.6/32 |
+| Loopback0 | EVPN_Overlay_Peering | default | 10.100.160.3/32 |
+| Loopback1 | VTEP_VXLAN_Tunnel_Source | default | 10.100.54.19/32 |
 
 ##### IPv6
 
@@ -364,8 +541,6 @@ interface Port-Channel8
 | --------- | ----------- | --- | ------------ |
 | Loopback0 | EVPN_Overlay_Peering | default | - |
 | Loopback1 | VTEP_VXLAN_Tunnel_Source | default | - |
-| Loopback10 | VRF10_VTEP_DIAGNOSTICS | VRF10 | - |
-| Loopback11 | VRF11_VTEP_DIAGNOSTICS | VRF11 | - |
 
 
 #### Loopback Interfaces Device Configuration
@@ -375,24 +550,12 @@ interface Port-Channel8
 interface Loopback0
    description EVPN_Overlay_Peering
    no shutdown
-   ip address 10.255.0.6/32
+   ip address 10.100.160.3/32
 !
 interface Loopback1
    description VTEP_VXLAN_Tunnel_Source
    no shutdown
-   ip address 10.255.1.5/32
-!
-interface Loopback10
-   description VRF10_VTEP_DIAGNOSTICS
-   no shutdown
-   vrf VRF10
-   ip address 10.255.10.6/32
-!
-interface Loopback11
-   description VRF11_VTEP_DIAGNOSTICS
-   no shutdown
-   vrf VRF11
-   ip address 10.255.11.6/32
+   ip address 10.100.54.19/32
 ```
 
 ### VLAN Interfaces
@@ -401,82 +564,55 @@ interface Loopback11
 
 | Interface | Description | VRF |  MTU | Shutdown |
 | --------- | ----------- | --- | ---- | -------- |
-| Vlan11 | VRF10_VLAN11 | VRF10 | - | False |
-| Vlan12 | VRF10_VLAN12 | VRF10 | - | False |
-| Vlan21 | VRF11_VLAN21 | VRF11 | - | False |
-| Vlan22 | VRF11_VLAN22 | VRF11 | - | False |
-| Vlan3009 | MLAG_PEER_L3_iBGP: vrf VRF10 | VRF10 | 1500 | False |
-| Vlan3010 | MLAG_PEER_L3_iBGP: vrf VRF11 | VRF11 | 1500 | False |
-| Vlan4093 | MLAG_PEER_L3_PEERING | default | 1500 | False |
-| Vlan4094 | MLAG_PEER | default | 1500 | False |
+| Vlan10 | VRF10_VLAN10 | VRF10 | - | False |
+| Vlan1202 | - | default | - | False |
+| Vlan3009 | MLAG_PEER_L3_iBGP: vrf VRF10 | VRF10 | 9214 | False |
+| Vlan4093 | MLAG_PEER_L3_PEERING | default | 9214 | False |
+| Vlan4094 | MLAG_PEER | default | 9214 | False |
 
 ##### IPv4
 
 | Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan11 |  VRF10  |  -  |  10.10.11.1/24  |  -  |  -  |  -  |  -  |
-| Vlan12 |  VRF10  |  -  |  10.10.12.1/24  |  -  |  -  |  -  |  -  |
-| Vlan21 |  VRF11  |  -  |  10.10.21.1/24  |  -  |  -  |  -  |  -  |
-| Vlan22 |  VRF11  |  -  |  10.10.22.1/24  |  -  |  -  |  -  |  -  |
-| Vlan3009 |  VRF10  |  10.255.1.101/31  |  -  |  -  |  -  |  -  |  -  |
-| Vlan3010 |  VRF11  |  10.255.1.101/31  |  -  |  -  |  -  |  -  |  -  |
-| Vlan4093 |  default  |  10.255.1.101/31  |  -  |  -  |  -  |  -  |  -  |
-| Vlan4094 |  default  |  10.255.1.69/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan10 |  VRF10  |  -  |  10.100.54.193/27  |  -  |  -  |  -  |  -  |
+| Vlan1202 |  default  |  -  |  10.100.55.2/26  |  -  |  -  |  -  |  -  |
+| Vlan3009 |  VRF10  |  10.100.54.112/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan4093 |  default  |  10.100.54.112/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan4094 |  default  |  10.100.54.96/31  |  -  |  -  |  -  |  -  |  -  |
 
 #### VLAN Interfaces Device Configuration
 
 ```eos
 !
-interface Vlan11
-   description VRF10_VLAN11
+interface Vlan10
+   description VRF10_VLAN10
    no shutdown
    vrf VRF10
-   ip address virtual 10.10.11.1/24
+   ip address virtual 10.100.54.193/27
 !
-interface Vlan12
-   description VRF10_VLAN12
+interface Vlan1202
    no shutdown
-   vrf VRF10
-   ip address virtual 10.10.12.1/24
-!
-interface Vlan21
-   description VRF11_VLAN21
-   no shutdown
-   vrf VRF11
-   ip address virtual 10.10.21.1/24
-!
-interface Vlan22
-   description VRF11_VLAN22
-   no shutdown
-   vrf VRF11
-   ip address virtual 10.10.22.1/24
+   ip address virtual 10.100.55.2/26
 !
 interface Vlan3009
    description MLAG_PEER_L3_iBGP: vrf VRF10
    no shutdown
-   mtu 1500
+   mtu 9214
    vrf VRF10
-   ip address 10.255.1.101/31
-!
-interface Vlan3010
-   description MLAG_PEER_L3_iBGP: vrf VRF11
-   no shutdown
-   mtu 1500
-   vrf VRF11
-   ip address 10.255.1.101/31
+   ip address 10.100.54.112/31
 !
 interface Vlan4093
    description MLAG_PEER_L3_PEERING
    no shutdown
-   mtu 1500
-   ip address 10.255.1.101/31
+   mtu 9214
+   ip address 10.100.54.112/31
 !
 interface Vlan4094
    description MLAG_PEER
    no shutdown
-   mtu 1500
+   mtu 9214
    no autostate
-   ip address 10.255.1.69/31
+   ip address 10.100.54.96/31
 ```
 
 ### VXLAN Interface
@@ -488,42 +624,39 @@ interface Vlan4094
 | Source Interface | Loopback1 |
 | UDP port | 4789 |
 | EVPN MLAG Shared Router MAC | mlag-system-id |
+| VXLAN flood-lists learning from data-plane | Enabled |
 
 ##### VLAN to VNI, Flood List and Multicast Group Mappings
 
 | VLAN | VNI | Flood List | Multicast Group |
 | ---- | --- | ---------- | --------------- |
-| 11 | 10011 | - | - |
-| 12 | 10012 | - | - |
-| 21 | 10021 | - | - |
-| 22 | 10022 | - | - |
-| 3401 | 13401 | - | - |
-| 3402 | 13402 | - | - |
+| 10 | 10010 | - | - |
+| 1202 | 11202 | - | - |
+| 1213 | 11213 | - | - |
+| 1250 | 11250 | - | - |
 
 ##### VRF to VNI and Multicast Group Mappings
 
 | VRF | VNI | Multicast Group |
 | ---- | --- | --------------- |
 | VRF10 | 10 | - |
-| VRF11 | 11 | - |
 
 #### VXLAN Interface Device Configuration
 
 ```eos
 !
 interface Vxlan1
-   description dc1-leaf2b_VTEP
+   description vx-borderleaf1a_VTEP
    vxlan source-interface Loopback1
    vxlan virtual-router encapsulation mac-address mlag-system-id
    vxlan udp-port 4789
-   vxlan vlan 11 vni 10011
-   vxlan vlan 12 vni 10012
-   vxlan vlan 21 vni 10021
-   vxlan vlan 22 vni 10022
-   vxlan vlan 3401 vni 13401
-   vxlan vlan 3402 vni 13402
+   vxlan flood vtep learned data-plane
+   vxlan vlan 10 vni 10010
+   vxlan vlan 1202 vni 11202
+   vxlan vlan 1213 vni 11213
+   vxlan vlan 1250 vni 11250
    vxlan vrf VRF10 vni 10
-   vxlan vrf VRF11 vni 11
+   vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21
 ```
 
 ## Routing
@@ -559,7 +692,6 @@ ip virtual-router mac-address 00:1c:73:00:00:99
 | default | True |
 | MGMT | False |
 | VRF10 | True |
-| VRF11 | True |
 
 #### IP Routing Device Configuration
 
@@ -568,7 +700,6 @@ ip virtual-router mac-address 00:1c:73:00:00:99
 ip routing
 no ip routing vrf MGMT
 ip routing vrf VRF10
-ip routing vrf VRF11
 ```
 
 ### IPv6 Routing
@@ -580,7 +711,6 @@ ip routing vrf VRF11
 | default | False |
 | MGMT | false |
 | VRF10 | false |
-| VRF11 | false |
 
 ### Static Routes
 
@@ -588,13 +718,13 @@ ip routing vrf VRF11
 
 | VRF | Destination Prefix | Next Hop IP             | Exit interface      | Administrative Distance       | Tag               | Route Name                    | Metric         |
 | --- | ------------------ | ----------------------- | ------------------- | ----------------------------- | ----------------- | ----------------------------- | -------------- |
-| MGMT | 0.0.0.0/0 | 172.16.1.1 | - | 1 | - | - | - |
+| MGMT | 0.0.0.0/0 | 10.151.11.1 | - | 1 | - | - | - |
 
 #### Static Routes Device Configuration
 
 ```eos
 !
-ip route vrf MGMT 0.0.0.0/0 172.16.1.1
+ip route vrf MGMT 0.0.0.0/0 10.151.11.1
 ```
 
 ### Router BGP
@@ -603,12 +733,13 @@ ip route vrf MGMT 0.0.0.0/0 172.16.1.1
 
 | BGP AS | Router ID |
 | ------ | --------- |
-| 65102|  10.255.0.6 |
+| 65101|  10.100.160.3 |
 
 | BGP Tuning |
 | ---------- |
 | graceful-restart restart-time 300 |
 | graceful-restart |
+| update wait-install |
 | no bgp default ipv4-unicast |
 | maximum-paths 4 ecmp 4 |
 
@@ -638,7 +769,7 @@ ip route vrf MGMT 0.0.0.0/0 172.16.1.1
 | Settings | Value |
 | -------- | ----- |
 | Address Family | ipv4 |
-| Remote AS | 65102 |
+| Remote AS | 65101 |
 | Next-hop self | True |
 | Send community | all |
 | Maximum routes | 12000 |
@@ -647,13 +778,12 @@ ip route vrf MGMT 0.0.0.0/0 172.16.1.1
 
 | Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain | Route-Reflector Client | Passive |
 | -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- | ---------------------- | ------- |
-| 10.255.0.1 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
-| 10.255.0.2 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
-| 10.255.1.100 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | default | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
-| 10.255.255.12 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
-| 10.255.255.14 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
-| 10.255.1.100 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | VRF10 | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
-| 10.255.1.100 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | VRF11 | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
+| 10.100.54.32 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
+| 10.100.54.34 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
+| 10.100.54.113 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | default | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
+| 10.100.160.1 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
+| 10.100.160.2 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
+| 10.100.54.113 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | VRF10 | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
 
 #### Router BGP EVPN Address Family
 
@@ -667,29 +797,27 @@ ip route vrf MGMT 0.0.0.0/0 172.16.1.1
 
 | VLAN | Route-Distinguisher | Both Route-Target | Import Route Target | Export Route-Target | Redistribute |
 | ---- | ------------------- | ----------------- | ------------------- | ------------------- | ------------ |
-| 11 | 10.255.0.6:10011 | 10011:10011 | - | - | learned |
-| 12 | 10.255.0.6:10012 | 10012:10012 | - | - | learned |
-| 21 | 10.255.0.6:10021 | 10021:10021 | - | - | learned |
-| 22 | 10.255.0.6:10022 | 10022:10022 | - | - | learned |
-| 3401 | 10.255.0.6:13401 | 13401:13401 | - | - | learned |
-| 3402 | 10.255.0.6:13402 | 13402:13402 | - | - | learned |
+| 10 | 10.100.160.3:10010 | 10010:10010 | - | - | learned |
+| 1202 | 10.100.160.3:11202 | 11202:11202 | - | - | learned |
+| 1213 | 10.100.160.3:11213 | 11213:11213 | - | - | learned |
+| 1250 | 10.100.160.3:11250 | 11250:11250 | - | - | learned |
 
 #### Router BGP VRFs
 
 | VRF | Route-Distinguisher | Redistribute |
 | --- | ------------------- | ------------ |
-| VRF10 | 10.255.0.6:10 | connected |
-| VRF11 | 10.255.0.6:11 | connected |
+| VRF10 | 10.100.160.3:10 | connected |
 
 #### Router BGP Device Configuration
 
 ```eos
 !
-router bgp 65102
-   router-id 10.255.0.6
+router bgp 65101
+   router-id 10.100.160.3
    graceful-restart restart-time 300
    graceful-restart
    maximum-paths 4 ecmp 4
+   update wait-install
    no bgp default ipv4-unicast
    neighbor EVPN-OVERLAY-PEERS peer group
    neighbor EVPN-OVERLAY-PEERS update-source Loopback0
@@ -703,57 +831,47 @@ router bgp 65102
    neighbor IPv4-UNDERLAY-PEERS send-community
    neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000
    neighbor MLAG-IPv4-UNDERLAY-PEER peer group
-   neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65102
+   neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65101
    neighbor MLAG-IPv4-UNDERLAY-PEER next-hop-self
-   neighbor MLAG-IPv4-UNDERLAY-PEER description dc1-leaf2a
+   neighbor MLAG-IPv4-UNDERLAY-PEER description vx-borderleaf1b
    neighbor MLAG-IPv4-UNDERLAY-PEER password 7 <removed>
    neighbor MLAG-IPv4-UNDERLAY-PEER send-community
    neighbor MLAG-IPv4-UNDERLAY-PEER maximum-routes 12000
    neighbor MLAG-IPv4-UNDERLAY-PEER route-map RM-MLAG-PEER-IN in
-   neighbor 10.255.0.1 peer group EVPN-OVERLAY-PEERS
-   neighbor 10.255.0.1 remote-as 65100
-   neighbor 10.255.0.1 description dc1-spine1
-   neighbor 10.255.0.2 peer group EVPN-OVERLAY-PEERS
-   neighbor 10.255.0.2 remote-as 65100
-   neighbor 10.255.0.2 description dc1-spine2
-   neighbor 10.255.1.100 peer group MLAG-IPv4-UNDERLAY-PEER
-   neighbor 10.255.1.100 description dc1-leaf2a
-   neighbor 10.255.255.12 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.255.12 remote-as 65100
-   neighbor 10.255.255.12 description dc1-spine1_Ethernet4
-   neighbor 10.255.255.14 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.255.255.14 remote-as 65100
-   neighbor 10.255.255.14 description dc1-spine2_Ethernet4
+   neighbor 10.100.54.32 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.100.54.32 remote-as 65100
+   neighbor 10.100.54.32 description vx-spine1_Ethernet5
+   neighbor 10.100.54.34 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.100.54.34 remote-as 65100
+   neighbor 10.100.54.34 description vx-spine2_Ethernet5
+   neighbor 10.100.54.113 peer group MLAG-IPv4-UNDERLAY-PEER
+   neighbor 10.100.54.113 description vx-borderleaf1b
+   neighbor 10.100.160.1 peer group EVPN-OVERLAY-PEERS
+   neighbor 10.100.160.1 remote-as 65100
+   neighbor 10.100.160.1 description vx-spine1
+   neighbor 10.100.160.2 peer group EVPN-OVERLAY-PEERS
+   neighbor 10.100.160.2 remote-as 65100
+   neighbor 10.100.160.2 description vx-spine2
    redistribute connected route-map RM-CONN-2-BGP
    !
-   vlan 11
-      rd 10.255.0.6:10011
-      route-target both 10011:10011
+   vlan 10
+      rd 10.100.160.3:10010
+      route-target both 10010:10010
       redistribute learned
    !
-   vlan 12
-      rd 10.255.0.6:10012
-      route-target both 10012:10012
+   vlan 1202
+      rd 10.100.160.3:11202
+      route-target both 11202:11202
       redistribute learned
    !
-   vlan 21
-      rd 10.255.0.6:10021
-      route-target both 10021:10021
+   vlan 1213
+      rd 10.100.160.3:11213
+      route-target both 11213:11213
       redistribute learned
    !
-   vlan 22
-      rd 10.255.0.6:10022
-      route-target both 10022:10022
-      redistribute learned
-   !
-   vlan 3401
-      rd 10.255.0.6:13401
-      route-target both 13401:13401
-      redistribute learned
-   !
-   vlan 3402
-      rd 10.255.0.6:13402
-      route-target both 13402:13402
+   vlan 1250
+      rd 10.100.160.3:11250
+      route-target both 11250:11250
       redistribute learned
    !
    address-family evpn
@@ -765,19 +883,12 @@ router bgp 65102
       neighbor MLAG-IPv4-UNDERLAY-PEER activate
    !
    vrf VRF10
-      rd 10.255.0.6:10
+      rd 10.100.160.3:10
       route-target import evpn 10:10
       route-target export evpn 10:10
-      router-id 10.255.0.6
-      neighbor 10.255.1.100 peer group MLAG-IPv4-UNDERLAY-PEER
-      redistribute connected
-   !
-   vrf VRF11
-      rd 10.255.0.6:11
-      route-target import evpn 11:11
-      route-target export evpn 11:11
-      router-id 10.255.0.6
-      neighbor 10.255.1.100 peer group MLAG-IPv4-UNDERLAY-PEER
+      router-id 10.100.160.3
+      update wait-install
+      neighbor 10.100.54.113 peer group MLAG-IPv4-UNDERLAY-PEER
       redistribute connected
 ```
 
@@ -824,16 +935,16 @@ router bfd
 
 | Sequence | Action |
 | -------- | ------ |
-| 10 | permit 10.255.0.0/27 eq 32 |
-| 20 | permit 10.255.1.0/27 eq 32 |
+| 10 | permit 10.100.160.0/27 eq 32 |
+| 20 | permit 10.100.54.16/28 eq 32 |
 
 #### Prefix-lists Device Configuration
 
 ```eos
 !
 ip prefix-list PL-LOOPBACKS-EVPN-OVERLAY
-   seq 10 permit 10.255.0.0/27 eq 32
-   seq 20 permit 10.255.1.0/27 eq 32
+   seq 10 permit 10.100.160.0/27 eq 32
+   seq 20 permit 10.100.54.16/28 eq 32
 ```
 
 ### Route-maps
@@ -872,7 +983,6 @@ route-map RM-MLAG-PEER-IN permit 10
 | -------- | ---------- |
 | MGMT | disabled |
 | VRF10 | enabled |
-| VRF11 | enabled |
 
 ### VRF Instances Device Configuration
 
@@ -881,23 +991,4 @@ route-map RM-MLAG-PEER-IN permit 10
 vrf instance MGMT
 !
 vrf instance VRF10
-!
-vrf instance VRF11
-```
-
-## Virtual Source NAT
-
-### Virtual Source NAT Summary
-
-| Source NAT VRF | Source NAT IP Address |
-| -------------- | --------------------- |
-| VRF10 | 10.255.10.6 |
-| VRF11 | 10.255.11.6 |
-
-### Virtual Source NAT Configuration
-
-```eos
-!
-ip address virtual source-nat vrf VRF10 address 10.255.10.6
-ip address virtual source-nat vrf VRF11 address 10.255.11.6
 ```

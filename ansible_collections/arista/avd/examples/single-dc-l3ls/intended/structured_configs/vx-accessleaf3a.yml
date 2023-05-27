@@ -1,0 +1,431 @@
+serial_number: JMX2304A1QJ
+router_bgp:
+  as: '65103'
+  router_id: 10.100.160.7
+  bgp:
+    default:
+      ipv4_unicast: false
+  maximum_paths:
+    paths: 4
+    ecmp: 4
+  updates:
+    wait_install: true
+  graceful_restart:
+    enabled: true
+    restart_time: 300
+  peer_groups:
+  - name: MLAG-IPv4-UNDERLAY-PEER
+    type: ipv4
+    remote_as: '65103'
+    next_hop_self: true
+    description: vx-accessleaf3b
+    password: 4b21pAdCvWeAqpcKDFMdWw==
+    maximum_routes: 12000
+    send_community: all
+    route_map_in: RM-MLAG-PEER-IN
+  - name: IPv4-UNDERLAY-PEERS
+    type: ipv4
+    password: 7x4B4rnJhZB438m9+BrBfQ==
+    maximum_routes: 12000
+    send_community: all
+    route_map_out: RM-BGP-UNDERLAY-PEERS-OUT
+  - name: EVPN-OVERLAY-PEERS
+    type: evpn
+    update_source: Loopback0
+    bfd: true
+    password: Q4fqtbqcZ7oQuKfuWtNGRQ==
+    send_community: all
+    maximum_routes: 0
+    ebgp_multihop: 3
+  address_family_ipv4:
+    peer_groups:
+    - name: MLAG-IPv4-UNDERLAY-PEER
+      activate: true
+    - name: IPv4-UNDERLAY-PEERS
+      activate: true
+    - name: EVPN-OVERLAY-PEERS
+      activate: false
+  neighbors:
+  - ip_address: 10.100.54.121
+    peer_group: MLAG-IPv4-UNDERLAY-PEER
+    description: vx-accessleaf3b
+  - ip_address: 10.100.54.48
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65100'
+    description: vx-spine1_Ethernet1
+  - ip_address: 10.100.54.50
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65100'
+    description: vx-spine2_Ethernet1
+  - ip_address: 10.100.160.1
+    peer_group: EVPN-OVERLAY-PEERS
+    description: vx-spine1
+    remote_as: '65100'
+  - ip_address: 10.100.160.2
+    peer_group: EVPN-OVERLAY-PEERS
+    description: vx-spine2
+    remote_as: '65100'
+  redistribute_routes:
+  - source_protocol: connected
+    route_map: RM-CONN-2-BGP
+  address_family_evpn:
+    peer_groups:
+    - name: EVPN-OVERLAY-PEERS
+      activate: true
+  vlans:
+  - id: 10
+    tenant: TENANT1
+    rd: 10.100.160.7:10
+    route_targets:
+      both:
+      - '10:10'
+    redistribute_routes:
+    - learned
+static_routes:
+- vrf: MGMT
+  destination_address_prefix: 0.0.0.0/0
+  gateway: 10.151.11.1
+service_routing_protocols_model: multi-agent
+ip_routing: true
+daemon_terminattr:
+  cvaddrs:
+  - apiserver.arista.io:443
+  cvauth:
+    method: token-secure
+    token_file: /tmp/cv-onboarding-token
+  cvvrf: MGMT
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  disable_aaa: false
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 1006
+    ending: 1199
+ip_name_servers:
+- ip_address: 10.148.30.200
+  vrf: MGMT
+- ip_address: 10.149.30.200
+  vrf: MGMT
+spanning_tree:
+  mode: mstp
+  mst_instances:
+  - id: '0'
+    priority: 4096
+  no_spanning_tree_vlan: 4093-4094
+local_users:
+- name: netmanager
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.
+vrfs:
+- name: MGMT
+  ip_routing: false
+management_interfaces:
+- name: Management1
+  description: oob_management
+  shutdown: false
+  vrf: MGMT
+  ip_address: 10.151.11.19/26
+  gateway: 10.151.11.1
+  type: oob
+management_api_http:
+  enable_vrfs:
+  - name: MGMT
+  enable_https: true
+eos_cli: "router bgp 65103\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan 10\ninterface Vxlan1\n
+  \ no vxlan vrf default vni 1010"
+vlans:
+- id: 4093
+  tenant: system
+  name: LEAF_PEER_L3
+  trunk_groups:
+  - LEAF_PEER_L3
+- id: 4094
+  tenant: system
+  name: MLAG_PEER
+  trunk_groups:
+  - MLAG
+- id: 10
+  name: VRF10_VLAN10
+  tenant: TENANT1
+vlan_interfaces:
+- name: Vlan4093
+  description: MLAG_PEER_L3_PEERING
+  shutdown: false
+  mtu: 9214
+  ip_address: 10.100.54.120/31
+- name: Vlan4094
+  description: MLAG_PEER
+  shutdown: false
+  ip_address: 10.100.54.104/31
+  no_autostate: true
+  mtu: 9214
+- name: Vlan10
+  tenant: TENANT1
+  tags:
+  - accessleaf
+  description: VRF10_VLAN10
+  shutdown: false
+  mtu: 9214
+  ip_address_virtual: 10.100.54.193/27
+  ip_helpers:
+  - ip_helper: 10.100.54.225
+port_channel_interfaces:
+- name: Port-Channel491
+  description: MLAG_PEER_vx-accessleaf3b_Po491
+  type: switched
+  shutdown: false
+  mode: trunk
+  trunk_groups:
+  - LEAF_PEER_L3
+  - MLAG
+- name: Port-Channel46
+  description: VX-SUBLEAF5_Po11
+  type: switched
+  shutdown: false
+  mode: trunk
+  vlans: '10'
+  mlag: 46
+- name: Port-Channel48
+  description: VX-SUBLEAF4_Po56
+  type: switched
+  shutdown: false
+  mode: trunk
+  vlans: '10'
+  mlag: 48
+ethernet_interfaces:
+- name: Ethernet49/1
+  peer: vx-accessleaf3b
+  peer_interface: Ethernet49/1
+  peer_type: mlag_peer
+  description: MLAG_PEER_vx-accessleaf3b_Ethernet49/1
+  type: port-channel-member
+  shutdown: false
+  channel_group:
+    id: 491
+    mode: active
+- name: Ethernet50/1
+  peer: vx-accessleaf3b
+  peer_interface: Ethernet50/1
+  peer_type: mlag_peer
+  description: MLAG_PEER_vx-accessleaf3b_Ethernet50/1
+  type: port-channel-member
+  shutdown: false
+  channel_group:
+    id: 491
+    mode: active
+- name: Ethernet1
+  peer: vx-spine1
+  peer_interface: Ethernet1
+  peer_type: spine
+  description: P2P_LINK_TO_VX-SPINE1_Ethernet1
+  shutdown: false
+  mtu: 9214
+  type: routed
+  ip_address: 10.100.54.49/31
+- name: Ethernet2
+  peer: vx-spine2
+  peer_interface: Ethernet1
+  peer_type: spine
+  description: P2P_LINK_TO_VX-SPINE2_Ethernet1
+  shutdown: false
+  mtu: 9214
+  type: routed
+  ip_address: 10.100.54.51/31
+- name: Ethernet45
+  peer: vx-subleaf5b
+  peer_interface: Ethernet1/1
+  peer_type: l2leaf
+  description: VX-SUBLEAF5B_Ethernet1/1
+  shutdown: false
+  type: port-channel-member
+  channel_group:
+    id: 46
+    mode: active
+- name: Ethernet46
+  peer: vx-subleaf5a
+  peer_interface: Ethernet1/1
+  peer_type: l2leaf
+  description: VX-SUBLEAF5A_Ethernet1/1
+  shutdown: false
+  type: port-channel-member
+  channel_group:
+    id: 46
+    mode: active
+- name: Ethernet47
+  peer: vx-subleaf4b
+  peer_interface: Ethernet56
+  peer_type: l2leaf
+  description: VX-SUBLEAF4B_Ethernet56
+  shutdown: false
+  type: port-channel-member
+  channel_group:
+    id: 48
+    mode: active
+- name: Ethernet48
+  peer: vx-subleaf4a
+  peer_interface: Ethernet56
+  peer_type: l2leaf
+  description: VX-SUBLEAF4A_Ethernet56
+  shutdown: false
+  type: port-channel-member
+  channel_group:
+    id: 48
+    mode: active
+mlag_configuration:
+  domain_id: ACCESSLEAF3
+  local_interface: Vlan4094
+  peer_address: 10.100.54.105
+  peer_link: Port-Channel491
+  reload_delay_mlag: '300'
+  reload_delay_non_mlag: '330'
+route_maps:
+- name: RM-MLAG-PEER-IN
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    set:
+    - origin incomplete
+    description: Make routes learned over MLAG Peer-link less preferred on spines to ensure optimal routing
+- name: RM-CONN-2-BGP
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    match:
+    - ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY
+  - sequence: 30
+    type: permit
+    match:
+    - ip address prefix-list PL-SVI-VRF-DEFAULT
+- name: RM-EVPN-EXPORT-VRF-DEFAULT
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    match:
+    - ip address prefix-list PL-SVI-VRF-DEFAULT
+- name: RM-BGP-UNDERLAY-PEERS-OUT
+  sequence_numbers:
+  - sequence: 20
+    type: permit
+  - sequence: 10
+    type: deny
+    match:
+    - ip address prefix-list PL-SVI-VRF-DEFAULT
+loopback_interfaces:
+- name: Loopback0
+  description: EVPN_Overlay_Peering
+  shutdown: false
+  ip_address: 10.100.160.7/32
+- name: Loopback1
+  description: VTEP_VXLAN_Tunnel_Source
+  shutdown: false
+  ip_address: 10.100.54.23/32
+  ip_address_secondaries:
+  - 10.100.55.253/32
+prefix_lists:
+- name: PL-LOOPBACKS-EVPN-OVERLAY
+  sequence_numbers:
+  - sequence: 10
+    action: permit 10.100.160.0/27 eq 32
+  - sequence: 20
+    action: permit 10.100.54.16/28 eq 32
+  - sequence: 30
+    action: permit 10.100.55.253/32
+- name: PL-SVI-VRF-DEFAULT
+  sequence_numbers:
+  - sequence: 10
+    action: permit 10.100.54.192/27
+router_bfd:
+  multihop:
+    interval: 300
+    min_rx: 300
+    multiplier: 3
+ip_igmp_snooping:
+  globally_enabled: true
+ip_virtual_router_mac_address: 00:1c:73:00:00:99
+vxlan_interface:
+  Vxlan1:
+    description: vx-accessleaf3a_VTEP
+    vxlan:
+      udp_port: 4789
+      source_interface: Loopback1
+      virtual_router_encapsulation_mac_address: mlag-system-id
+      vlans:
+      - id: 10
+        vni: 10
+      vrfs:
+      - name: default
+        vni: 1010
+ntp:
+  local_interface:
+    name: Management1
+    vrf: MGMT
+  servers:
+  - name: utc1.corp.lego.com
+    vrf: MGMT
+  - name: utc2.corp.lego.com
+    vrf: MGMT
+  - name: utcd.corp.lego.com
+    vrf: MGMT
+dns_domain: sdn.lego.com
+sflow:
+  sample: 16384
+  polling_interval: 10
+  destinations:
+  - destination: 127.0.0.1
+  extensions:
+  - name: bgp
+    enabled: true
+  run: true
+radius_server:
+  hosts:
+  - host: 10.148.56.50
+    vrf: MGMT
+    key: 070D2E5E41075422240A284D
+  - host: 10.149.56.50
+    vrf: MGMT
+    key: 070D2E5E41075422240A284D
+  - host: 10.150.56.50
+    vrf: MGMT
+    key: 070D2E5E41075422240A284D
+tacacs_servers:
+  hosts:
+  - host: 10.148.56.50
+    vrf: MGMT
+    key: 070D2E5E41075422240A284D
+    key_type: '7'
+  - host: 10.149.56.50
+    vrf: MGMT
+    key: 070D2E5E41075422240A284D
+    key_type: '7'
+  - host: 10.150.56.50
+    vrf: MGMT
+    key: 070D2E5E41075422240A284D
+    key_type: '7'
+aaa_authentication:
+  login:
+    default: group tacacs+ local
+  enable:
+    default: group tacacs+ local
+  dot1x:
+    default: group radius
+aaa_authorization:
+  exec:
+    default: group tacacs+ local
+  commands:
+    all_default: group tacacs+ local
+aaa_accounting:
+  exec:
+    default:
+      type: start-stop
+      group: tacacs+
+  dot1x:
+    default:
+      type: start-stop
+      group: radius
+  commands:
+    default:
+    - commands: '15'
+      type: start-stop
+      group: tacacs+

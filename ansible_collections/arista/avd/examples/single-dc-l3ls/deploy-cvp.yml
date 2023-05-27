@@ -1,0 +1,19 @@
+---
+- name: Deploy Configurations to Devices Using CloudVision Portal # (1)!
+  hosts: CLOUDVISION
+  gather_facts: false
+  # connection: local
+  tasks:
+
+    - name: Deploy Configurations to CloudVision # (2)!
+      ansible.builtin.import_role:
+        name: arista.avd.eos_config_deploy_cvp
+      vars:
+        cv_collection: v3 # (3)!
+        container_root: 'DC1'
+        configlets_prefix: 'AVD-VXLAN'
+        container_apply_mode: strict
+        device_apply_mode: strict
+        state: present
+        execute_tasks: true
+        device_search_key: serialNumber

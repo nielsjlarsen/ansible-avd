@@ -1,0 +1,71 @@
+---
+cvp_devices:
+  - fqdn: vx-accessleaf3a
+    serialNumber: "JMX2304A1QJ"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-accessleaf3a
+  - fqdn: vx-accessleaf3b
+    serialNumber: "JMX2303A6SE"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-accessleaf3b
+  - fqdn: vx-borderleaf1a
+    serialNumber: "JMX2304A20L"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-borderleaf1a
+  - fqdn: vx-borderleaf1b
+    serialNumber: "JMX2304A22D"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-borderleaf1b
+  - fqdn: vx-borderleaf2a
+    serialNumber: "JMX2304A1PE"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-borderleaf2a
+  - fqdn: vx-borderleaf2b
+    serialNumber: "JMX2304A235"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-borderleaf2b
+  - fqdn: vx-spine1
+    serialNumber: "JMX2304A4RT"
+    parentContainerName: DC1_SPINES
+    configlets:
+      - AVD-VXLAN_vx-spine1
+  - fqdn: vx-spine2
+    serialNumber: "JMX2304A237"
+    parentContainerName: DC1_SPINES
+    configlets:
+      - AVD-VXLAN_vx-spine2
+  - fqdn: vx-subleaf4a
+    serialNumber: "HBG231201ET"
+    parentContainerName: DC1_L2_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-subleaf4a
+  - fqdn: vx-subleaf4b
+    serialNumber: "HBG231201J4"
+    parentContainerName: DC1_L2_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-subleaf4b
+  - fqdn: vx-subleaf5a
+    serialNumber: "HNN20505070"
+    parentContainerName: DC1_L2_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-subleaf5a
+  - fqdn: vx-subleaf5b
+    serialNumber: "HNN21045125"
+    parentContainerName: DC1_L2_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-subleaf5b
+cvp_containers:
+  DC1:
+    parentContainerName: Tenant
+  DC1_L2_LEAVES:
+    parentContainerName: DC1
+  DC1_L3_LEAVES:
+    parentContainerName: DC1
+  DC1_SPINES:
+    parentContainerName: DC1

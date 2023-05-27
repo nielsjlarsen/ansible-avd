@@ -305,10 +305,10 @@ cvp_configlets:
     activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER activate\n   !\n   vrf default\n
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65101\n  no
-    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\ninterface
-    Vxlan1\n  no vxlan vrf default vni 1010\nmonitor session niels source Ethernet48\nmonitor
-    session niels destination tunnel mode gre source 10.151.11.23 destination 212.237.101.162
-    vrf MGMT\n!\nend\n"
+    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
+    1010\n! monitor session niels source Ethernet48\n! monitor session niels destination
+    tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT\n!\nend\n"
   AVD-VXLAN_vx-borderleaf1b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -411,10 +411,10 @@ cvp_configlets:
     activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER activate\n   !\n   vrf default\n
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65101\n  no
-    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\ninterface
-    Vxlan1\n  no vxlan vrf default vni 1010\nmonitor session niels source Ethernet48\nmonitor
-    session niels destination tunnel mode gre source 10.151.11.23 destination 212.237.101.162
-    vrf MGMT\n!\nend\n"
+    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
+    1010\n! monitor session niels source Ethernet48\n! monitor session niels destination
+    tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT\n!\nend\n"
   AVD-VXLAN_vx-borderleaf2a: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -515,8 +515,9 @@ cvp_configlets:
     activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER activate\n   !\n   vrf default\n
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65102\n  no
-    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\ninterface
-    Vxlan1\n  no vxlan vrf default vni 1010\n!\nend\n"
+    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
+    1010\n!\nend\n"
   AVD-VXLAN_vx-borderleaf2b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -617,8 +618,9 @@ cvp_configlets:
     activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER activate\n   !\n   vrf default\n
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65102\n  no
-    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\ninterface
-    Vxlan1\n  no vxlan vrf default vni 1010\n!\nend\n"
+    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
+    1010\n!\nend\n"
   AVD-VXLAN_vx-spine1: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent

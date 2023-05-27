@@ -156,8 +156,8 @@ management_api_http:
   enable_vrfs:
   - name: MGMT
   enable_https: true
-eos_cli: "router bgp 65102\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\ninterface Vxlan1\n  no vxlan
-  vrf default vni 1010"
+eos_cli: "router bgp 65102\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan 11\n  no vlan 1213\n
+  \ no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni 1010"
 vlans:
 - id: 4093
   tenant: system

@@ -312,8 +312,6 @@ loopback_interfaces:
   description: VTEP_VXLAN_Tunnel_Source
   shutdown: false
   ip_address: 10.100.54.21/32
-  ip_address_secondaries:
-  - 10.100.55.253/32
 prefix_lists:
 - name: PL-LOOPBACKS-EVPN-OVERLAY
   sequence_numbers:
@@ -321,8 +319,6 @@ prefix_lists:
     action: permit 10.100.160.0/27 eq 32
   - sequence: 20
     action: permit 10.100.54.16/28 eq 32
-  - sequence: 30
-    action: permit 10.100.55.253/32
 - name: PL-SVI-VRF-DEFAULT
   sequence_numbers:
   - sequence: 10

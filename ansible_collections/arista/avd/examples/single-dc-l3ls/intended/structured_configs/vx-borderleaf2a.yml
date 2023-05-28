@@ -157,7 +157,7 @@ management_api_http:
   - name: MGMT
   enable_https: true
 eos_cli: "router bgp 65102\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan 11\n  no vlan 1213\n
-  \ no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni 1010"
+  \ no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni 1010\n  vxlan flood vtep 10.100.54.19"
 vlans:
 - id: 4093
   tenant: system
@@ -170,7 +170,7 @@ vlans:
   trunk_groups:
   - MLAG
 - id: 11
-  name: VRF10_VLAN11
+  name: VLAN11-Firewall_Linknet
   tenant: TENANT1
 - id: 1213
   name: mobile-prod-device
@@ -194,7 +194,7 @@ vlan_interfaces:
   tenant: TENANT1
   tags:
   - borderleaf
-  description: VRF10_VLAN11
+  description: VLAN11-Firewall_Linknet
   shutdown: false
   mtu: 9214
   ip_address_virtual: 10.100.54.226/27

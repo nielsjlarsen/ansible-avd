@@ -22,21 +22,21 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VRF10_VLAN10\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan
-    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
-    Port-Channel46\n   description VX-SUBLEAF5_Po11\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 10\n   switchport mode trunk\n   mlag 46\n!\ninterface
-    Port-Channel48\n   description VX-SUBLEAF4_Po56\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 10\n   switchport mode trunk\n   mlag 48\n!\ninterface
-    Port-Channel491\n   description MLAG_PEER_vx-accessleaf3b_Po491\n   no shutdown\n
-    \  switchport\n   switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n
-    \  switchport trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet1\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.49/31\n!\ninterface
-    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet1\n   no shutdown\n   mtu
-    9214\n   no switchport\n   ip address 10.100.54.51/31\n!\ninterface Ethernet45\n
-    \  description VX-SUBLEAF5B_Ethernet1/1\n   no shutdown\n   channel-group 46 mode
-    active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/1\n   no
-    shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
+    10\n   name VLAN10-Access_Points\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk
+    group LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
+    instance MGMT\n!\ninterface Port-Channel46\n   description VX-SUBLEAF5_Po11\n
+    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
+    mode trunk\n   mlag 46\n!\ninterface Port-Channel48\n   description VX-SUBLEAF4_Po56\n
+    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
+    mode trunk\n   mlag 48\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-accessleaf3b_Po491\n
+    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
+    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
+    P2P_LINK_TO_VX-SPINE1_Ethernet1\n   no shutdown\n   mtu 9214\n   no switchport\n
+    \  ip address 10.100.54.49/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet1\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.51/31\n!\ninterface
+    Ethernet45\n   description VX-SUBLEAF5B_Ethernet1/1\n   no shutdown\n   channel-group
+    46 mode active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/1\n
+    \  no shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
     VX-SUBLEAF4B_Ethernet56\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
     Ethernet48\n   description VX-SUBLEAF4A_Ethernet56\n   no shutdown\n   channel-group
     48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-accessleaf3b_Ethernet49/1\n
@@ -46,9 +46,9 @@ cvp_configlets:
     \  no shutdown\n   ip address 10.100.160.7/32\n!\ninterface Loopback1\n   description
     VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.23/32\n!\ninterface
     Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.19/26\n!\ninterface Vlan10\n   description VRF10_VLAN10\n   no
-    shutdown\n   mtu 9214\n   ip helper-address 10.100.54.225\n   ip address virtual
-    10.100.54.193/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    address 10.151.11.19/26\n!\ninterface Vlan10\n   description VLAN10-Access_Points\n
+    \  no shutdown\n   mtu 9214\n   ip helper-address 10.100.54.225\n   ip address
+    virtual 10.100.54.193/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
     \  no shutdown\n   mtu 9214\n   ip address 10.100.54.120/31\n!\ninterface Vlan4094\n
     \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
     address 10.100.54.104/31\n!\ninterface Vxlan1\n   description vx-accessleaf3a_VTEP\n
@@ -124,21 +124,21 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VRF10_VLAN10\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan
-    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
-    Port-Channel46\n   description VX-SUBLEAF5_Po11\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 10\n   switchport mode trunk\n   mlag 46\n!\ninterface
-    Port-Channel48\n   description VX-SUBLEAF4_Po56\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 10\n   switchport mode trunk\n   mlag 48\n!\ninterface
-    Port-Channel491\n   description MLAG_PEER_vx-accessleaf3a_Po491\n   no shutdown\n
-    \  switchport\n   switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n
-    \  switchport trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet2\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.53/31\n!\ninterface
-    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet2\n   no shutdown\n   mtu
-    9214\n   no switchport\n   ip address 10.100.54.55/31\n!\ninterface Ethernet45\n
-    \  description VX-SUBLEAF5B_Ethernet1/2\n   no shutdown\n   channel-group 46 mode
-    active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/2\n   no
-    shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
+    10\n   name VLAN10-Access_Points\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk
+    group LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
+    instance MGMT\n!\ninterface Port-Channel46\n   description VX-SUBLEAF5_Po11\n
+    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
+    mode trunk\n   mlag 46\n!\ninterface Port-Channel48\n   description VX-SUBLEAF4_Po56\n
+    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
+    mode trunk\n   mlag 48\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-accessleaf3a_Po491\n
+    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
+    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
+    P2P_LINK_TO_VX-SPINE1_Ethernet2\n   no shutdown\n   mtu 9214\n   no switchport\n
+    \  ip address 10.100.54.53/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet2\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.55/31\n!\ninterface
+    Ethernet45\n   description VX-SUBLEAF5B_Ethernet1/2\n   no shutdown\n   channel-group
+    46 mode active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/2\n
+    \  no shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
     VX-SUBLEAF4B_Ethernet55\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
     Ethernet48\n   description VX-SUBLEAF4A_Ethernet55\n   no shutdown\n   channel-group
     48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-accessleaf3a_Ethernet49/1\n
@@ -148,9 +148,9 @@ cvp_configlets:
     \  no shutdown\n   ip address 10.100.160.8/32\n!\ninterface Loopback1\n   description
     VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.23/32\n!\ninterface
     Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.20/26\n!\ninterface Vlan10\n   description VRF10_VLAN10\n   no
-    shutdown\n   mtu 9214\n   ip helper-address 10.100.54.225\n   ip address virtual
-    10.100.54.193/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    address 10.151.11.20/26\n!\ninterface Vlan10\n   description VLAN10-Access_Points\n
+    \  no shutdown\n   mtu 9214\n   ip helper-address 10.100.54.225\n   ip address
+    virtual 10.100.54.193/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
     \  no shutdown\n   mtu 9214\n   ip address 10.100.54.121/31\n!\ninterface Vlan4094\n
     \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
     address 10.100.54.105/31\n!\ninterface Vxlan1\n   description vx-accessleaf3b_VTEP\n
@@ -226,37 +226,37 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VRF10_VLAN11\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan 1250\n
-    \  name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan
-    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
-    Port-Channel48\n   description palo1_PortChannel palo1\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 11,1213,1250\n   switchport mode trunk\n   mlag
-    48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-borderleaf1b_Po491\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
-    P2P_LINK_TO_VX-SPINE1_Ethernet5\n   no shutdown\n   mtu 9214\n   no switchport\n
-    \  ip address 10.100.54.33/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet5\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.35/31\n!\ninterface
-    Ethernet3\n   description pc3_LAN1\n   no shutdown\n   switchport access vlan
-    1250\n   switchport mode access\n   switchport\n   spanning-tree portfast\n!\ninterface
-    Ethernet48\n   description palo1_Ethernet1/11\n   no shutdown\n   channel-group
-    48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-borderleaf1b_Ethernet49/1\n
-    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Ethernet50/1\n
-    \  description MLAG_PEER_vx-borderleaf1b_Ethernet50/1\n   no shutdown\n   channel-group
-    491 mode active\n!\ninterface Loopback0\n   description EVPN_Overlay_Peering\n
-    \  no shutdown\n   ip address 10.100.160.3/32\n!\ninterface Loopback1\n   description
-    VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.19/32\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.23/26\n!\ninterface Vlan11\n   description VRF10_VLAN11\n   no
-    shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface Vlan4093\n
-    \  description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip address
-    10.100.54.112/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no shutdown\n
-    \  mtu 9214\n   no autostate\n   ip address 10.100.54.96/31\n!\ninterface Vxlan1\n
-    \  description vx-borderleaf1a_VTEP\n   vxlan source-interface Loopback1\n   vxlan
-    virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port 4789\n
-    \  vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan vlan
-    1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n   vxlan
-    bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21\n!\nip virtual-router
+    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
+    LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
+    MGMT\n!\ninterface Port-Channel48\n   description palo1_PortChannel palo1\n   no
+    shutdown\n   switchport\n   switchport trunk allowed vlan 11,1213,1250\n   switchport
+    mode trunk\n   mlag 48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n
+    \  description MLAG_PEER_vx-borderleaf1b_Po491\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n   switchport
+    trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet5\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.33/31\n!\ninterface
+    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet5\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.35/31\n!\ninterface Ethernet3\n
+    \  description pc3_LAN1\n   no shutdown\n   switchport access vlan 1250\n   switchport
+    mode access\n   switchport\n   spanning-tree portfast\n!\ninterface Ethernet48\n
+    \  description palo1_Ethernet1/11\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
+    Ethernet49/1\n   description MLAG_PEER_vx-borderleaf1b_Ethernet49/1\n   no shutdown\n
+    \  channel-group 491 mode active\n!\ninterface Ethernet50/1\n   description MLAG_PEER_vx-borderleaf1b_Ethernet50/1\n
+    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Loopback0\n   description
+    EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.3/32\n!\ninterface
+    Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
+    10.100.54.19/32\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.23/26\n!\ninterface Vlan11\n   description
+    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
+    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
+    address 10.100.54.112/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
+    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.96/31\n!\ninterface
+    Vxlan1\n   description vx-borderleaf1a_VTEP\n   vxlan source-interface Loopback1\n
+    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
+    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
+    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
+    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21\n!\nip virtual-router
     mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
     PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
     10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
@@ -307,8 +307,9 @@ cvp_configlets:
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65101\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
     11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n! monitor session niels source Ethernet48\n! monitor session niels destination
-    tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT\n!\nend\n"
+    1010\n  vxlan flood vtep 10.100.54.21\n! monitor session niels source Ethernet48\n!
+    monitor session niels destination tunnel mode gre source 10.151.11.23 destination
+    212.237.101.162 vrf MGMT\n!\nend\n"
   AVD-VXLAN_vx-borderleaf1b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -332,37 +333,37 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VRF10_VLAN11\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan 1250\n
-    \  name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan
-    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
-    Port-Channel48\n   description palo1_PortChannel palo1\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 11,1213,1250\n   switchport mode trunk\n   mlag
-    48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-borderleaf1a_Po491\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
-    P2P_LINK_TO_VX-SPINE1_Ethernet6\n   no shutdown\n   mtu 9214\n   no switchport\n
-    \  ip address 10.100.54.37/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet6\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.39/31\n!\ninterface
-    Ethernet3\n   description pc4_LAN1\n   no shutdown\n   switchport access vlan
-    1250\n   switchport mode access\n   switchport\n   spanning-tree portfast\n!\ninterface
-    Ethernet48\n   description palo1_Ethernet1/12\n   no shutdown\n   channel-group
-    48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-borderleaf1a_Ethernet49/1\n
-    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Ethernet50/1\n
-    \  description MLAG_PEER_vx-borderleaf1a_Ethernet50/1\n   no shutdown\n   channel-group
-    491 mode active\n!\ninterface Loopback0\n   description EVPN_Overlay_Peering\n
-    \  no shutdown\n   ip address 10.100.160.4/32\n!\ninterface Loopback1\n   description
-    VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.19/32\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.24/26\n!\ninterface Vlan11\n   description VRF10_VLAN11\n   no
-    shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface Vlan4093\n
-    \  description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip address
-    10.100.54.113/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no shutdown\n
-    \  mtu 9214\n   no autostate\n   ip address 10.100.54.97/31\n!\ninterface Vxlan1\n
-    \  description vx-borderleaf1b_VTEP\n   vxlan source-interface Loopback1\n   vxlan
-    virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port 4789\n
-    \  vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan vlan
-    1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n   vxlan
-    bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21\n!\nip virtual-router
+    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
+    LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
+    MGMT\n!\ninterface Port-Channel48\n   description palo1_PortChannel palo1\n   no
+    shutdown\n   switchport\n   switchport trunk allowed vlan 11,1213,1250\n   switchport
+    mode trunk\n   mlag 48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n
+    \  description MLAG_PEER_vx-borderleaf1a_Po491\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n   switchport
+    trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet6\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.37/31\n!\ninterface
+    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet6\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.39/31\n!\ninterface Ethernet3\n
+    \  description pc4_LAN1\n   no shutdown\n   switchport access vlan 1250\n   switchport
+    mode access\n   switchport\n   spanning-tree portfast\n!\ninterface Ethernet48\n
+    \  description palo1_Ethernet1/12\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
+    Ethernet49/1\n   description MLAG_PEER_vx-borderleaf1a_Ethernet49/1\n   no shutdown\n
+    \  channel-group 491 mode active\n!\ninterface Ethernet50/1\n   description MLAG_PEER_vx-borderleaf1a_Ethernet50/1\n
+    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Loopback0\n   description
+    EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.4/32\n!\ninterface
+    Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
+    10.100.54.19/32\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.24/26\n!\ninterface Vlan11\n   description
+    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
+    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
+    address 10.100.54.113/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
+    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.97/31\n!\ninterface
+    Vxlan1\n   description vx-borderleaf1b_VTEP\n   vxlan source-interface Loopback1\n
+    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
+    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
+    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
+    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21\n!\nip virtual-router
     mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
     PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
     10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
@@ -413,8 +414,9 @@ cvp_configlets:
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65101\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
     11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n! monitor session niels source Ethernet48\n! monitor session niels destination
-    tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT\n!\nend\n"
+    1010\n  vxlan flood vtep 10.100.54.21\n! monitor session niels source Ethernet48\n!
+    monitor session niels destination tunnel mode gre source 10.151.11.23 destination
+    212.237.101.162 vrf MGMT\n!\nend\n"
   AVD-VXLAN_vx-borderleaf2a: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -438,35 +440,35 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VRF10_VLAN11\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan 1250\n
-    \  name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan
-    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
-    Port-Channel48\n   description palo2_PortChannel palo2\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 11,1213,1250\n   switchport mode trunk\n   mlag
-    48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-borderleaf2b_Po491\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
-    P2P_LINK_TO_VX-SPINE1_Ethernet3\n   no shutdown\n   mtu 9214\n   no switchport\n
-    \  ip address 10.100.54.41/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet3\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.43/31\n!\ninterface
-    Ethernet48\n   description palo2_Ethernet1/11\n   no shutdown\n   channel-group
-    48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-borderleaf2b_Ethernet49/1\n
-    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Ethernet50/1\n
-    \  description MLAG_PEER_vx-borderleaf2b_Ethernet50/1\n   no shutdown\n   channel-group
-    491 mode active\n!\ninterface Loopback0\n   description EVPN_Overlay_Peering\n
-    \  no shutdown\n   ip address 10.100.160.5/32\n!\ninterface Loopback1\n   description
-    VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.21/32\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.21/26\n!\ninterface Vlan11\n   description VRF10_VLAN11\n   no
-    shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface Vlan4093\n
-    \  description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip address
-    10.100.54.116/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no shutdown\n
-    \  mtu 9214\n   no autostate\n   ip address 10.100.54.100/31\n!\ninterface Vxlan1\n
-    \  description vx-borderleaf2a_VTEP\n   vxlan source-interface Loopback1\n   vxlan
-    virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port 4789\n
-    \  vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan vlan
-    1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n   vxlan
-    bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19\n!\nip virtual-router
+    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
+    LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
+    MGMT\n!\ninterface Port-Channel48\n   description palo2_PortChannel palo2\n   no
+    shutdown\n   switchport\n   switchport trunk allowed vlan 11,1213,1250\n   switchport
+    mode trunk\n   mlag 48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n
+    \  description MLAG_PEER_vx-borderleaf2b_Po491\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n   switchport
+    trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet3\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.41/31\n!\ninterface
+    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet3\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.43/31\n!\ninterface Ethernet48\n
+    \  description palo2_Ethernet1/11\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
+    Ethernet49/1\n   description MLAG_PEER_vx-borderleaf2b_Ethernet49/1\n   no shutdown\n
+    \  channel-group 491 mode active\n!\ninterface Ethernet50/1\n   description MLAG_PEER_vx-borderleaf2b_Ethernet50/1\n
+    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Loopback0\n   description
+    EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.5/32\n!\ninterface
+    Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
+    10.100.54.21/32\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.21/26\n!\ninterface Vlan11\n   description
+    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
+    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
+    address 10.100.54.116/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
+    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.100/31\n!\ninterface
+    Vxlan1\n   description vx-borderleaf2a_VTEP\n   vxlan source-interface Loopback1\n
+    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
+    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
+    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
+    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19\n!\nip virtual-router
     mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
     PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
     10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
@@ -517,7 +519,7 @@ cvp_configlets:
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65102\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
     11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n!\nend\n"
+    1010\n  vxlan flood vtep 10.100.54.19\n!\nend\n"
   AVD-VXLAN_vx-borderleaf2b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -541,35 +543,35 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VRF10_VLAN11\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan 1250\n
-    \  name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan
-    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
-    Port-Channel48\n   description palo2_PortChannel palo2\n   no shutdown\n   switchport\n
-    \  switchport trunk allowed vlan 11,1213,1250\n   switchport mode trunk\n   mlag
-    48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-borderleaf2a_Po491\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
-    P2P_LINK_TO_VX-SPINE1_Ethernet4\n   no shutdown\n   mtu 9214\n   no switchport\n
-    \  ip address 10.100.54.45/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet4\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.47/31\n!\ninterface
-    Ethernet48\n   description palo2_Ethernet1/12\n   no shutdown\n   channel-group
-    48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-borderleaf2a_Ethernet49/1\n
-    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Ethernet50/1\n
-    \  description MLAG_PEER_vx-borderleaf2a_Ethernet50/1\n   no shutdown\n   channel-group
-    491 mode active\n!\ninterface Loopback0\n   description EVPN_Overlay_Peering\n
-    \  no shutdown\n   ip address 10.100.160.6/32\n!\ninterface Loopback1\n   description
-    VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.21/32\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.22/26\n!\ninterface Vlan11\n   description VRF10_VLAN11\n   no
-    shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface Vlan4093\n
-    \  description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip address
-    10.100.54.117/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no shutdown\n
-    \  mtu 9214\n   no autostate\n   ip address 10.100.54.101/31\n!\ninterface Vxlan1\n
-    \  description vx-borderleaf2b_VTEP\n   vxlan source-interface Loopback1\n   vxlan
-    virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port 4789\n
-    \  vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan vlan
-    1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n   vxlan
-    bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19\n!\nip virtual-router
+    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
+    LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
+    MGMT\n!\ninterface Port-Channel48\n   description palo2_PortChannel palo2\n   no
+    shutdown\n   switchport\n   switchport trunk allowed vlan 11,1213,1250\n   switchport
+    mode trunk\n   mlag 48\n   spanning-tree portfast\n!\ninterface Port-Channel491\n
+    \  description MLAG_PEER_vx-borderleaf2a_Po491\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n   switchport
+    trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet4\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.45/31\n!\ninterface
+    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet4\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.47/31\n!\ninterface Ethernet48\n
+    \  description palo2_Ethernet1/12\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
+    Ethernet49/1\n   description MLAG_PEER_vx-borderleaf2a_Ethernet49/1\n   no shutdown\n
+    \  channel-group 491 mode active\n!\ninterface Ethernet50/1\n   description MLAG_PEER_vx-borderleaf2a_Ethernet50/1\n
+    \  no shutdown\n   channel-group 491 mode active\n!\ninterface Loopback0\n   description
+    EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.6/32\n!\ninterface
+    Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
+    10.100.54.21/32\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.22/26\n!\ninterface Vlan11\n   description
+    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
+    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
+    address 10.100.54.117/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
+    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.101/31\n!\ninterface
+    Vxlan1\n   description vx-borderleaf2b_VTEP\n   vxlan source-interface Loopback1\n
+    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
+    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
+    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
+    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19\n!\nip virtual-router
     mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
     PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
     10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
@@ -620,7 +622,7 @@ cvp_configlets:
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65102\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
     11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n!\nend\n"
+    1010\n  vxlan flood vtep 10.100.54.19\n!\nend\n"
   AVD-VXLAN_vx-spine1: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -797,10 +799,10 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VRF10_VLAN10\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
-    instance MGMT\n!\ninterface Port-Channel1\n   description ap1_PortChannel AP1\n
-    \  no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel lacp
-    fallback individual\n   mlag 1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n
+    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
+    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel1\n   description ap1_PortChannel
+    AP1\n   no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel
+    lacp fallback individual\n   mlag 1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n
     \  description ap2_PortChannel AP2\n   no shutdown\n   switchport\n   switchport
     access vlan 10\n   port-channel lacp fallback individual\n   mlag 2\n   spanning-tree
     portfast\n!\ninterface Port-Channel49\n   description MLAG_PEER_vx-subleaf4b_Po49\n
@@ -851,10 +853,10 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VRF10_VLAN10\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
-    instance MGMT\n!\ninterface Port-Channel1\n   description ap1_PortChannel AP1\n
-    \  no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel lacp
-    fallback individual\n   mlag 1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n
+    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
+    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel1\n   description ap1_PortChannel
+    AP1\n   no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel
+    lacp fallback individual\n   mlag 1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n
     \  description ap2_PortChannel AP2\n   no shutdown\n   switchport\n   switchport
     access vlan 10\n   port-channel lacp fallback individual\n   mlag 2\n   spanning-tree
     portfast\n!\ninterface Port-Channel49\n   description MLAG_PEER_vx-subleaf4a_Po49\n
@@ -905,8 +907,8 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VRF10_VLAN10\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
-    instance MGMT\n!\ninterface Port-Channel11\n   description ACCESSLEAF3_Po46\n
+    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
+    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel11\n   description ACCESSLEAF3_Po46\n
     \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
     mode trunk\n   mlag 11\n!\ninterface Port-Channel13\n   description MLAG_PEER_vx-subleaf5b_Po13\n
     \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
@@ -956,8 +958,8 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VRF10_VLAN10\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
-    instance MGMT\n!\ninterface Port-Channel11\n   description ACCESSLEAF3_Po46\n
+    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
+    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel11\n   description ACCESSLEAF3_Po46\n
     \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
     mode trunk\n   mlag 11\n!\ninterface Port-Channel13\n   description MLAG_PEER_vx-subleaf5a_Po13\n
     \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group

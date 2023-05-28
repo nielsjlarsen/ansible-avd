@@ -22,7 +22,7 @@ tenants:
           # SVI definitions.
           "10":
             # SVI Description
-            name: VRF10_VLAN10
+            name: VLAN10-Access_Points
             enabled: true
             # vxlan: false
             # IP anycast gateway to be used in the SVI in every leaf.
@@ -33,7 +33,7 @@ tenants:
             tags: [ accessleaf ]
           "11":
             # SVI Description
-            name: VRF10_VLAN11
+            name: VLAN11-Firewall_Linknet
             enabled: true
             # IP anycast gateway to be used in the SVI in every leaf.
             ip_address_virtual: 10.100.54.226/27

@@ -57,7 +57,7 @@ vlans:
   trunk_groups:
   - MLAG
 - id: 10
-  name: VRF10_VLAN10
+  name: VLAN10-Access_Points
   tenant: TENANT1
 vlan_interfaces:
 - name: Vlan4094

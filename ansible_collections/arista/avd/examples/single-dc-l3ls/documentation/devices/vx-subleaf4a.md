@@ -391,10 +391,7 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 10 | VRF10_VLAN10 | - |
-| 1202 | mgmt-accesspoint | - |
-| 1213 | mobile-prod-device | - |
-| 1250 | enterprisenet | - |
+| 10 | VLAN10-Access_Points | - |
 | 4094 | MLAG_PEER | MLAG |
 
 ### VLANs Device Configuration
@@ -402,16 +399,7 @@ vlan internal order ascending range 1006 1199
 ```eos
 !
 vlan 10
-   name VRF10_VLAN10
-!
-vlan 1202
-   name mgmt-accesspoint
-!
-vlan 1213
-   name mobile-prod-device
-!
-vlan 1250
-   name enterprisenet
+   name VLAN10-Access_Points
 !
 vlan 4094
    name MLAG_PEER
@@ -430,10 +418,11 @@ vlan 4094
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
 | Ethernet1 | ap1_LAN1 | *access | *10 | *- | *- | 1 |
 | Ethernet2 | ap2_LAN1 | *access | *10 | *- | *- | 2 |
+| Ethernet3 |  pc1_LAN1 | access | 10 | - | - | - |
 | Ethernet49 | MLAG_PEER_vx-subleaf4b_Ethernet49 | *trunk | *- | *- | *['MLAG'] | 49 |
 | Ethernet50 | MLAG_PEER_vx-subleaf4b_Ethernet50 | *trunk | *- | *- | *['MLAG'] | 49 |
-| Ethernet55 | VX-ACCESSLEAF3B_Ethernet48 | *trunk | *10,1202,1213,1250 | *- | *- | 56 |
-| Ethernet56 | VX-ACCESSLEAF3A_Ethernet48 | *trunk | *10,1202,1213,1250 | *- | *- | 56 |
+| Ethernet55 | VX-ACCESSLEAF3B_Ethernet48 | *trunk | *10 | *- | *- | 56 |
+| Ethernet56 | VX-ACCESSLEAF3A_Ethernet48 | *trunk | *10 | *- | *- | 56 |
 
 *Inherited from Port-Channel Interface
 
@@ -445,7 +434,7 @@ interface Ethernet1
    description ap1_LAN1
    no shutdown
    speed auto 1000full
-   switchport access vlan 1202
+   switchport access vlan 10
    switchport mode access
    channel-group 1 mode active
 !
@@ -453,9 +442,17 @@ interface Ethernet2
    description ap2_LAN1
    no shutdown
    speed auto 1000full
-   switchport access vlan 1202
+   switchport access vlan 10
    switchport mode access
    channel-group 2 mode active
+!
+interface Ethernet3
+   description pc1_LAN1
+   no shutdown
+   switchport access vlan 10
+   switchport mode access
+   switchport
+   spanning-tree portfast
 !
 interface Ethernet49
    description MLAG_PEER_vx-subleaf4b_Ethernet49
@@ -489,7 +486,7 @@ interface Ethernet56
 | Port-Channel1 | ap1_PortChannel AP1 | switched | access | 10 | - | - | - | individual | 1 | - |
 | Port-Channel2 | ap2_PortChannel AP2 | switched | access | 10 | - | - | - | individual | 2 | - |
 | Port-Channel49 | MLAG_PEER_vx-subleaf4b_Po49 | switched | trunk | - | - | ['MLAG'] | - | - | - | - |
-| Port-Channel56 | ACCESSLEAF3_Po48 | switched | trunk | 10,1202,1213,1250 | - | - | - | - | 56 | - |
+| Port-Channel56 | ACCESSLEAF3_Po48 | switched | trunk | 10 | - | - | - | - | 56 | - |
 
 #### Port-Channel Interfaces Device Configuration
 
@@ -524,7 +521,7 @@ interface Port-Channel56
    description ACCESSLEAF3_Po48
    no shutdown
    switchport
-   switchport trunk allowed vlan 10,1202,1213,1250
+   switchport trunk allowed vlan 10
    switchport mode trunk
    mlag 56
 ```

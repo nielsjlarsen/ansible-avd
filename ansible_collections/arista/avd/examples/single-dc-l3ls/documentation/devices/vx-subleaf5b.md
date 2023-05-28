@@ -391,10 +391,7 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 10 | VRF10_VLAN10 | - |
-| 1202 | mgmt-accesspoint | - |
-| 1213 | mobile-prod-device | - |
-| 1250 | enterprisenet | - |
+| 10 | VLAN10-Access_Points | - |
 | 4094 | MLAG_PEER | MLAG |
 
 ### VLANs Device Configuration
@@ -402,16 +399,7 @@ vlan internal order ascending range 1006 1199
 ```eos
 !
 vlan 10
-   name VRF10_VLAN10
-!
-vlan 1202
-   name mgmt-accesspoint
-!
-vlan 1213
-   name mobile-prod-device
-!
-vlan 1250
-   name enterprisenet
+   name VLAN10-Access_Points
 !
 vlan 4094
    name MLAG_PEER
@@ -428,8 +416,8 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet1/1 | VX-ACCESSLEAF3A_Ethernet45 | *trunk | *10,1202,1213,1250 | *- | *- | 11 |
-| Ethernet1/2 | VX-ACCESSLEAF3B_Ethernet45 | *trunk | *10,1202,1213,1250 | *- | *- | 11 |
+| Ethernet1/1 | VX-ACCESSLEAF3A_Ethernet45 | *trunk | *10 | *- | *- | 11 |
+| Ethernet1/2 | VX-ACCESSLEAF3B_Ethernet45 | *trunk | *10 | *- | *- | 11 |
 | Ethernet1/3 | MLAG_PEER_vx-subleaf5a_Ethernet1/3 | *trunk | *- | *- | *['MLAG'] | 13 |
 | Ethernet1/4 | MLAG_PEER_vx-subleaf5a_Ethernet1/4 | *trunk | *- | *- | *['MLAG'] | 13 |
 | Ethernet3/1 | ap3_LAN2 | *access | *10 | *- | *- | 31 |
@@ -465,7 +453,7 @@ interface Ethernet3/1
    description ap3_LAN2
    no shutdown
    speed auto 1000full
-   switchport access vlan 1202
+   switchport access vlan 10
    switchport mode access
    channel-group 31 mode active
 !
@@ -473,7 +461,7 @@ interface Ethernet3/2
    description ap4_LAN2
    no shutdown
    speed auto 1000full
-   switchport access vlan 1202
+   switchport access vlan 10
    switchport mode access
    channel-group 32 mode active
 ```
@@ -486,7 +474,7 @@ interface Ethernet3/2
 
 | Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
 | --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel11 | ACCESSLEAF3_Po46 | switched | trunk | 10,1202,1213,1250 | - | - | - | - | 11 | - |
+| Port-Channel11 | ACCESSLEAF3_Po46 | switched | trunk | 10 | - | - | - | - | 11 | - |
 | Port-Channel13 | MLAG_PEER_vx-subleaf5a_Po13 | switched | trunk | - | - | ['MLAG'] | - | - | - | - |
 | Port-Channel31 | ap3_PortChannel AP3 | switched | access | 10 | - | - | - | individual | 31 | - |
 | Port-Channel32 | ap4_PortChannel AP4 | switched | access | 10 | - | - | - | individual | 32 | - |
@@ -499,7 +487,7 @@ interface Port-Channel11
    description ACCESSLEAF3_Po46
    no shutdown
    switchport
-   switchport trunk allowed vlan 10,1202,1213,1250
+   switchport trunk allowed vlan 10
    switchport mode trunk
    mlag 11
 !

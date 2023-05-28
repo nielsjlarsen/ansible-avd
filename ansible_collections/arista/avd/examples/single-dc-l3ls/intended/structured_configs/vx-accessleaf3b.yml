@@ -147,7 +147,7 @@ vlans:
   trunk_groups:
   - MLAG
 - id: 10
-  name: VRF10_VLAN10
+  name: VLAN10-Access_Points
   tenant: TENANT1
 vlan_interfaces:
 - name: Vlan4093
@@ -165,7 +165,7 @@ vlan_interfaces:
   tenant: TENANT1
   tags:
   - accessleaf
-  description: VRF10_VLAN10
+  description: VLAN10-Access_Points
   shutdown: false
   mtu: 9214
   ip_address_virtual: 10.100.54.193/27

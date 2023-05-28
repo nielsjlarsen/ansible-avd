@@ -117,7 +117,9 @@ management_api_http:
   - name: MGMT
   enable_https: true
 eos_cli: "router bgp 65101\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan 61\n  no vlan 62\ninterface
-  Vxlan1\n  no vxlan vrf default vni 1010"
+  Vxlan1\n  no vxlan vrf default vni 1010\n  vxlan flood vtep 10.100.54.21\ninterface Recirc-Channel 1\n  switchport recirculation features
+  cpu-mirror\ninterface et48\n  description Recirc-Channel\n  traffic-loopback source system device mac\n  channel-group recirculation
+  1\nmonitor session niels source Ethernet1\nmonitor session niels destination cpu"
 ethernet_interfaces:
 - name: Ethernet1
   peer: spine1

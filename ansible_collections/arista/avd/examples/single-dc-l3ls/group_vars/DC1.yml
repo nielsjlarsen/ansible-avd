@@ -73,6 +73,15 @@ l3leaf:
           no vlan 62
         interface Vxlan1
           no vxlan vrf default vni 1010
+          vxlan flood vtep 10.100.54.21
+        interface Recirc-Channel 1
+          switchport recirculation features cpu-mirror
+        interface et48
+          description Recirc-Channel
+          traffic-loopback source system device mac
+          channel-group recirculation 1
+        monitor session niels source Ethernet1
+        monitor session niels destination cpu
       nodes:
         # Definition of hostnames under the node_group
         leaf1:

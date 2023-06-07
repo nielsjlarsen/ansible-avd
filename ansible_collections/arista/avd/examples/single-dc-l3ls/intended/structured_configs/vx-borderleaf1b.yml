@@ -157,8 +157,9 @@ management_api_http:
   - name: MGMT
   enable_https: true
 eos_cli: "router bgp 65101\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan 11\n  no vlan 1213\n
-  \ no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni 1010\n  vxlan flood vtep 10.100.54.21\n! monitor session niels source
-  Ethernet48\n! monitor session niels destination tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT"
+  \ no vlan 1250\ninterface Vxlan1\n  no vxlan vlan 11 vni 11\n  no vxlan vrf default vni 1010\ninterface ethernet45-46\n  description
+  Borderleaf cross-site trunk\n  channel-group 45 mode active\n  no shut\ninterface Port-Channel45\n  description Borderleaf cross-site
+  trunk\n  switchport\n  switchport trunk allowed vlan 11,1213,1250\n  switchport mode trunk\n  mlag 45"
 vlans:
 - id: 4093
   tenant: system
@@ -171,7 +172,7 @@ vlans:
   trunk_groups:
   - MLAG
 - id: 11
-  name: VLAN11-Firewall_Linknet
+  name: VLAN11-Firewall_Linknet-borderleaf
   tenant: TENANT1
 - id: 1213
   name: mobile-prod-device
@@ -195,7 +196,7 @@ vlan_interfaces:
   tenant: TENANT1
   tags:
   - borderleaf
-  description: VLAN11-Firewall_Linknet
+  description: VLAN11-Firewall_Linknet-borderleaf
   shutdown: false
   mtu: 9214
   ip_address_virtual: 10.100.54.226/27

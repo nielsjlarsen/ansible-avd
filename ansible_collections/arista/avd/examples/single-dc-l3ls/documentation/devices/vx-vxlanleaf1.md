@@ -1,4 +1,4 @@
-# vx-subleaf5b
+# vx-vxlanleaf1
 
 ## Table of Contents
 
@@ -18,9 +18,6 @@
 - [Monitoring](#monitoring)
   - [TerminAttr Daemon](#terminattr-daemon)
   - [SFlow](#sflow)
-- [MLAG](#mlag)
-  - [MLAG Summary](#mlag-summary)
-  - [MLAG Device Configuration](#mlag-device-configuration)
 - [Spanning Tree](#spanning-tree)
   - [Spanning Tree Summary](#spanning-tree-summary)
   - [Spanning Tree Device Configuration](#spanning-tree-device-configuration)
@@ -33,7 +30,6 @@
 - [Interfaces](#interfaces)
   - [Ethernet Interfaces](#ethernet-interfaces)
   - [Port-Channel Interfaces](#port-channel-interfaces)
-  - [VLAN Interfaces](#vlan-interfaces)
 - [Routing](#routing)
   - [Service Routing Protocols Model](#service-routing-protocols-model)
   - [IP Routing](#ip-routing)
@@ -47,6 +43,7 @@
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
   - [VRF Instances Device Configuration](#vrf-instances-device-configuration)
+- [EOS CLI](#eos-cli)
 
 ## Management
 
@@ -58,23 +55,23 @@
 
 | Management Interface | description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1/1 | oob_management | oob | MGMT | 10.151.11.11/26 | 10.151.11.1 |
+| Management1 | oob_management | oob | MGMT | 10.151.11.25/26 | 10.151.11.1 |
 
 ##### IPv6
 
 | Management Interface | description | Type | VRF | IPv6 Address | IPv6 Gateway |
 | -------------------- | ----------- | ---- | --- | ------------ | ------------ |
-| Management1/1 | oob_management | oob | MGMT | - | - |
+| Management1 | oob_management | oob | MGMT | - | - |
 
 #### Management Interfaces Device Configuration
 
 ```eos
 !
-interface Management1/1
+interface Management1
    description oob_management
    no shutdown
    vrf MGMT
-   ip address 10.151.11.11/26
+   ip address 10.151.11.25/26
 ```
 
 ### DNS Domain
@@ -112,7 +109,7 @@ ip name-server vrf MGMT 10.149.30.200
 
 | Interface | VRF |
 | --------- | --- |
-| Management1/1 | MGMT |
+| Management1 | MGMT |
 
 ##### NTP Servers
 
@@ -126,7 +123,7 @@ ip name-server vrf MGMT 10.149.30.200
 
 ```eos
 !
-ntp local-interface vrf MGMT Management1/1
+ntp local-interface vrf MGMT Management1
 ntp server vrf MGMT utc1.corp.lego.com
 ntp server vrf MGMT utc2.corp.lego.com
 ntp server vrf MGMT utcd.corp.lego.com
@@ -322,29 +319,6 @@ sflow extension bgp
 sflow run
 ```
 
-## MLAG
-
-### MLAG Summary
-
-| Domain-id | Local-interface | Peer-address | Peer-link |
-| --------- | --------------- | ------------ | --------- |
-| VX-SUBLEAF5 | Vlan4094 | 10.100.54.132 | Port-Channel13 |
-
-Dual primary detection is disabled.
-
-### MLAG Device Configuration
-
-```eos
-!
-mlag configuration
-   domain-id VX-SUBLEAF5
-   local-interface Vlan4094
-   peer-address 10.100.54.132
-   peer-link Port-Channel13
-   reload-delay mlag 300
-   reload-delay non-mlag 330
-```
-
 ## Spanning Tree
 
 ### Spanning Tree Summary
@@ -357,16 +331,11 @@ STP mode: **mstp**
 | -------- | -------- |
 | 0 | 4096 |
 
-#### Global Spanning-Tree Settings
-
-- Spanning Tree disabled for VLANs: **4094**
-
 ### Spanning Tree Device Configuration
 
 ```eos
 !
 spanning-tree mode mstp
-no spanning-tree vlan-id 4094
 spanning-tree mst 0 priority 4096
 ```
 
@@ -391,23 +360,22 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 10 | VLAN10-Access_Points-borderleaf | - |
-| 20 | VLAN20-Access_Points-wifi-leaf | - |
-| 4094 | MLAG_PEER | MLAG |
+| 11 | VLAN11-Firewall_Linknet | - |
+| 1213 | mobile-prod-device | - |
+| 1250 | enterprisenet | - |
 
 ### VLANs Device Configuration
 
 ```eos
 !
-vlan 10
-   name VLAN10-Access_Points-borderleaf
+vlan 11
+   name VLAN11-Firewall_Linknet
 !
-vlan 20
-   name VLAN20-Access_Points-wifi-leaf
+vlan 1213
+   name mobile-prod-device
 !
-vlan 4094
-   name MLAG_PEER
-   trunk group MLAG
+vlan 1250
+   name enterprisenet
 ```
 
 ## Interfaces
@@ -420,12 +388,8 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet1/1 | VX-ACCESSLEAF3A_Ethernet45 | *trunk | *10,20 | *- | *- | 11 |
-| Ethernet1/2 | VX-ACCESSLEAF3B_Ethernet45 | *trunk | *10,20 | *- | *- | 11 |
-| Ethernet1/3 | MLAG_PEER_vx-subleaf5a_Ethernet1/3 | *trunk | *- | *- | *['MLAG'] | 13 |
-| Ethernet1/4 | MLAG_PEER_vx-subleaf5a_Ethernet1/4 | *trunk | *- | *- | *['MLAG'] | 13 |
-| Ethernet3/1 | ap3_LAN2 | *access | *20 | *- | *- | 31 |
-| Ethernet3/2 | ap4_LAN2 | *access | *20 | *- | *- | 32 |
+| Ethernet1/1 | VX-BORDERLEAF1A_Ethernet4 | *trunk | *11,1213,1250 | *- | *- | 11 |
+| Ethernet1/2 | VX-BORDERLEAF1B_Ethernet4 | *trunk | *11,1213,1250 | *- | *- | 11 |
 
 *Inherited from Port-Channel Interface
 
@@ -434,40 +398,14 @@ vlan 4094
 ```eos
 !
 interface Ethernet1/1
-   description VX-ACCESSLEAF3A_Ethernet45
+   description VX-BORDERLEAF1A_Ethernet4
    no shutdown
    channel-group 11 mode active
 !
 interface Ethernet1/2
-   description VX-ACCESSLEAF3B_Ethernet45
+   description VX-BORDERLEAF1B_Ethernet4
    no shutdown
    channel-group 11 mode active
-!
-interface Ethernet1/3
-   description MLAG_PEER_vx-subleaf5a_Ethernet1/3
-   no shutdown
-   channel-group 13 mode active
-!
-interface Ethernet1/4
-   description MLAG_PEER_vx-subleaf5a_Ethernet1/4
-   no shutdown
-   channel-group 13 mode active
-!
-interface Ethernet3/1
-   description ap3_LAN2
-   no shutdown
-   speed auto 1000full
-   switchport access vlan 10
-   switchport mode access
-   channel-group 31 mode active
-!
-interface Ethernet3/2
-   description ap4_LAN2
-   no shutdown
-   speed auto 1000full
-   switchport access vlan 10
-   switchport mode access
-   channel-group 32 mode active
 ```
 
 ### Port-Channel Interfaces
@@ -478,73 +416,18 @@ interface Ethernet3/2
 
 | Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
 | --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel11 | ACCESSLEAF3_Po46 | switched | trunk | 10,20 | - | - | - | - | 11 | - |
-| Port-Channel13 | MLAG_PEER_vx-subleaf5a_Po13 | switched | trunk | - | - | ['MLAG'] | - | - | - | - |
-| Port-Channel31 | ap3_PortChannel AP3 | switched | access | 20 | - | - | - | individual | 31 | - |
-| Port-Channel32 | ap4_PortChannel AP4 | switched | access | 20 | - | - | - | individual | 32 | - |
+| Port-Channel11 | BORDERLEAF1_Po4 | switched | trunk | 11,1213,1250 | - | - | - | - | - | - |
 
 #### Port-Channel Interfaces Device Configuration
 
 ```eos
 !
 interface Port-Channel11
-   description ACCESSLEAF3_Po46
+   description BORDERLEAF1_Po4
    no shutdown
    switchport
-   switchport trunk allowed vlan 10,20
+   switchport trunk allowed vlan 11,1213,1250
    switchport mode trunk
-   mlag 11
-!
-interface Port-Channel13
-   description MLAG_PEER_vx-subleaf5a_Po13
-   no shutdown
-   switchport
-   switchport mode trunk
-   switchport trunk group MLAG
-!
-interface Port-Channel31
-   description ap3_PortChannel AP3
-   no shutdown
-   switchport
-   switchport access vlan 20
-   port-channel lacp fallback individual
-   mlag 31
-   spanning-tree portfast
-!
-interface Port-Channel32
-   description ap4_PortChannel AP4
-   no shutdown
-   switchport
-   switchport access vlan 20
-   port-channel lacp fallback individual
-   mlag 32
-   spanning-tree portfast
-```
-
-### VLAN Interfaces
-
-#### VLAN Interfaces Summary
-
-| Interface | Description | VRF |  MTU | Shutdown |
-| --------- | ----------- | --- | ---- | -------- |
-| Vlan4094 | MLAG_PEER | default | 9214 | False |
-
-##### IPv4
-
-| Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
-| --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan4094 |  default  |  10.100.54.133/31  |  -  |  -  |  -  |  -  |  -  |
-
-#### VLAN Interfaces Device Configuration
-
-```eos
-!
-interface Vlan4094
-   description MLAG_PEER
-   no shutdown
-   mtu 9214
-   no autostate
-   ip address 10.100.54.133/31
 ```
 
 ## Routing
@@ -643,4 +526,47 @@ poe
 ```eos
 !
 vrf instance MGMT
+```
+
+## EOS CLI
+
+```eos
+!
+interface Vxlan1
+  description vx-vxlanleaf1_VTEP
+  vxlan source-interface Loopback1
+  vxlan udp-port 4789
+  vxlan flood vtep learned data-plane
+  vxlan vlan 1213 vni 1213
+  vxlan vlan 1250 vni 1250
+  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.26
+interface Port-Channel11
+  switchport trunk allowed vlan 101,1213,1250
+no vlan 11
+vlan 101
+  name BORDER1-LINKNET
+interface vlan 101
+  ip address 10.100.55.4/29
+interface Loopback0
+  ip address 10.100.160.9/32
+interface Loopback1
+  ip address 10.100.160.10/32
+router bgp 65104
+  router-id 10.100.160.9
+  graceful-restart restart-time 300
+  graceful-restart
+  maximum-paths 4 ecmp 4
+  update wait-install
+  no bgp default ipv4-unicast
+  neighbor IPv4-UNDERLAY-PEERS peer group
+  neighbor IPv4-UNDERLAY-PEERS password 7 7x4B4rnJhZB438m9+BrBfQ==
+  neighbor IPv4-UNDERLAY-PEERS send-community
+  neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000
+  neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
+  neighbor 10.100.55.3 peer group IPv4-UNDERLAY-PEERS
+  neighbor 10.100.55.3 remote-as 65101
+  neighbor 10.100.55.3 description vx-borderleaf1
+  redistribute connected
+  address-family ipv4
+      neighbor IPv4-UNDERLAY-PEERS activate
 ```

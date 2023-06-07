@@ -367,6 +367,8 @@ vlan internal order ascending range 1006 1199
 | Ethernet4 | P2P_LINK_TO_VX-BORDERLEAF2B_Ethernet1 | routed | - | 10.100.54.44/31 | default | 9214 | False | - | - |
 | Ethernet5 | P2P_LINK_TO_VX-BORDERLEAF1A_Ethernet1 | routed | - | 10.100.54.32/31 | default | 9214 | False | - | - |
 | Ethernet6 | P2P_LINK_TO_VX-BORDERLEAF1B_Ethernet1 | routed | - | 10.100.54.36/31 | default | 9214 | False | - | - |
+| Ethernet7 | P2P_LINK_TO_VX-WIFI1A_Ethernet27 | routed | - | 10.100.54.56/31 | default | 9214 | False | - | - |
+| Ethernet8 | P2P_LINK_TO_VX-WIFI1B_Ethernet27 | routed | - | 10.100.54.60/31 | default | 9214 | False | - | - |
 
 #### Ethernet Interfaces Device Configuration
 
@@ -413,6 +415,20 @@ interface Ethernet6
    mtu 9214
    no switchport
    ip address 10.100.54.36/31
+!
+interface Ethernet7
+   description P2P_LINK_TO_VX-WIFI1A_Ethernet27
+   no shutdown
+   mtu 9214
+   no switchport
+   ip address 10.100.54.56/31
+!
+interface Ethernet8
+   description P2P_LINK_TO_VX-WIFI1B_Ethernet27
+   no shutdown
+   mtu 9214
+   no switchport
+   ip address 10.100.54.60/31
 ```
 
 ### Loopback Interfaces
@@ -542,12 +558,16 @@ ip route vrf MGMT 0.0.0.0/0 10.151.11.1
 | 10.100.54.45 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
 | 10.100.54.49 | 65103 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
 | 10.100.54.53 | 65103 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
+| 10.100.54.57 | 65104 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
+| 10.100.54.61 | 65104 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
 | 10.100.160.3 | 65101 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 | 10.100.160.4 | 65101 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 | 10.100.160.5 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 | 10.100.160.6 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 | 10.100.160.7 | 65103 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 | 10.100.160.8 | 65103 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
+| 10.100.160.9 | 65104 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
+| 10.100.160.10 | 65104 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 
 #### Router BGP EVPN Address Family
 
@@ -598,6 +618,12 @@ router bgp 65100
    neighbor 10.100.54.53 peer group IPv4-UNDERLAY-PEERS
    neighbor 10.100.54.53 remote-as 65103
    neighbor 10.100.54.53 description vx-accessleaf3b_Ethernet1
+   neighbor 10.100.54.57 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.100.54.57 remote-as 65104
+   neighbor 10.100.54.57 description vx-wifi1a_Ethernet27
+   neighbor 10.100.54.61 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.100.54.61 remote-as 65104
+   neighbor 10.100.54.61 description vx-wifi1b_Ethernet27
    neighbor 10.100.160.3 peer group EVPN-OVERLAY-PEERS
    neighbor 10.100.160.3 remote-as 65101
    neighbor 10.100.160.3 description vx-borderleaf1a
@@ -616,6 +642,12 @@ router bgp 65100
    neighbor 10.100.160.8 peer group EVPN-OVERLAY-PEERS
    neighbor 10.100.160.8 remote-as 65103
    neighbor 10.100.160.8 description vx-accessleaf3b
+   neighbor 10.100.160.9 peer group EVPN-OVERLAY-PEERS
+   neighbor 10.100.160.9 remote-as 65104
+   neighbor 10.100.160.9 description vx-wifi1a
+   neighbor 10.100.160.10 peer group EVPN-OVERLAY-PEERS
+   neighbor 10.100.160.10 remote-as 65104
+   neighbor 10.100.160.10 description vx-wifi1b
    redistribute connected route-map RM-CONN-2-BGP
    !
    address-family evpn

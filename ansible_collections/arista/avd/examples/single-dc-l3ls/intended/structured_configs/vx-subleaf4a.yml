@@ -57,7 +57,10 @@ vlans:
   trunk_groups:
   - MLAG
 - id: 10
-  name: VLAN10-Access_Points
+  name: VLAN10-Access_Points-borderleaf
+  tenant: TENANT1
+- id: 20
+  name: VLAN20-Access_Points-wifi-leaf
   tenant: TENANT1
 vlan_interfaces:
 - name: Vlan4094
@@ -79,7 +82,7 @@ port_channel_interfaces:
   type: switched
   shutdown: false
   mode: trunk
-  vlans: '10'
+  vlans: 10,20
   mlag: 56
 - name: Port-Channel1
   description: ap1_PortChannel AP1

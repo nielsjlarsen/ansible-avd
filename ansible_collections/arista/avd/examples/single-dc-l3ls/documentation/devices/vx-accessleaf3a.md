@@ -398,7 +398,8 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 10 | VLAN10-Access_Points | - |
+| 10 | VLAN10-Access_Points-borderleaf | - |
+| 20 | VLAN20-Access_Points-wifi-leaf | - |
 | 4093 | LEAF_PEER_L3 | LEAF_PEER_L3 |
 | 4094 | MLAG_PEER | MLAG |
 
@@ -407,7 +408,10 @@ vlan internal order ascending range 1006 1199
 ```eos
 !
 vlan 10
-   name VLAN10-Access_Points
+   name VLAN10-Access_Points-borderleaf
+!
+vlan 20
+   name VLAN20-Access_Points-wifi-leaf
 !
 vlan 4093
    name LEAF_PEER_L3
@@ -428,10 +432,10 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet45 | VX-SUBLEAF5B_Ethernet1/1 | *trunk | *10 | *- | *- | 46 |
-| Ethernet46 | VX-SUBLEAF5A_Ethernet1/1 | *trunk | *10 | *- | *- | 46 |
-| Ethernet47 | VX-SUBLEAF4B_Ethernet56 | *trunk | *10 | *- | *- | 48 |
-| Ethernet48 | VX-SUBLEAF4A_Ethernet56 | *trunk | *10 | *- | *- | 48 |
+| Ethernet45 | VX-SUBLEAF5B_Ethernet1/1 | *trunk | *10,20 | *- | *- | 46 |
+| Ethernet46 | VX-SUBLEAF5A_Ethernet1/1 | *trunk | *10,20 | *- | *- | 46 |
+| Ethernet47 | VX-SUBLEAF4B_Ethernet56 | *trunk | *10,20 | *- | *- | 48 |
+| Ethernet48 | VX-SUBLEAF4A_Ethernet56 | *trunk | *10,20 | *- | *- | 48 |
 | Ethernet49/1 | MLAG_PEER_vx-accessleaf3b_Ethernet49/1 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 491 |
 | Ethernet50/1 | MLAG_PEER_vx-accessleaf3b_Ethernet50/1 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 491 |
 
@@ -501,8 +505,8 @@ interface Ethernet50/1
 
 | Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
 | --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel46 | VX-SUBLEAF5_Po11 | switched | trunk | 10 | - | - | - | - | 46 | - |
-| Port-Channel48 | VX-SUBLEAF4_Po56 | switched | trunk | 10 | - | - | - | - | 48 | - |
+| Port-Channel46 | VX-SUBLEAF5_Po11 | switched | trunk | 10,20 | - | - | - | - | 46 | - |
+| Port-Channel48 | VX-SUBLEAF4_Po56 | switched | trunk | 10,20 | - | - | - | - | 48 | - |
 | Port-Channel491 | MLAG_PEER_vx-accessleaf3b_Po491 | switched | trunk | - | - | ['LEAF_PEER_L3', 'MLAG'] | - | - | - | - |
 
 #### Port-Channel Interfaces Device Configuration
@@ -513,7 +517,7 @@ interface Port-Channel46
    description VX-SUBLEAF5_Po11
    no shutdown
    switchport
-   switchport trunk allowed vlan 10
+   switchport trunk allowed vlan 10,20
    switchport mode trunk
    mlag 46
 !
@@ -521,7 +525,7 @@ interface Port-Channel48
    description VX-SUBLEAF4_Po56
    no shutdown
    switchport
-   switchport trunk allowed vlan 10
+   switchport trunk allowed vlan 10,20
    switchport mode trunk
    mlag 48
 !
@@ -574,7 +578,8 @@ interface Loopback1
 
 | Interface | Description | VRF |  MTU | Shutdown |
 | --------- | ----------- | --- | ---- | -------- |
-| Vlan10 | VLAN10-Access_Points | default | 9214 | False |
+| Vlan10 | VLAN10-Access_Points-borderleaf | default | 9214 | False |
+| Vlan20 | VLAN20-Access_Points-wifi-leaf | default | 9214 | False |
 | Vlan4093 | MLAG_PEER_L3_PEERING | default | 9214 | False |
 | Vlan4094 | MLAG_PEER | default | 9214 | False |
 
@@ -583,6 +588,7 @@ interface Loopback1
 | Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
 | Vlan10 |  default  |  -  |  10.100.54.193/27  |  -  |  -  |  -  |  -  |
+| Vlan20 |  default  |  -  |  10.100.5.161/27  |  -  |  -  |  -  |  -  |
 | Vlan4093 |  default  |  10.100.54.120/31  |  -  |  -  |  -  |  -  |  -  |
 | Vlan4094 |  default  |  10.100.54.104/31  |  -  |  -  |  -  |  -  |  -  |
 
@@ -591,11 +597,18 @@ interface Loopback1
 ```eos
 !
 interface Vlan10
-   description VLAN10-Access_Points
+   description VLAN10-Access_Points-borderleaf
    no shutdown
    mtu 9214
    ip helper-address 10.100.54.225
    ip address virtual 10.100.54.193/27
+!
+interface Vlan20
+   description VLAN20-Access_Points-wifi-leaf
+   no shutdown
+   mtu 9214
+   ip helper-address 10.100.55.1
+   ip address virtual 10.100.5.161/27
 !
 interface Vlan4093
    description MLAG_PEER_L3_PEERING
@@ -626,6 +639,7 @@ interface Vlan4094
 | VLAN | VNI | Flood List | Multicast Group |
 | ---- | --- | ---------- | --------------- |
 | 10 | 10 | - | - |
+| 20 | 20 | - | - |
 
 ##### VRF to VNI and Multicast Group Mappings
 
@@ -643,6 +657,7 @@ interface Vxlan1
    vxlan virtual-router encapsulation mac-address mlag-system-id
    vxlan udp-port 4789
    vxlan vlan 10 vni 10
+   vxlan vlan 20 vni 20
    vxlan vrf default vni 1010
 ```
 
@@ -781,6 +796,7 @@ ip route vrf MGMT 0.0.0.0/0 10.151.11.1
 | VLAN | Route-Distinguisher | Both Route-Target | Import Route Target | Export Route-Target | Redistribute |
 | ---- | ------------------- | ----------------- | ------------------- | ------------------- | ------------ |
 | 10 | 10.100.160.7:10 | 10:10 | - | - | learned |
+| 20 | 10.100.160.7:20 | 20:20 | - | - | learned |
 
 #### Router BGP Device Configuration
 
@@ -832,6 +848,11 @@ router bgp 65103
    vlan 10
       rd 10.100.160.7:10
       route-target both 10:10
+      redistribute learned
+   !
+   vlan 20
+      rd 10.100.160.7:20
+      route-target both 20:20
       redistribute learned
    !
    address-family evpn
@@ -894,6 +915,7 @@ router bfd
 | Sequence | Action |
 | -------- | ------ |
 | 10 | permit 10.100.54.192/27 |
+| 20 | permit 10.100.5.160/27 |
 
 #### Prefix-lists Device Configuration
 
@@ -905,6 +927,7 @@ ip prefix-list PL-LOOPBACKS-EVPN-OVERLAY
 !
 ip prefix-list PL-SVI-VRF-DEFAULT
    seq 10 permit 10.100.54.192/27
+   seq 20 permit 10.100.5.160/27
 ```
 
 ### Route-maps

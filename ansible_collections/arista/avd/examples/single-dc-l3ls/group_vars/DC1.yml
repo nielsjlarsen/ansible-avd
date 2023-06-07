@@ -100,17 +100,7 @@ l3leaf:
             default:
               redistribute_routes:
                 static:
-      raw_eos_cli: |-
-        router bgp 65101
-          no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
-          no vlan 11
-          no vlan 1213
-          no vlan 1250
-        interface Vxlan1
-          no vxlan vrf default vni 1010
-          vxlan flood vtep 10.100.54.21
-        ! monitor session niels source Ethernet48
-        ! monitor session niels destination tunnel mode gre source 10.151.11.23 destination 212.237.101.162 vrf MGMT
+
       nodes:
         # Definition of hostnames under the node_group
         vx-borderleaf1a:
@@ -127,10 +117,25 @@ l3leaf:
                 vxlan:
                   flood_vtep_learned_data_plane: true
                 eos_cli: "vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21"
-            # vlan_interfaces:
-            #   - name: Vlan1202
-            #     shutdown: false
-            #     ip_address_virtual: 10.100.55.2/26
+          raw_eos_cli: |-
+            router bgp 65101
+              no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
+              no vlan 11
+              no vlan 1213
+              no vlan 1250
+            interface Vxlan1
+              no vxlan vlan 11 vni 11
+              no vxlan vrf default vni 1010
+            interface ethernet45-46
+              description Borderleaf cross-site trunk
+              channel-group 45 mode active
+              no shut
+            interface Port-Channel45
+              description Borderleaf cross-site trunk
+              switchport
+              switchport trunk allowed vlan 11,1213,1250
+              switchport mode trunk
+              mlag 45
         vx-borderleaf1b:
           id: 2
           mgmt_ip: 10.151.11.24/26
@@ -143,10 +148,25 @@ l3leaf:
                 vxlan:
                   flood_vtep_learned_data_plane: true
                 eos_cli: "vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21"
-            # vlan_interfaces:
-            #   - name: Vlan1202
-            #     shutdown: false
-            #     ip_address_virtual: 10.100.55.2/26
+          raw_eos_cli: |-
+            router bgp 65101
+              no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
+              no vlan 11
+              no vlan 1213
+              no vlan 1250
+            interface Vxlan1
+              no vxlan vlan 11 vni 11
+              no vxlan vrf default vni 1010
+            interface ethernet45-46
+              description Borderleaf cross-site trunk
+              channel-group 45 mode active
+              no shut
+            interface Port-Channel45
+              description Borderleaf cross-site trunk
+              switchport
+              switchport trunk allowed vlan 11,1213,1250
+              switchport mode trunk
+              mlag 45
 
     BORDERLEAF2:
       bgp_as: 65102
@@ -169,8 +189,18 @@ l3leaf:
           no vlan 1213
           no vlan 1250
         interface Vxlan1
+          no vxlan vlan 11 vni 11
           no vxlan vrf default vni 1010
-          vxlan flood vtep 10.100.54.19
+        interface ethernet45-46
+          description Borderleaf cross-site trunk
+          channel-group 45 mode active
+          no shut
+        interface Port-Channel45
+          description Borderleaf cross-site trunk
+          switchport
+          switchport trunk allowed vlan 11,1213,1250
+          switchport mode trunk
+          mlag 45
       nodes:
         vx-borderleaf2a:
           id: 3
@@ -220,6 +250,36 @@ l3leaf:
           uplink_switch_interfaces:
             - Ethernet2
             - Ethernet2
+
+    WIFILEAF1:
+      bgp_as: 65104
+      uplink_interfaces: ['Ethernet27', 'Ethernet28']
+      mlag_interfaces: ['Ethernet23', 'Ethernet24']
+      platform: 722XPM
+      filter:
+        tags: [ wifi ]
+      raw_eos_cli: |-
+        interface Vxlan1
+          vxlan bridging vtep-to-vtep
+          vxlan flood vtep learned data-plane
+          no vxlan vlan 12 vni 12
+        router bgp 65104
+          no vlan 12
+          no vlan 1214
+          no vlan 1251
+      nodes:
+        vx-wifi1a:
+          id: 7
+          mgmt_ip: 10.151.11.25/26
+          uplink_switch_interfaces:
+            - Ethernet7
+            - Ethernet7
+        vx-wifi1b:
+          id: 8
+          mgmt_ip: 10.151.11.26/26
+          uplink_switch_interfaces:
+            - Ethernet8
+            - Ethernet8
 
 # L2 Leaf switch group
 l2leaf:

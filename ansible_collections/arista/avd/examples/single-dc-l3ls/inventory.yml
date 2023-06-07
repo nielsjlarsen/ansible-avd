@@ -37,6 +37,10 @@ all:
                   serial_number: JMX2304A1QJ
                 vx-accessleaf3b:
                   serial_number: JMX2303A6SE
+                vx-wifi1a:
+                  serial_number: JPE19352589
+                vx-wifi1b:
+                  serial_number: JPE19352542
             DC1_L2_LEAVES:
               hosts:
                 vx-subleaf4a:

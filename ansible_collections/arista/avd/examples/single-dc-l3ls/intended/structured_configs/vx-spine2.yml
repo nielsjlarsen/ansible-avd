@@ -62,6 +62,14 @@ router_bgp:
     peer_group: IPv4-UNDERLAY-PEERS
     remote_as: '65101'
     description: vx-borderleaf1b_Ethernet2
+  - ip_address: 10.100.54.59
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65104'
+    description: vx-wifi1a_Ethernet28
+  - ip_address: 10.100.54.63
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65104'
+    description: vx-wifi1b_Ethernet28
   - ip_address: 10.100.160.7
     peer_group: EVPN-OVERLAY-PEERS
     description: vx-accessleaf3a
@@ -86,6 +94,14 @@ router_bgp:
     peer_group: EVPN-OVERLAY-PEERS
     description: vx-borderleaf2b
     remote_as: '65102'
+  - ip_address: 10.100.160.9
+    peer_group: EVPN-OVERLAY-PEERS
+    description: vx-wifi1a
+    remote_as: '65104'
+  - ip_address: 10.100.160.10
+    peer_group: EVPN-OVERLAY-PEERS
+    description: vx-wifi1b
+    remote_as: '65104'
   address_family_evpn:
     peer_groups:
     - name: EVPN-OVERLAY-PEERS
@@ -193,6 +209,24 @@ ethernet_interfaces:
   mtu: 9214
   type: routed
   ip_address: 10.100.54.38/31
+- name: Ethernet7
+  peer: vx-wifi1a
+  peer_interface: Ethernet28
+  peer_type: l3leaf
+  description: P2P_LINK_TO_VX-WIFI1A_Ethernet28
+  shutdown: false
+  mtu: 9214
+  type: routed
+  ip_address: 10.100.54.58/31
+- name: Ethernet8
+  peer: vx-wifi1b
+  peer_interface: Ethernet28
+  peer_type: l3leaf
+  description: P2P_LINK_TO_VX-WIFI1B_Ethernet28
+  shutdown: false
+  mtu: 9214
+  type: routed
+  ip_address: 10.100.54.62/31
 loopback_interfaces:
 - name: Loopback0
   description: EVPN_Overlay_Peering

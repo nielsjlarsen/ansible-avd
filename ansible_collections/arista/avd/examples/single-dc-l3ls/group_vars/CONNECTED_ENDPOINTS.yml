@@ -59,6 +59,32 @@ servers:
         description: PortChannel palo2
         mode: active
 
+  palo1-wifi:
+    adapters:
+    - endpoint_ports: [ Ethernet1/10, Ethernet1/9 ]
+      switch_ports: [ Ethernet21, Ethernet21 ]
+      switches: [ vx-wifi1a, vx-wifi1b ]
+      vlans: 12,1214,1251
+      # native_vlan: 4092
+      mode: trunk
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel palo1-wifi
+        mode: active
+
+  palo2-wifi:
+    adapters:
+    - endpoint_ports: [ Ethernet1/10, Ethernet1/9 ]
+      switch_ports: [ Ethernet22, Ethernet22 ]
+      switches: [ vx-wifi1a, vx-wifi1b ]
+      vlans: 12,1214,1251
+      # native_vlan: 4092
+      mode: trunk
+      spanning_tree_portfast: edge
+      port_channel:
+        description: PortChannel palo2-wifi
+        mode: active
+
   ap1:
     adapters:
     - endpoint_ports: [ LAN1, LAN2 ]
@@ -88,7 +114,7 @@ servers:
     - endpoint_ports: [ LAN1, LAN2 ]
       switch_ports: [ Ethernet3/1, Ethernet3/1 ]
       switches: [ vx-subleaf5a, vx-subleaf5b ]
-      vlans: 10
+      vlans: 20
       mode: access
       spanning_tree_portfast: edge
       port_channel:
@@ -100,7 +126,7 @@ servers:
     - endpoint_ports: [ LAN1, LAN2 ]
       switch_ports: [ Ethernet3/2, Ethernet3/2 ]
       switches: [ vx-subleaf5a, vx-subleaf5b ]
-      vlans: 10
+      vlans: 20
       mode: access
       spanning_tree_portfast: edge
       port_channel:

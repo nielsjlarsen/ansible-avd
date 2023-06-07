@@ -391,7 +391,8 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 10 | VLAN10-Access_Points | - |
+| 10 | VLAN10-Access_Points-borderleaf | - |
+| 20 | VLAN20-Access_Points-wifi-leaf | - |
 | 4094 | MLAG_PEER | MLAG |
 
 ### VLANs Device Configuration
@@ -399,7 +400,10 @@ vlan internal order ascending range 1006 1199
 ```eos
 !
 vlan 10
-   name VLAN10-Access_Points
+   name VLAN10-Access_Points-borderleaf
+!
+vlan 20
+   name VLAN20-Access_Points-wifi-leaf
 !
 vlan 4094
    name MLAG_PEER
@@ -416,12 +420,12 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet1/1 | VX-ACCESSLEAF3A_Ethernet46 | *trunk | *10 | *- | *- | 11 |
-| Ethernet1/2 | VX-ACCESSLEAF3B_Ethernet46 | *trunk | *10 | *- | *- | 11 |
+| Ethernet1/1 | VX-ACCESSLEAF3A_Ethernet46 | *trunk | *10,20 | *- | *- | 11 |
+| Ethernet1/2 | VX-ACCESSLEAF3B_Ethernet46 | *trunk | *10,20 | *- | *- | 11 |
 | Ethernet1/3 | MLAG_PEER_vx-subleaf5b_Ethernet1/3 | *trunk | *- | *- | *['MLAG'] | 13 |
 | Ethernet1/4 | MLAG_PEER_vx-subleaf5b_Ethernet1/4 | *trunk | *- | *- | *['MLAG'] | 13 |
-| Ethernet3/1 | ap3_LAN1 | *access | *10 | *- | *- | 31 |
-| Ethernet3/2 | ap4_LAN1 | *access | *10 | *- | *- | 32 |
+| Ethernet3/1 | ap3_LAN1 | *access | *20 | *- | *- | 31 |
+| Ethernet3/2 | ap4_LAN1 | *access | *20 | *- | *- | 32 |
 
 *Inherited from Port-Channel Interface
 
@@ -474,10 +478,10 @@ interface Ethernet3/2
 
 | Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
 | --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel11 | ACCESSLEAF3_Po46 | switched | trunk | 10 | - | - | - | - | 11 | - |
+| Port-Channel11 | ACCESSLEAF3_Po46 | switched | trunk | 10,20 | - | - | - | - | 11 | - |
 | Port-Channel13 | MLAG_PEER_vx-subleaf5b_Po13 | switched | trunk | - | - | ['MLAG'] | - | - | - | - |
-| Port-Channel31 | ap3_PortChannel AP3 | switched | access | 10 | - | - | - | individual | 31 | - |
-| Port-Channel32 | ap4_PortChannel AP4 | switched | access | 10 | - | - | - | individual | 32 | - |
+| Port-Channel31 | ap3_PortChannel AP3 | switched | access | 20 | - | - | - | individual | 31 | - |
+| Port-Channel32 | ap4_PortChannel AP4 | switched | access | 20 | - | - | - | individual | 32 | - |
 
 #### Port-Channel Interfaces Device Configuration
 
@@ -487,7 +491,7 @@ interface Port-Channel11
    description ACCESSLEAF3_Po46
    no shutdown
    switchport
-   switchport trunk allowed vlan 10
+   switchport trunk allowed vlan 10,20
    switchport mode trunk
    mlag 11
 !
@@ -502,7 +506,7 @@ interface Port-Channel31
    description ap3_PortChannel AP3
    no shutdown
    switchport
-   switchport access vlan 10
+   switchport access vlan 20
    port-channel lacp fallback individual
    mlag 31
    spanning-tree portfast
@@ -511,7 +515,7 @@ interface Port-Channel32
    description ap4_PortChannel AP4
    no shutdown
    switchport
-   switchport access vlan 10
+   switchport access vlan 20
    port-channel lacp fallback individual
    mlag 32
    spanning-tree portfast

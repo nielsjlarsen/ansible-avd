@@ -60,6 +60,16 @@ cvp_devices:
     parentContainerName: DC1_L2_LEAVES
     configlets:
       - AVD-VXLAN_vx-subleaf5b
+  - fqdn: vx-wifi1a
+    serialNumber: "JPE19352589"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-wifi1a
+  - fqdn: vx-wifi1b
+    serialNumber: "JPE19352542"
+    parentContainerName: DC1_L3_LEAVES
+    configlets:
+      - AVD-VXLAN_vx-wifi1b
 cvp_containers:
   DC1:
     parentContainerName: Tenant

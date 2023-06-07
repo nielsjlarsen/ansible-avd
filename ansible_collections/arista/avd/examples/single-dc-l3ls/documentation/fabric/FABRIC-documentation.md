@@ -29,6 +29,8 @@
 | FABRIC | l2leaf | vx-subleaf4b | 10.151.11.16/26 | 722XPM | Provisioned | HBG231201J4 |
 | FABRIC | l2leaf | vx-subleaf5a | 10.151.11.12/26 | 755XP | Provisioned | HNN20505070 |
 | FABRIC | l2leaf | vx-subleaf5b | 10.151.11.11/26 | 755XP | Provisioned | HNN21045125 |
+| FABRIC | l3leaf | vx-wifi1a | 10.151.11.25/26 | 722XPM | Provisioned | JPE19352589 |
+| FABRIC | l3leaf | vx-wifi1b | 10.151.11.26/26 | 722XPM | Provisioned | JPE19352542 |
 
 > Provision status is based on Ansible inventory declaration and do not represent real status from CloudVision.
 
@@ -67,10 +69,16 @@
 | l3leaf | vx-borderleaf2a | Ethernet50/1 | mlag_peer | vx-borderleaf2b | Ethernet50/1 |
 | l3leaf | vx-borderleaf2b | Ethernet1 | spine | vx-spine1 | Ethernet4 |
 | l3leaf | vx-borderleaf2b | Ethernet2 | spine | vx-spine2 | Ethernet4 |
+| spine | vx-spine1 | Ethernet7 | l3leaf | vx-wifi1a | Ethernet27 |
+| spine | vx-spine1 | Ethernet8 | l3leaf | vx-wifi1b | Ethernet27 |
+| spine | vx-spine2 | Ethernet7 | l3leaf | vx-wifi1a | Ethernet28 |
+| spine | vx-spine2 | Ethernet8 | l3leaf | vx-wifi1b | Ethernet28 |
 | l2leaf | vx-subleaf4a | Ethernet49 | mlag_peer | vx-subleaf4b | Ethernet49 |
 | l2leaf | vx-subleaf4a | Ethernet50 | mlag_peer | vx-subleaf4b | Ethernet50 |
 | l2leaf | vx-subleaf5a | Ethernet1/3 | mlag_peer | vx-subleaf5b | Ethernet1/3 |
 | l2leaf | vx-subleaf5a | Ethernet1/4 | mlag_peer | vx-subleaf5b | Ethernet1/4 |
+| l3leaf | vx-wifi1a | Ethernet23 | mlag_peer | vx-wifi1b | Ethernet23 |
+| l3leaf | vx-wifi1a | Ethernet24 | mlag_peer | vx-wifi1b | Ethernet24 |
 
 ## Fabric IP Allocation
 
@@ -78,7 +86,7 @@
 
 | Uplink IPv4 Pool | Available Addresses | Assigned addresses | Assigned Address % |
 | ---------------- | ------------------- | ------------------ | ------------------ |
-| 10.100.54.32/27 | 32 | 24 | 75.0 % |
+| 10.100.54.32/27 | 32 | 32 | 100.0 % |
 
 ### Point-To-Point Links Node Allocation
 
@@ -96,12 +104,16 @@
 | vx-borderleaf2a | Ethernet2 | 10.100.54.43/31 | vx-spine2 | Ethernet3 | 10.100.54.42/31 |
 | vx-borderleaf2b | Ethernet1 | 10.100.54.45/31 | vx-spine1 | Ethernet4 | 10.100.54.44/31 |
 | vx-borderleaf2b | Ethernet2 | 10.100.54.47/31 | vx-spine2 | Ethernet4 | 10.100.54.46/31 |
+| vx-spine1 | Ethernet7 | 10.100.54.56/31 | vx-wifi1a | Ethernet27 | 10.100.54.57/31 |
+| vx-spine1 | Ethernet8 | 10.100.54.60/31 | vx-wifi1b | Ethernet27 | 10.100.54.61/31 |
+| vx-spine2 | Ethernet7 | 10.100.54.58/31 | vx-wifi1a | Ethernet28 | 10.100.54.59/31 |
+| vx-spine2 | Ethernet8 | 10.100.54.62/31 | vx-wifi1b | Ethernet28 | 10.100.54.63/31 |
 
 ### Loopback Interfaces (BGP EVPN Peering)
 
 | Loopback Pool | Available Addresses | Assigned addresses | Assigned Address % |
 | ------------- | ------------------- | ------------------ | ------------------ |
-| 10.100.160.0/27 | 32 | 8 | 25.0 % |
+| 10.100.160.0/27 | 32 | 10 | 31.25 % |
 
 ### Loopback0 Interfaces Node Allocation
 
@@ -115,12 +127,14 @@
 | FABRIC | vx-borderleaf2b | 10.100.160.6/32 |
 | FABRIC | vx-spine1 | 10.100.160.1/32 |
 | FABRIC | vx-spine2 | 10.100.160.2/32 |
+| FABRIC | vx-wifi1a | 10.100.160.9/32 |
+| FABRIC | vx-wifi1b | 10.100.160.10/32 |
 
 ### VTEP Loopback VXLAN Tunnel Source Interfaces (VTEPs Only)
 
 | VTEP Loopback Pool | Available Addresses | Assigned addresses | Assigned Address % |
 | --------------------- | ------------------- | ------------------ | ------------------ |
-| 10.100.54.16/28 | 16 | 6 | 37.5 % |
+| 10.100.54.16/28 | 16 | 8 | 50.0 % |
 
 ### VTEP Loopback Node allocation
 
@@ -132,3 +146,5 @@
 | FABRIC | vx-borderleaf1b | 10.100.54.19/32 |
 | FABRIC | vx-borderleaf2a | 10.100.54.21/32 |
 | FABRIC | vx-borderleaf2b | 10.100.54.21/32 |
+| FABRIC | vx-wifi1a | 10.100.54.25/32 |
+| FABRIC | vx-wifi1b | 10.100.54.25/32 |

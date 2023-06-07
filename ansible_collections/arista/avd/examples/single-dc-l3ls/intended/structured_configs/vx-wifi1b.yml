@@ -1,7 +1,7 @@
-serial_number: JMX2304A1PE
+serial_number: JPE19352542
 router_bgp:
-  as: '65102'
-  router_id: 10.100.160.5
+  as: '65104'
+  router_id: 10.100.160.10
   bgp:
     default:
       ipv4_unicast: false
@@ -16,9 +16,9 @@ router_bgp:
   peer_groups:
   - name: MLAG-IPv4-UNDERLAY-PEER
     type: ipv4
-    remote_as: '65102'
+    remote_as: '65104'
     next_hop_self: true
-    description: vx-borderleaf2b
+    description: vx-wifi1a
     password: 4b21pAdCvWeAqpcKDFMdWw==
     maximum_routes: 12000
     send_community: all
@@ -46,17 +46,17 @@ router_bgp:
     - name: EVPN-OVERLAY-PEERS
       activate: false
   neighbors:
-  - ip_address: 10.100.54.117
+  - ip_address: 10.100.54.124
     peer_group: MLAG-IPv4-UNDERLAY-PEER
-    description: vx-borderleaf2b
-  - ip_address: 10.100.54.40
+    description: vx-wifi1a
+  - ip_address: 10.100.54.60
     peer_group: IPv4-UNDERLAY-PEERS
     remote_as: '65100'
-    description: vx-spine1_Ethernet3
-  - ip_address: 10.100.54.42
+    description: vx-spine1_Ethernet8
+  - ip_address: 10.100.54.62
     peer_group: IPv4-UNDERLAY-PEERS
     remote_as: '65100'
-    description: vx-spine2_Ethernet3
+    description: vx-spine2_Ethernet8
   - ip_address: 10.100.160.1
     peer_group: EVPN-OVERLAY-PEERS
     description: vx-spine1
@@ -73,41 +73,34 @@ router_bgp:
     - name: EVPN-OVERLAY-PEERS
       activate: true
   vlans:
-  - id: 11
+  - id: 12
     tenant: TENANT1
-    rd: 10.100.160.5:11
+    rd: 10.100.160.10:12
     route_targets:
       both:
-      - '11:11'
+      - '12:12'
     redistribute_routes:
     - learned
-  - id: 1213
+  - id: 1214
     tenant: TENANT1
-    rd: 10.100.160.5:1213
+    rd: 10.100.160.10:1214
     route_targets:
       both:
-      - 1213:1213
+      - 1214:1214
     redistribute_routes:
     - learned
-  - id: 1250
+  - id: 1251
     tenant: TENANT1
-    rd: 10.100.160.5:1250
+    rd: 10.100.160.10:1251
     route_targets:
       both:
-      - 1250:1250
+      - 1251:1251
     redistribute_routes:
     - learned
-  vrfs:
-  - name: default
-    redistribute_routes:
-    - source_protocol: static
 static_routes:
 - vrf: MGMT
   destination_address_prefix: 0.0.0.0/0
   gateway: 10.151.11.1
-- vrf: default
-  destination_address_prefix: 0.0.0.0/0
-  gateway: 10.100.54.225
 service_routing_protocols_model: multi-agent
 ip_routing: true
 daemon_terminattr:
@@ -149,17 +142,15 @@ management_interfaces:
   description: oob_management
   shutdown: false
   vrf: MGMT
-  ip_address: 10.151.11.21/26
+  ip_address: 10.151.11.26/26
   gateway: 10.151.11.1
   type: oob
 management_api_http:
   enable_vrfs:
   - name: MGMT
   enable_https: true
-eos_cli: "router bgp 65102\n  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan 11\n  no vlan 1213\n
-  \ no vlan 1250\ninterface Vxlan1\n  no vxlan vlan 11 vni 11\n  no vxlan vrf default vni 1010\ninterface ethernet45-46\n  description
-  Borderleaf cross-site trunk\n  channel-group 45 mode active\n  no shut\ninterface Port-Channel45\n  description Borderleaf cross-site
-  trunk\n  switchport\n  switchport trunk allowed vlan 11,1213,1250\n  switchport mode trunk\n  mlag 45"
+eos_cli: "interface Vxlan1\n  vxlan bridging vtep-to-vtep\n  vxlan flood vtep learned data-plane\n  no vxlan vlan 12 vni 12\nrouter
+  bgp 65104\n  no vlan 12\n  no vlan 1214\n  no vlan 1251"
 vlans:
 - id: 4093
   tenant: system
@@ -171,13 +162,13 @@ vlans:
   name: MLAG_PEER
   trunk_groups:
   - MLAG
-- id: 11
-  name: VLAN11-Firewall_Linknet-borderleaf
+- id: 12
+  name: VLAN12-Firewall_Linknet-wifi-leaf
   tenant: TENANT1
-- id: 1213
+- id: 1214
   name: mobile-prod-device
   tenant: TENANT1
-- id: 1250
+- id: 1251
   name: enterprisenet
   tenant: TENANT1
 vlan_interfaces:
@@ -185,92 +176,110 @@ vlan_interfaces:
   description: MLAG_PEER_L3_PEERING
   shutdown: false
   mtu: 9214
-  ip_address: 10.100.54.116/31
+  ip_address: 10.100.54.125/31
 - name: Vlan4094
   description: MLAG_PEER
   shutdown: false
-  ip_address: 10.100.54.100/31
+  ip_address: 10.100.54.109/31
   no_autostate: true
   mtu: 9214
-- name: Vlan11
+- name: Vlan12
   tenant: TENANT1
   tags:
-  - borderleaf
-  description: VLAN11-Firewall_Linknet-borderleaf
+  - wifi
+  description: VLAN12-Firewall_Linknet-wifi-leaf
   shutdown: false
   mtu: 9214
-  ip_address_virtual: 10.100.54.226/27
+  ip_address_virtual: 10.100.55.2/27
 port_channel_interfaces:
-- name: Port-Channel491
-  description: MLAG_PEER_vx-borderleaf2b_Po491
+- name: Port-Channel23
+  description: MLAG_PEER_vx-wifi1a_Po23
   type: switched
   shutdown: false
   mode: trunk
   trunk_groups:
   - LEAF_PEER_L3
   - MLAG
-- name: Port-Channel48
-  description: palo2_PortChannel palo2
+- name: Port-Channel21
+  description: palo1-wifi_PortChannel palo1-wifi
   type: switched
   shutdown: false
   mode: trunk
-  vlans: 11,1213,1250
+  vlans: 12,1214,1251
   spanning_tree_portfast: edge
-  mlag: 48
+  mlag: 21
+- name: Port-Channel22
+  description: palo2-wifi_PortChannel palo2-wifi
+  type: switched
+  shutdown: false
+  mode: trunk
+  vlans: 12,1214,1251
+  spanning_tree_portfast: edge
+  mlag: 22
 ethernet_interfaces:
-- name: Ethernet49/1
-  peer: vx-borderleaf2b
-  peer_interface: Ethernet49/1
+- name: Ethernet23
+  peer: vx-wifi1a
+  peer_interface: Ethernet23
   peer_type: mlag_peer
-  description: MLAG_PEER_vx-borderleaf2b_Ethernet49/1
+  description: MLAG_PEER_vx-wifi1a_Ethernet23
   type: port-channel-member
   shutdown: false
   channel_group:
-    id: 491
+    id: 23
     mode: active
-- name: Ethernet50/1
-  peer: vx-borderleaf2b
-  peer_interface: Ethernet50/1
+- name: Ethernet24
+  peer: vx-wifi1a
+  peer_interface: Ethernet24
   peer_type: mlag_peer
-  description: MLAG_PEER_vx-borderleaf2b_Ethernet50/1
+  description: MLAG_PEER_vx-wifi1a_Ethernet24
   type: port-channel-member
   shutdown: false
   channel_group:
-    id: 491
+    id: 23
     mode: active
-- name: Ethernet1
+- name: Ethernet27
   peer: vx-spine1
-  peer_interface: Ethernet3
+  peer_interface: Ethernet8
   peer_type: spine
-  description: P2P_LINK_TO_VX-SPINE1_Ethernet3
+  description: P2P_LINK_TO_VX-SPINE1_Ethernet8
   shutdown: false
   mtu: 9214
   type: routed
-  ip_address: 10.100.54.41/31
-- name: Ethernet2
+  ip_address: 10.100.54.61/31
+- name: Ethernet28
   peer: vx-spine2
-  peer_interface: Ethernet3
+  peer_interface: Ethernet8
   peer_type: spine
-  description: P2P_LINK_TO_VX-SPINE2_Ethernet3
+  description: P2P_LINK_TO_VX-SPINE2_Ethernet8
   shutdown: false
   mtu: 9214
   type: routed
-  ip_address: 10.100.54.43/31
-- name: Ethernet48
-  peer: palo2
-  peer_interface: Ethernet1/11
+  ip_address: 10.100.54.63/31
+- name: Ethernet21
+  peer: palo1-wifi
+  peer_interface: Ethernet1/9
   peer_type: server
-  description: palo2_Ethernet1/11
+  description: palo1-wifi_Ethernet1/9
   shutdown: false
   type: port-channel-member
   channel_group:
-    id: 48
+    id: 21
+    mode: active
+- name: Ethernet22
+  peer: palo2-wifi
+  peer_interface: Ethernet1/9
+  peer_type: server
+  description: palo2-wifi_Ethernet1/9
+  shutdown: false
+  type: port-channel-member
+  channel_group:
+    id: 22
     mode: active
 mlag_configuration:
-  domain_id: BORDERLEAF2
+  domain_id: WIFILEAF1
   local_interface: Vlan4094
-  peer_address: 10.100.54.101
-  peer_link: Port-Channel491
+  peer_address: 10.100.54.108
+  peer_link: Port-Channel23
   reload_delay_mlag: '300'
   reload_delay_non_mlag: '330'
 route_maps:
@@ -309,11 +318,11 @@ loopback_interfaces:
 - name: Loopback0
   description: EVPN_Overlay_Peering
   shutdown: false
-  ip_address: 10.100.160.5/32
+  ip_address: 10.100.160.10/32
 - name: Loopback1
   description: VTEP_VXLAN_Tunnel_Source
   shutdown: false
-  ip_address: 10.100.54.21/32
+  ip_address: 10.100.54.25/32
 prefix_lists:
 - name: PL-LOOPBACKS-EVPN-OVERLAY
   sequence_numbers:
@@ -324,7 +333,7 @@ prefix_lists:
 - name: PL-SVI-VRF-DEFAULT
   sequence_numbers:
   - sequence: 10
-    action: permit 10.100.54.224/27
+    action: permit 10.100.55.0/27
 router_bfd:
   multihop:
     interval: 300
@@ -335,23 +344,21 @@ ip_igmp_snooping:
 ip_virtual_router_mac_address: 00:1c:73:00:00:99
 vxlan_interface:
   Vxlan1:
-    description: vx-borderleaf2a_VTEP
+    description: vx-wifi1b_VTEP
     vxlan:
       udp_port: 4789
       source_interface: Loopback1
       virtual_router_encapsulation_mac_address: mlag-system-id
       vlans:
-      - id: 11
-        vni: 11
-      - id: 1213
-        vni: 1213
-      - id: 1250
-        vni: 1250
+      - id: 12
+        vni: 12
+      - id: 1214
+        vni: 1214
+      - id: 1251
+        vni: 1251
       vrfs:
       - name: default
         vni: 1010
-      flood_vtep_learned_data_plane: true
-    eos_cli: vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19
 ntp:
   local_interface:
     name: Management1

@@ -22,21 +22,22 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VLAN10-Access_Points\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk
-    group LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
-    instance MGMT\n!\ninterface Port-Channel46\n   description VX-SUBLEAF5_Po11\n
-    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
-    mode trunk\n   mlag 46\n!\ninterface Port-Channel48\n   description VX-SUBLEAF4_Po56\n
-    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
-    mode trunk\n   mlag 48\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-accessleaf3b_Po491\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
-    P2P_LINK_TO_VX-SPINE1_Ethernet1\n   no shutdown\n   mtu 9214\n   no switchport\n
-    \  ip address 10.100.54.49/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet1\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.51/31\n!\ninterface
-    Ethernet45\n   description VX-SUBLEAF5B_Ethernet1/1\n   no shutdown\n   channel-group
-    46 mode active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/1\n
-    \  no shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
+    10\n   name VLAN10-Access_Points-borderleaf\n!\nvlan 20\n   name VLAN20-Access_Points-wifi-leaf\n!\nvlan
+    4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan 4094\n   name
+    MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel46\n
+    \  description VX-SUBLEAF5_Po11\n   no shutdown\n   switchport\n   switchport
+    trunk allowed vlan 10,20\n   switchport mode trunk\n   mlag 46\n!\ninterface Port-Channel48\n
+    \  description VX-SUBLEAF4_Po56\n   no shutdown\n   switchport\n   switchport
+    trunk allowed vlan 10,20\n   switchport mode trunk\n   mlag 48\n!\ninterface Port-Channel491\n
+    \  description MLAG_PEER_vx-accessleaf3b_Po491\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n   switchport
+    trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet1\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.49/31\n!\ninterface
+    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet1\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.51/31\n!\ninterface Ethernet45\n
+    \  description VX-SUBLEAF5B_Ethernet1/1\n   no shutdown\n   channel-group 46 mode
+    active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/1\n   no
+    shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
     VX-SUBLEAF4B_Ethernet56\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
     Ethernet48\n   description VX-SUBLEAF4A_Ethernet56\n   no shutdown\n   channel-group
     48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-accessleaf3b_Ethernet49/1\n
@@ -46,26 +47,28 @@ cvp_configlets:
     \  no shutdown\n   ip address 10.100.160.7/32\n!\ninterface Loopback1\n   description
     VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.23/32\n!\ninterface
     Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.19/26\n!\ninterface Vlan10\n   description VLAN10-Access_Points\n
+    address 10.151.11.19/26\n!\ninterface Vlan10\n   description VLAN10-Access_Points-borderleaf\n
     \  no shutdown\n   mtu 9214\n   ip helper-address 10.100.54.225\n   ip address
-    virtual 10.100.54.193/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    virtual 10.100.54.193/27\n!\ninterface Vlan20\n   description VLAN20-Access_Points-wifi-leaf\n
+    \  no shutdown\n   mtu 9214\n   ip helper-address 10.100.55.1\n   ip address virtual
+    10.100.5.161/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
     \  no shutdown\n   mtu 9214\n   ip address 10.100.54.120/31\n!\ninterface Vlan4094\n
     \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
     address 10.100.54.104/31\n!\ninterface Vxlan1\n   description vx-accessleaf3a_VTEP\n
     \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
-    mlag-system-id\n   vxlan udp-port 4789\n   vxlan vlan 10 vni 10\n   vxlan vrf
-    default vni 1010\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno
-    ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit
-    10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list
-    PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.192/27\n!\nmlag configuration\n
-    \  domain-id ACCESSLEAF3\n   local-interface Vlan4094\n   peer-address 10.100.54.105\n
-    \  peer-link Port-Channel491\n   reload-delay mlag 300\n   reload-delay non-mlag
-    330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit 30\n   match ip address
-    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT permit
-    10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan vlan 10 vni 10\n   vxlan vlan
+    20 vni 20\n   vxlan vrf default vni 1010\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip
+    routing\nno ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n
+    \  seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip
+    prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.192/27\n   seq 20 permit
+    10.100.5.160/27\n!\nmlag configuration\n   domain-id ACCESSLEAF3\n   local-interface
+    Vlan4094\n   peer-address 10.100.54.105\n   peer-link Port-Channel491\n   reload-delay
+    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
+    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit
+    30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT
+    permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
     permit 10\n   description Make routes learned over MLAG Peer-link less preferred
     on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter bfd\n
     \  multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65103\n   router-id
@@ -94,8 +97,9 @@ cvp_configlets:
     peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.2 remote-as 65100\n   neighbor
     10.100.160.2 description vx-spine2\n   redistribute connected route-map RM-CONN-2-BGP\n
     \  !\n   vlan 10\n      rd 10.100.160.7:10\n      route-target both 10:10\n      redistribute
-    learned\n   !\n   address-family evpn\n      neighbor EVPN-OVERLAY-PEERS activate\n
-    \  !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS activate\n
+    learned\n   !\n   vlan 20\n      rd 10.100.160.7:20\n      route-target both 20:20\n
+    \     redistribute learned\n   !\n   address-family evpn\n      neighbor EVPN-OVERLAY-PEERS
+    activate\n   !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS activate\n
     \     neighbor IPv4-UNDERLAY-PEERS activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER
     activate\n!\nmanagement api http-commands\n   protocol https\n   no shutdown\n
     \  !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65103\n  no neighbor IPv4-UNDERLAY-PEERS
@@ -124,21 +128,22 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VLAN10-Access_Points\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk
-    group LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf
-    instance MGMT\n!\ninterface Port-Channel46\n   description VX-SUBLEAF5_Po11\n
-    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
-    mode trunk\n   mlag 46\n!\ninterface Port-Channel48\n   description VX-SUBLEAF4_Po56\n
-    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
-    mode trunk\n   mlag 48\n!\ninterface Port-Channel491\n   description MLAG_PEER_vx-accessleaf3a_Po491\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface Ethernet1\n   description
-    P2P_LINK_TO_VX-SPINE1_Ethernet2\n   no shutdown\n   mtu 9214\n   no switchport\n
-    \  ip address 10.100.54.53/31\n!\ninterface Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet2\n
-    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.55/31\n!\ninterface
-    Ethernet45\n   description VX-SUBLEAF5B_Ethernet1/2\n   no shutdown\n   channel-group
-    46 mode active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/2\n
-    \  no shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
+    10\n   name VLAN10-Access_Points-borderleaf\n!\nvlan 20\n   name VLAN20-Access_Points-wifi-leaf\n!\nvlan
+    4093\n   name LEAF_PEER_L3\n   trunk group LEAF_PEER_L3\n!\nvlan 4094\n   name
+    MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel46\n
+    \  description VX-SUBLEAF5_Po11\n   no shutdown\n   switchport\n   switchport
+    trunk allowed vlan 10,20\n   switchport mode trunk\n   mlag 46\n!\ninterface Port-Channel48\n
+    \  description VX-SUBLEAF4_Po56\n   no shutdown\n   switchport\n   switchport
+    trunk allowed vlan 10,20\n   switchport mode trunk\n   mlag 48\n!\ninterface Port-Channel491\n
+    \  description MLAG_PEER_vx-accessleaf3a_Po491\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group LEAF_PEER_L3\n   switchport
+    trunk group MLAG\n!\ninterface Ethernet1\n   description P2P_LINK_TO_VX-SPINE1_Ethernet2\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.53/31\n!\ninterface
+    Ethernet2\n   description P2P_LINK_TO_VX-SPINE2_Ethernet2\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.55/31\n!\ninterface Ethernet45\n
+    \  description VX-SUBLEAF5B_Ethernet1/2\n   no shutdown\n   channel-group 46 mode
+    active\n!\ninterface Ethernet46\n   description VX-SUBLEAF5A_Ethernet1/2\n   no
+    shutdown\n   channel-group 46 mode active\n!\ninterface Ethernet47\n   description
     VX-SUBLEAF4B_Ethernet55\n   no shutdown\n   channel-group 48 mode active\n!\ninterface
     Ethernet48\n   description VX-SUBLEAF4A_Ethernet55\n   no shutdown\n   channel-group
     48 mode active\n!\ninterface Ethernet49/1\n   description MLAG_PEER_vx-accessleaf3a_Ethernet49/1\n
@@ -148,26 +153,28 @@ cvp_configlets:
     \  no shutdown\n   ip address 10.100.160.8/32\n!\ninterface Loopback1\n   description
     VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address 10.100.54.23/32\n!\ninterface
     Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.20/26\n!\ninterface Vlan10\n   description VLAN10-Access_Points\n
+    address 10.151.11.20/26\n!\ninterface Vlan10\n   description VLAN10-Access_Points-borderleaf\n
     \  no shutdown\n   mtu 9214\n   ip helper-address 10.100.54.225\n   ip address
-    virtual 10.100.54.193/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    virtual 10.100.54.193/27\n!\ninterface Vlan20\n   description VLAN20-Access_Points-wifi-leaf\n
+    \  no shutdown\n   mtu 9214\n   ip helper-address 10.100.55.1\n   ip address virtual
+    10.100.5.161/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
     \  no shutdown\n   mtu 9214\n   ip address 10.100.54.121/31\n!\ninterface Vlan4094\n
     \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
     address 10.100.54.105/31\n!\ninterface Vxlan1\n   description vx-accessleaf3b_VTEP\n
     \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
-    mlag-system-id\n   vxlan udp-port 4789\n   vxlan vlan 10 vni 10\n   vxlan vrf
-    default vni 1010\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno
-    ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit
-    10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list
-    PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.192/27\n!\nmlag configuration\n
-    \  domain-id ACCESSLEAF3\n   local-interface Vlan4094\n   peer-address 10.100.54.104\n
-    \  peer-link Port-Channel491\n   reload-delay mlag 300\n   reload-delay non-mlag
-    330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit 30\n   match ip address
-    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT permit
-    10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan vlan 10 vni 10\n   vxlan vlan
+    20 vni 20\n   vxlan vrf default vni 1010\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip
+    routing\nno ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n
+    \  seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip
+    prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.192/27\n   seq 20 permit
+    10.100.5.160/27\n!\nmlag configuration\n   domain-id ACCESSLEAF3\n   local-interface
+    Vlan4094\n   peer-address 10.100.54.104\n   peer-link Port-Channel491\n   reload-delay
+    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
+    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit
+    30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT
+    permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
     permit 10\n   description Make routes learned over MLAG Peer-link less preferred
     on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter bfd\n
     \  multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65103\n   router-id
@@ -196,8 +203,9 @@ cvp_configlets:
     peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.2 remote-as 65100\n   neighbor
     10.100.160.2 description vx-spine2\n   redistribute connected route-map RM-CONN-2-BGP\n
     \  !\n   vlan 10\n      rd 10.100.160.8:10\n      route-target both 10:10\n      redistribute
-    learned\n   !\n   address-family evpn\n      neighbor EVPN-OVERLAY-PEERS activate\n
-    \  !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS activate\n
+    learned\n   !\n   vlan 20\n      rd 10.100.160.8:20\n      route-target both 20:20\n
+    \     redistribute learned\n   !\n   address-family evpn\n      neighbor EVPN-OVERLAY-PEERS
+    activate\n   !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS activate\n
     \     neighbor IPv4-UNDERLAY-PEERS activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER
     activate\n!\nmanagement api http-commands\n   protocol https\n   no shutdown\n
     \  !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65103\n  no neighbor IPv4-UNDERLAY-PEERS
@@ -226,7 +234,7 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    11\n   name VLAN11-Firewall_Linknet-borderleaf\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
     1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
     LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
     MGMT\n!\ninterface Port-Channel48\n   description palo1_PortChannel palo1\n   no
@@ -248,27 +256,27 @@ cvp_configlets:
     Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
     10.100.54.19/32\n!\ninterface Management1\n   description oob_management\n   no
     shutdown\n   vrf MGMT\n   ip address 10.151.11.23/26\n!\ninterface Vlan11\n   description
-    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
-    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
-    address 10.100.54.112/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
-    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.96/31\n!\ninterface
-    Vxlan1\n   description vx-borderleaf1a_VTEP\n   vxlan source-interface Loopback1\n
-    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
-    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
-    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
-    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21\n!\nip virtual-router
-    mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
-    10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
-    10.100.54.224/27\n!\nmlag configuration\n   domain-id BORDERLEAF1\n   local-interface
-    Vlan4094\n   peer-address 10.100.54.97\n   peer-link Port-Channel491\n   reload-delay
-    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip
-    route 0.0.0.0/0 10.100.54.225\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT deny 10\n
-    \  match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit 30\n   match ip address
-    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT permit
-    10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
+    VLAN11-Firewall_Linknet-borderleaf\n   no shutdown\n   mtu 9214\n   ip address
+    virtual 10.100.54.226/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    \  no shutdown\n   mtu 9214\n   ip address 10.100.54.112/31\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.96/31\n!\ninterface Vxlan1\n   description vx-borderleaf1a_VTEP\n
+    \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan flood vtep learned data-plane\n
+    \  vxlan vlan 11 vni 11\n   vxlan vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n
+    \  vxlan vrf default vni 1010\n   vxlan bridging vtep-to-vtep source-vtep tx disabled
+    10.100.54.21\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno
+    ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit
+    10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list
+    PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.224/27\n!\nmlag configuration\n
+    \  domain-id BORDERLEAF1\n   local-interface Vlan4094\n   peer-address 10.100.54.97\n
+    \  peer-link Port-Channel491\n   reload-delay mlag 300\n   reload-delay non-mlag
+    330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip route 0.0.0.0/0 10.100.54.225\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
+    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit
+    30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT
+    permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
     permit 10\n   description Make routes learned over MLAG Peer-link less preferred
     on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter bfd\n
     \  multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65101\n   router-id
@@ -306,10 +314,11 @@ cvp_configlets:
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65101\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
-    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n  vxlan flood vtep 10.100.54.21\n! monitor session niels source Ethernet48\n!
-    monitor session niels destination tunnel mode gre source 10.151.11.23 destination
-    212.237.101.162 vrf MGMT\n!\nend\n"
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vlan 11 vni 11\n
+    \ no vxlan vrf default vni 1010\ninterface ethernet45-46\n  description Borderleaf
+    cross-site trunk\n  channel-group 45 mode active\n  no shut\ninterface Port-Channel45\n
+    \ description Borderleaf cross-site trunk\n  switchport\n  switchport trunk allowed
+    vlan 11,1213,1250\n  switchport mode trunk\n  mlag 45\n!\nend\n"
   AVD-VXLAN_vx-borderleaf1b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -333,7 +342,7 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    11\n   name VLAN11-Firewall_Linknet-borderleaf\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
     1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
     LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
     MGMT\n!\ninterface Port-Channel48\n   description palo1_PortChannel palo1\n   no
@@ -355,27 +364,27 @@ cvp_configlets:
     Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
     10.100.54.19/32\n!\ninterface Management1\n   description oob_management\n   no
     shutdown\n   vrf MGMT\n   ip address 10.151.11.24/26\n!\ninterface Vlan11\n   description
-    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
-    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
-    address 10.100.54.113/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
-    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.97/31\n!\ninterface
-    Vxlan1\n   description vx-borderleaf1b_VTEP\n   vxlan source-interface Loopback1\n
-    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
-    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
-    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
-    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21\n!\nip virtual-router
-    mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
-    10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
-    10.100.54.224/27\n!\nmlag configuration\n   domain-id BORDERLEAF1\n   local-interface
-    Vlan4094\n   peer-address 10.100.54.96\n   peer-link Port-Channel491\n   reload-delay
-    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip
-    route 0.0.0.0/0 10.100.54.225\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT deny 10\n
-    \  match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit 30\n   match ip address
-    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT permit
-    10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
+    VLAN11-Firewall_Linknet-borderleaf\n   no shutdown\n   mtu 9214\n   ip address
+    virtual 10.100.54.226/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    \  no shutdown\n   mtu 9214\n   ip address 10.100.54.113/31\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.97/31\n!\ninterface Vxlan1\n   description vx-borderleaf1b_VTEP\n
+    \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan flood vtep learned data-plane\n
+    \  vxlan vlan 11 vni 11\n   vxlan vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n
+    \  vxlan vrf default vni 1010\n   vxlan bridging vtep-to-vtep source-vtep tx disabled
+    10.100.54.21\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno
+    ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit
+    10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list
+    PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.224/27\n!\nmlag configuration\n
+    \  domain-id BORDERLEAF1\n   local-interface Vlan4094\n   peer-address 10.100.54.96\n
+    \  peer-link Port-Channel491\n   reload-delay mlag 300\n   reload-delay non-mlag
+    330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip route 0.0.0.0/0 10.100.54.225\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
+    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit
+    30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT
+    permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
     permit 10\n   description Make routes learned over MLAG Peer-link less preferred
     on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter bfd\n
     \  multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65101\n   router-id
@@ -413,10 +422,11 @@ cvp_configlets:
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65101\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
-    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n  vxlan flood vtep 10.100.54.21\n! monitor session niels source Ethernet48\n!
-    monitor session niels destination tunnel mode gre source 10.151.11.23 destination
-    212.237.101.162 vrf MGMT\n!\nend\n"
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vlan 11 vni 11\n
+    \ no vxlan vrf default vni 1010\ninterface ethernet45-46\n  description Borderleaf
+    cross-site trunk\n  channel-group 45 mode active\n  no shut\ninterface Port-Channel45\n
+    \ description Borderleaf cross-site trunk\n  switchport\n  switchport trunk allowed
+    vlan 11,1213,1250\n  switchport mode trunk\n  mlag 45\n!\nend\n"
   AVD-VXLAN_vx-borderleaf2a: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -440,7 +450,7 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    11\n   name VLAN11-Firewall_Linknet-borderleaf\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
     1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
     LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
     MGMT\n!\ninterface Port-Channel48\n   description palo2_PortChannel palo2\n   no
@@ -460,27 +470,27 @@ cvp_configlets:
     Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
     10.100.54.21/32\n!\ninterface Management1\n   description oob_management\n   no
     shutdown\n   vrf MGMT\n   ip address 10.151.11.21/26\n!\ninterface Vlan11\n   description
-    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
-    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
-    address 10.100.54.116/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
-    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.100/31\n!\ninterface
-    Vxlan1\n   description vx-borderleaf2a_VTEP\n   vxlan source-interface Loopback1\n
-    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
-    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
-    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
-    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19\n!\nip virtual-router
-    mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
-    10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
-    10.100.54.224/27\n!\nmlag configuration\n   domain-id BORDERLEAF2\n   local-interface
-    Vlan4094\n   peer-address 10.100.54.101\n   peer-link Port-Channel491\n   reload-delay
-    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip
-    route 0.0.0.0/0 10.100.54.225\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT deny 10\n
-    \  match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit 30\n   match ip address
-    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT permit
-    10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
+    VLAN11-Firewall_Linknet-borderleaf\n   no shutdown\n   mtu 9214\n   ip address
+    virtual 10.100.54.226/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    \  no shutdown\n   mtu 9214\n   ip address 10.100.54.116/31\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.100/31\n!\ninterface Vxlan1\n   description vx-borderleaf2a_VTEP\n
+    \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan flood vtep learned data-plane\n
+    \  vxlan vlan 11 vni 11\n   vxlan vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n
+    \  vxlan vrf default vni 1010\n   vxlan bridging vtep-to-vtep source-vtep tx disabled
+    10.100.54.19\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno
+    ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit
+    10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list
+    PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.224/27\n!\nmlag configuration\n
+    \  domain-id BORDERLEAF2\n   local-interface Vlan4094\n   peer-address 10.100.54.101\n
+    \  peer-link Port-Channel491\n   reload-delay mlag 300\n   reload-delay non-mlag
+    330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip route 0.0.0.0/0 10.100.54.225\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
+    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit
+    30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT
+    permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
     permit 10\n   description Make routes learned over MLAG Peer-link less preferred
     on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter bfd\n
     \  multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65102\n   router-id
@@ -518,8 +528,11 @@ cvp_configlets:
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65102\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
-    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n  vxlan flood vtep 10.100.54.19\n!\nend\n"
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vlan 11 vni 11\n
+    \ no vxlan vrf default vni 1010\ninterface ethernet45-46\n  description Borderleaf
+    cross-site trunk\n  channel-group 45 mode active\n  no shut\ninterface Port-Channel45\n
+    \ description Borderleaf cross-site trunk\n  switchport\n  switchport trunk allowed
+    vlan 11,1213,1250\n  switchport mode trunk\n  mlag 45\n!\nend\n"
   AVD-VXLAN_vx-borderleaf2b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n
     \  exec /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -543,7 +556,7 @@ cvp_configlets:
     start-stop group radius\naaa accounting commands 15 default start-stop group tacacs+\n!\nno
     enable password\nno aaa root\n!\nusername netmanager privilege 15 role network-admin
     secret sha512 $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    11\n   name VLAN11-Firewall_Linknet\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
+    11\n   name VLAN11-Firewall_Linknet-borderleaf\n!\nvlan 1213\n   name mobile-prod-device\n!\nvlan
     1250\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
     LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
     MGMT\n!\ninterface Port-Channel48\n   description palo2_PortChannel palo2\n   no
@@ -563,27 +576,27 @@ cvp_configlets:
     Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
     10.100.54.21/32\n!\ninterface Management1\n   description oob_management\n   no
     shutdown\n   vrf MGMT\n   ip address 10.151.11.22/26\n!\ninterface Vlan11\n   description
-    VLAN11-Firewall_Linknet\n   no shutdown\n   mtu 9214\n   ip address virtual 10.100.54.226/27\n!\ninterface
-    Vlan4093\n   description MLAG_PEER_L3_PEERING\n   no shutdown\n   mtu 9214\n   ip
-    address 10.100.54.117/31\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
-    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.101/31\n!\ninterface
-    Vxlan1\n   description vx-borderleaf2b_VTEP\n   vxlan source-interface Loopback1\n
-    \  vxlan virtual-router encapsulation mac-address mlag-system-id\n   vxlan udp-port
-    4789\n   vxlan flood vtep learned data-plane\n   vxlan vlan 11 vni 11\n   vxlan
-    vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n   vxlan vrf default vni 1010\n
-    \  vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.19\n!\nip virtual-router
-    mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n   seq 20 permit
-    10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n   seq 10 permit
-    10.100.54.224/27\n!\nmlag configuration\n   domain-id BORDERLEAF2\n   local-interface
-    Vlan4094\n   peer-address 10.100.54.100\n   peer-link Port-Channel491\n   reload-delay
-    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip
-    route 0.0.0.0/0 10.100.54.225\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT deny 10\n
-    \  match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT
-    permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit 30\n   match ip address
-    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT permit
-    10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
+    VLAN11-Firewall_Linknet-borderleaf\n   no shutdown\n   mtu 9214\n   ip address
+    virtual 10.100.54.226/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    \  no shutdown\n   mtu 9214\n   ip address 10.100.54.117/31\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.101/31\n!\ninterface Vxlan1\n   description vx-borderleaf2b_VTEP\n
+    \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan flood vtep learned data-plane\n
+    \  vxlan vlan 11 vni 11\n   vxlan vlan 1213 vni 1213\n   vxlan vlan 1250 vni 1250\n
+    \  vxlan vrf default vni 1010\n   vxlan bridging vtep-to-vtep source-vtep tx disabled
+    10.100.54.19\n!\nip virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno
+    ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit
+    10.100.160.0/27 eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list
+    PL-SVI-VRF-DEFAULT\n   seq 10 permit 10.100.54.224/27\n!\nmlag configuration\n
+    \  domain-id BORDERLEAF2\n   local-interface Vlan4094\n   peer-address 10.100.54.100\n
+    \  peer-link Port-Channel491\n   reload-delay mlag 300\n   reload-delay non-mlag
+    330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\nip route 0.0.0.0/0 10.100.54.225\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-BGP-UNDERLAY-PEERS-OUT permit 20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
+    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map RM-CONN-2-BGP permit
+    30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-EVPN-EXPORT-VRF-DEFAULT
+    permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-MLAG-PEER-IN
     permit 10\n   description Make routes learned over MLAG Peer-link less preferred
     on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter bfd\n
     \  multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65102\n   router-id
@@ -621,8 +634,11 @@ cvp_configlets:
     \     redistribute static\n!\nmanagement api http-commands\n   protocol https\n
     \  no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nrouter bgp 65102\n  no
     neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out\n  no vlan
-    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vrf default vni
-    1010\n  vxlan flood vtep 10.100.54.19\n!\nend\n"
+    11\n  no vlan 1213\n  no vlan 1250\ninterface Vxlan1\n  no vxlan vlan 11 vni 11\n
+    \ no vxlan vrf default vni 1010\ninterface ethernet45-46\n  description Borderleaf
+    cross-site trunk\n  channel-group 45 mode active\n  no shut\ninterface Port-Channel45\n
+    \ description Borderleaf cross-site trunk\n  switchport\n  switchport trunk allowed
+    vlan 11,1213,1250\n  switchport mode trunk\n  mlag 45\n!\nend\n"
   AVD-VXLAN_vx-spine1: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -655,50 +671,62 @@ cvp_configlets:
     \  ip address 10.100.54.44/31\n!\ninterface Ethernet5\n   description P2P_LINK_TO_VX-BORDERLEAF1A_Ethernet1\n
     \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.32/31\n!\ninterface
     Ethernet6\n   description P2P_LINK_TO_VX-BORDERLEAF1B_Ethernet1\n   no shutdown\n
-    \  mtu 9214\n   no switchport\n   ip address 10.100.54.36/31\n!\ninterface Loopback0\n
-    \  description EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.1/32\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.17/26\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n!\nip route
-    vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
-    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nrouter bfd\n   multihop interval
-    300 min-rx 300 multiplier 3\n!\nrouter bgp 65100\n   router-id 10.100.160.1\n
-    \  graceful-restart restart-time 300\n   graceful-restart\n   maximum-paths 4
-    ecmp 4\n   update wait-install\n   no bgp default ipv4-unicast\n   neighbor EVPN-OVERLAY-PEERS
-    peer group\n   neighbor EVPN-OVERLAY-PEERS next-hop-unchanged\n   neighbor EVPN-OVERLAY-PEERS
-    update-source Loopback0\n   neighbor EVPN-OVERLAY-PEERS bfd\n   neighbor EVPN-OVERLAY-PEERS
-    ebgp-multihop 3\n   neighbor EVPN-OVERLAY-PEERS password 7 Q4fqtbqcZ7oQuKfuWtNGRQ==\n
-    \  neighbor EVPN-OVERLAY-PEERS send-community\n   neighbor EVPN-OVERLAY-PEERS
-    maximum-routes 0\n   neighbor IPv4-UNDERLAY-PEERS peer group\n   neighbor IPv4-UNDERLAY-PEERS
-    password 7 7x4B4rnJhZB438m9+BrBfQ==\n   neighbor IPv4-UNDERLAY-PEERS send-community\n
-    \  neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000\n   neighbor 10.100.54.33
-    peer group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.33 remote-as 65101\n   neighbor
-    10.100.54.33 description vx-borderleaf1a_Ethernet1\n   neighbor 10.100.54.37 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.37 remote-as 65101\n   neighbor
-    10.100.54.37 description vx-borderleaf1b_Ethernet1\n   neighbor 10.100.54.41 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.41 remote-as 65102\n   neighbor
-    10.100.54.41 description vx-borderleaf2a_Ethernet1\n   neighbor 10.100.54.45 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.45 remote-as 65102\n   neighbor
-    10.100.54.45 description vx-borderleaf2b_Ethernet1\n   neighbor 10.100.54.49 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.49 remote-as 65103\n   neighbor
-    10.100.54.49 description vx-accessleaf3a_Ethernet1\n   neighbor 10.100.54.53 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.53 remote-as 65103\n   neighbor
-    10.100.54.53 description vx-accessleaf3b_Ethernet1\n   neighbor 10.100.160.3 peer
-    group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.3 remote-as 65101\n   neighbor
-    10.100.160.3 description vx-borderleaf1a\n   neighbor 10.100.160.4 peer group
-    EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.4 remote-as 65101\n   neighbor 10.100.160.4
-    description vx-borderleaf1b\n   neighbor 10.100.160.5 peer group EVPN-OVERLAY-PEERS\n
-    \  neighbor 10.100.160.5 remote-as 65102\n   neighbor 10.100.160.5 description
-    vx-borderleaf2a\n   neighbor 10.100.160.6 peer group EVPN-OVERLAY-PEERS\n   neighbor
-    10.100.160.6 remote-as 65102\n   neighbor 10.100.160.6 description vx-borderleaf2b\n
-    \  neighbor 10.100.160.7 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.7
-    remote-as 65103\n   neighbor 10.100.160.7 description vx-accessleaf3a\n   neighbor
-    10.100.160.8 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.8 remote-as
-    65103\n   neighbor 10.100.160.8 description vx-accessleaf3b\n   redistribute connected
-    route-map RM-CONN-2-BGP\n   !\n   address-family evpn\n      neighbor EVPN-OVERLAY-PEERS
-    activate\n   !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS activate\n
-    \     neighbor IPv4-UNDERLAY-PEERS activate\n!\nmanagement api http-commands\n
-    \  protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nend\n"
+    \  mtu 9214\n   no switchport\n   ip address 10.100.54.36/31\n!\ninterface Ethernet7\n
+    \  description P2P_LINK_TO_VX-WIFI1A_Ethernet27\n   no shutdown\n   mtu 9214\n
+    \  no switchport\n   ip address 10.100.54.56/31\n!\ninterface Ethernet8\n   description
+    P2P_LINK_TO_VX-WIFI1B_Ethernet27\n   no shutdown\n   mtu 9214\n   no switchport\n
+    \  ip address 10.100.54.60/31\n!\ninterface Loopback0\n   description EVPN_Overlay_Peering\n
+    \  no shutdown\n   ip address 10.100.160.1/32\n!\ninterface Management1\n   description
+    oob_management\n   no shutdown\n   vrf MGMT\n   ip address 10.151.11.17/26\n!\nip
+    routing\nno ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n
+    \  seq 10 permit 10.100.160.0/27 eq 32\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map
+    RM-CONN-2-BGP permit 10\n   match ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nrouter
+    bfd\n   multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65100\n   router-id
+    10.100.160.1\n   graceful-restart restart-time 300\n   graceful-restart\n   maximum-paths
+    4 ecmp 4\n   update wait-install\n   no bgp default ipv4-unicast\n   neighbor
+    EVPN-OVERLAY-PEERS peer group\n   neighbor EVPN-OVERLAY-PEERS next-hop-unchanged\n
+    \  neighbor EVPN-OVERLAY-PEERS update-source Loopback0\n   neighbor EVPN-OVERLAY-PEERS
+    bfd\n   neighbor EVPN-OVERLAY-PEERS ebgp-multihop 3\n   neighbor EVPN-OVERLAY-PEERS
+    password 7 Q4fqtbqcZ7oQuKfuWtNGRQ==\n   neighbor EVPN-OVERLAY-PEERS send-community\n
+    \  neighbor EVPN-OVERLAY-PEERS maximum-routes 0\n   neighbor IPv4-UNDERLAY-PEERS
+    peer group\n   neighbor IPv4-UNDERLAY-PEERS password 7 7x4B4rnJhZB438m9+BrBfQ==\n
+    \  neighbor IPv4-UNDERLAY-PEERS send-community\n   neighbor IPv4-UNDERLAY-PEERS
+    maximum-routes 12000\n   neighbor 10.100.54.33 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.33 remote-as 65101\n   neighbor 10.100.54.33 description
+    vx-borderleaf1a_Ethernet1\n   neighbor 10.100.54.37 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.37 remote-as 65101\n   neighbor 10.100.54.37 description
+    vx-borderleaf1b_Ethernet1\n   neighbor 10.100.54.41 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.41 remote-as 65102\n   neighbor 10.100.54.41 description
+    vx-borderleaf2a_Ethernet1\n   neighbor 10.100.54.45 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.45 remote-as 65102\n   neighbor 10.100.54.45 description
+    vx-borderleaf2b_Ethernet1\n   neighbor 10.100.54.49 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.49 remote-as 65103\n   neighbor 10.100.54.49 description
+    vx-accessleaf3a_Ethernet1\n   neighbor 10.100.54.53 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.53 remote-as 65103\n   neighbor 10.100.54.53 description
+    vx-accessleaf3b_Ethernet1\n   neighbor 10.100.54.57 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.57 remote-as 65104\n   neighbor 10.100.54.57 description
+    vx-wifi1a_Ethernet27\n   neighbor 10.100.54.61 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.61 remote-as 65104\n   neighbor 10.100.54.61 description
+    vx-wifi1b_Ethernet27\n   neighbor 10.100.160.3 peer group EVPN-OVERLAY-PEERS\n
+    \  neighbor 10.100.160.3 remote-as 65101\n   neighbor 10.100.160.3 description
+    vx-borderleaf1a\n   neighbor 10.100.160.4 peer group EVPN-OVERLAY-PEERS\n   neighbor
+    10.100.160.4 remote-as 65101\n   neighbor 10.100.160.4 description vx-borderleaf1b\n
+    \  neighbor 10.100.160.5 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.5
+    remote-as 65102\n   neighbor 10.100.160.5 description vx-borderleaf2a\n   neighbor
+    10.100.160.6 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.6 remote-as
+    65102\n   neighbor 10.100.160.6 description vx-borderleaf2b\n   neighbor 10.100.160.7
+    peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.7 remote-as 65103\n   neighbor
+    10.100.160.7 description vx-accessleaf3a\n   neighbor 10.100.160.8 peer group
+    EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.8 remote-as 65103\n   neighbor 10.100.160.8
+    description vx-accessleaf3b\n   neighbor 10.100.160.9 peer group EVPN-OVERLAY-PEERS\n
+    \  neighbor 10.100.160.9 remote-as 65104\n   neighbor 10.100.160.9 description
+    vx-wifi1a\n   neighbor 10.100.160.10 peer group EVPN-OVERLAY-PEERS\n   neighbor
+    10.100.160.10 remote-as 65104\n   neighbor 10.100.160.10 description vx-wifi1b\n
+    \  redistribute connected route-map RM-CONN-2-BGP\n   !\n   address-family evpn\n
+    \     neighbor EVPN-OVERLAY-PEERS activate\n   !\n   address-family ipv4\n      no
+    neighbor EVPN-OVERLAY-PEERS activate\n      neighbor IPv4-UNDERLAY-PEERS activate\n!\nmanagement
+    api http-commands\n   protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no
+    shutdown\n!\nend\n"
   AVD-VXLAN_vx-spine2: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -731,50 +759,62 @@ cvp_configlets:
     \  ip address 10.100.54.46/31\n!\ninterface Ethernet5\n   description P2P_LINK_TO_VX-BORDERLEAF1A_Ethernet2\n
     \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.34/31\n!\ninterface
     Ethernet6\n   description P2P_LINK_TO_VX-BORDERLEAF1B_Ethernet2\n   no shutdown\n
-    \  mtu 9214\n   no switchport\n   ip address 10.100.54.38/31\n!\ninterface Loopback0\n
-    \  description EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.2/32\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.18/26\n!\nip routing\nno ip routing vrf MGMT\n!\nip prefix-list
-    PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27 eq 32\n!\nip route
-    vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map RM-CONN-2-BGP permit 10\n   match
-    ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nrouter bfd\n   multihop interval
-    300 min-rx 300 multiplier 3\n!\nrouter bgp 65100\n   router-id 10.100.160.2\n
-    \  graceful-restart restart-time 300\n   graceful-restart\n   maximum-paths 4
-    ecmp 4\n   update wait-install\n   no bgp default ipv4-unicast\n   neighbor EVPN-OVERLAY-PEERS
-    peer group\n   neighbor EVPN-OVERLAY-PEERS next-hop-unchanged\n   neighbor EVPN-OVERLAY-PEERS
-    update-source Loopback0\n   neighbor EVPN-OVERLAY-PEERS bfd\n   neighbor EVPN-OVERLAY-PEERS
-    ebgp-multihop 3\n   neighbor EVPN-OVERLAY-PEERS password 7 Q4fqtbqcZ7oQuKfuWtNGRQ==\n
-    \  neighbor EVPN-OVERLAY-PEERS send-community\n   neighbor EVPN-OVERLAY-PEERS
-    maximum-routes 0\n   neighbor IPv4-UNDERLAY-PEERS peer group\n   neighbor IPv4-UNDERLAY-PEERS
-    password 7 7x4B4rnJhZB438m9+BrBfQ==\n   neighbor IPv4-UNDERLAY-PEERS send-community\n
-    \  neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000\n   neighbor 10.100.54.35
-    peer group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.35 remote-as 65101\n   neighbor
-    10.100.54.35 description vx-borderleaf1a_Ethernet2\n   neighbor 10.100.54.39 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.39 remote-as 65101\n   neighbor
-    10.100.54.39 description vx-borderleaf1b_Ethernet2\n   neighbor 10.100.54.43 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.43 remote-as 65102\n   neighbor
-    10.100.54.43 description vx-borderleaf2a_Ethernet2\n   neighbor 10.100.54.47 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.47 remote-as 65102\n   neighbor
-    10.100.54.47 description vx-borderleaf2b_Ethernet2\n   neighbor 10.100.54.51 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.51 remote-as 65103\n   neighbor
-    10.100.54.51 description vx-accessleaf3a_Ethernet2\n   neighbor 10.100.54.55 peer
-    group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.55 remote-as 65103\n   neighbor
-    10.100.54.55 description vx-accessleaf3b_Ethernet2\n   neighbor 10.100.160.3 peer
-    group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.3 remote-as 65101\n   neighbor
-    10.100.160.3 description vx-borderleaf1a\n   neighbor 10.100.160.4 peer group
-    EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.4 remote-as 65101\n   neighbor 10.100.160.4
-    description vx-borderleaf1b\n   neighbor 10.100.160.5 peer group EVPN-OVERLAY-PEERS\n
-    \  neighbor 10.100.160.5 remote-as 65102\n   neighbor 10.100.160.5 description
-    vx-borderleaf2a\n   neighbor 10.100.160.6 peer group EVPN-OVERLAY-PEERS\n   neighbor
-    10.100.160.6 remote-as 65102\n   neighbor 10.100.160.6 description vx-borderleaf2b\n
-    \  neighbor 10.100.160.7 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.7
-    remote-as 65103\n   neighbor 10.100.160.7 description vx-accessleaf3a\n   neighbor
-    10.100.160.8 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.8 remote-as
-    65103\n   neighbor 10.100.160.8 description vx-accessleaf3b\n   redistribute connected
-    route-map RM-CONN-2-BGP\n   !\n   address-family evpn\n      neighbor EVPN-OVERLAY-PEERS
-    activate\n   !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS activate\n
-    \     neighbor IPv4-UNDERLAY-PEERS activate\n!\nmanagement api http-commands\n
-    \  protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nend\n"
+    \  mtu 9214\n   no switchport\n   ip address 10.100.54.38/31\n!\ninterface Ethernet7\n
+    \  description P2P_LINK_TO_VX-WIFI1A_Ethernet28\n   no shutdown\n   mtu 9214\n
+    \  no switchport\n   ip address 10.100.54.58/31\n!\ninterface Ethernet8\n   description
+    P2P_LINK_TO_VX-WIFI1B_Ethernet28\n   no shutdown\n   mtu 9214\n   no switchport\n
+    \  ip address 10.100.54.62/31\n!\ninterface Loopback0\n   description EVPN_Overlay_Peering\n
+    \  no shutdown\n   ip address 10.100.160.2/32\n!\ninterface Management1\n   description
+    oob_management\n   no shutdown\n   vrf MGMT\n   ip address 10.151.11.18/26\n!\nip
+    routing\nno ip routing vrf MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n
+    \  seq 10 permit 10.100.160.0/27 eq 32\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nroute-map
+    RM-CONN-2-BGP permit 10\n   match ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nrouter
+    bfd\n   multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65100\n   router-id
+    10.100.160.2\n   graceful-restart restart-time 300\n   graceful-restart\n   maximum-paths
+    4 ecmp 4\n   update wait-install\n   no bgp default ipv4-unicast\n   neighbor
+    EVPN-OVERLAY-PEERS peer group\n   neighbor EVPN-OVERLAY-PEERS next-hop-unchanged\n
+    \  neighbor EVPN-OVERLAY-PEERS update-source Loopback0\n   neighbor EVPN-OVERLAY-PEERS
+    bfd\n   neighbor EVPN-OVERLAY-PEERS ebgp-multihop 3\n   neighbor EVPN-OVERLAY-PEERS
+    password 7 Q4fqtbqcZ7oQuKfuWtNGRQ==\n   neighbor EVPN-OVERLAY-PEERS send-community\n
+    \  neighbor EVPN-OVERLAY-PEERS maximum-routes 0\n   neighbor IPv4-UNDERLAY-PEERS
+    peer group\n   neighbor IPv4-UNDERLAY-PEERS password 7 7x4B4rnJhZB438m9+BrBfQ==\n
+    \  neighbor IPv4-UNDERLAY-PEERS send-community\n   neighbor IPv4-UNDERLAY-PEERS
+    maximum-routes 12000\n   neighbor 10.100.54.35 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.35 remote-as 65101\n   neighbor 10.100.54.35 description
+    vx-borderleaf1a_Ethernet2\n   neighbor 10.100.54.39 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.39 remote-as 65101\n   neighbor 10.100.54.39 description
+    vx-borderleaf1b_Ethernet2\n   neighbor 10.100.54.43 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.43 remote-as 65102\n   neighbor 10.100.54.43 description
+    vx-borderleaf2a_Ethernet2\n   neighbor 10.100.54.47 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.47 remote-as 65102\n   neighbor 10.100.54.47 description
+    vx-borderleaf2b_Ethernet2\n   neighbor 10.100.54.51 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.51 remote-as 65103\n   neighbor 10.100.54.51 description
+    vx-accessleaf3a_Ethernet2\n   neighbor 10.100.54.55 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.55 remote-as 65103\n   neighbor 10.100.54.55 description
+    vx-accessleaf3b_Ethernet2\n   neighbor 10.100.54.59 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.59 remote-as 65104\n   neighbor 10.100.54.59 description
+    vx-wifi1a_Ethernet28\n   neighbor 10.100.54.63 peer group IPv4-UNDERLAY-PEERS\n
+    \  neighbor 10.100.54.63 remote-as 65104\n   neighbor 10.100.54.63 description
+    vx-wifi1b_Ethernet28\n   neighbor 10.100.160.3 peer group EVPN-OVERLAY-PEERS\n
+    \  neighbor 10.100.160.3 remote-as 65101\n   neighbor 10.100.160.3 description
+    vx-borderleaf1a\n   neighbor 10.100.160.4 peer group EVPN-OVERLAY-PEERS\n   neighbor
+    10.100.160.4 remote-as 65101\n   neighbor 10.100.160.4 description vx-borderleaf1b\n
+    \  neighbor 10.100.160.5 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.5
+    remote-as 65102\n   neighbor 10.100.160.5 description vx-borderleaf2a\n   neighbor
+    10.100.160.6 peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.6 remote-as
+    65102\n   neighbor 10.100.160.6 description vx-borderleaf2b\n   neighbor 10.100.160.7
+    peer group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.7 remote-as 65103\n   neighbor
+    10.100.160.7 description vx-accessleaf3a\n   neighbor 10.100.160.8 peer group
+    EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.8 remote-as 65103\n   neighbor 10.100.160.8
+    description vx-accessleaf3b\n   neighbor 10.100.160.9 peer group EVPN-OVERLAY-PEERS\n
+    \  neighbor 10.100.160.9 remote-as 65104\n   neighbor 10.100.160.9 description
+    vx-wifi1a\n   neighbor 10.100.160.10 peer group EVPN-OVERLAY-PEERS\n   neighbor
+    10.100.160.10 remote-as 65104\n   neighbor 10.100.160.10 description vx-wifi1b\n
+    \  redistribute connected route-map RM-CONN-2-BGP\n   !\n   address-family evpn\n
+    \     neighbor EVPN-OVERLAY-PEERS activate\n   !\n   address-family ipv4\n      no
+    neighbor EVPN-OVERLAY-PEERS activate\n      neighbor IPv4-UNDERLAY-PEERS activate\n!\nmanagement
+    api http-commands\n   protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no
+    shutdown\n!\nend\n"
   AVD-VXLAN_vx-subleaf4a: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -799,36 +839,36 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
-    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel1\n   description ap1_PortChannel
-    AP1\n   no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel
-    lacp fallback individual\n   mlag 1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n
-    \  description ap2_PortChannel AP2\n   no shutdown\n   switchport\n   switchport
-    access vlan 10\n   port-channel lacp fallback individual\n   mlag 2\n   spanning-tree
-    portfast\n!\ninterface Port-Channel49\n   description MLAG_PEER_vx-subleaf4b_Po49\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    MLAG\n!\ninterface Port-Channel56\n   description ACCESSLEAF3_Po48\n   no shutdown\n
-    \  switchport\n   switchport trunk allowed vlan 10\n   switchport mode trunk\n
-    \  mlag 56\n!\ninterface Ethernet1\n   description ap1_LAN1\n   no shutdown\n
-    \  speed auto 1000full\n   switchport access vlan 10\n   switchport mode access\n
-    \  channel-group 1 mode active\n!\ninterface Ethernet2\n   description ap2_LAN1\n
-    \  no shutdown\n   speed auto 1000full\n   switchport access vlan 10\n   switchport
-    mode access\n   channel-group 2 mode active\n!\ninterface Ethernet3\n   description
-    pc1_LAN1\n   no shutdown\n   switchport access vlan 10\n   switchport mode access\n
-    \  switchport\n   spanning-tree portfast\n!\ninterface Ethernet49\n   description
-    MLAG_PEER_vx-subleaf4b_Ethernet49\n   no shutdown\n   channel-group 49 mode active\n!\ninterface
-    Ethernet50\n   description MLAG_PEER_vx-subleaf4b_Ethernet50\n   no shutdown\n
-    \  channel-group 49 mode active\n!\ninterface Ethernet55\n   description VX-ACCESSLEAF3B_Ethernet48\n
-    \  no shutdown\n   channel-group 56 mode active\n!\ninterface Ethernet56\n   description
-    VX-ACCESSLEAF3A_Ethernet48\n   no shutdown\n   channel-group 56 mode active\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.15/26\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
-    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.128/31\nno ip
-    routing vrf MGMT\n!\nmlag configuration\n   domain-id VX-SUBLEAF4\n   local-interface
-    Vlan4094\n   peer-address 10.100.54.129\n   peer-link Port-Channel49\n   reload-delay
-    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nmanagement
-    api http-commands\n   protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no
-    shutdown\n!\nend\n"
+    10\n   name VLAN10-Access_Points-borderleaf\n!\nvlan 20\n   name VLAN20-Access_Points-wifi-leaf\n!\nvlan
+    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
+    Port-Channel1\n   description ap1_PortChannel AP1\n   no shutdown\n   switchport\n
+    \  switchport access vlan 10\n   port-channel lacp fallback individual\n   mlag
+    1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n   description ap2_PortChannel
+    AP2\n   no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel
+    lacp fallback individual\n   mlag 2\n   spanning-tree portfast\n!\ninterface Port-Channel49\n
+    \  description MLAG_PEER_vx-subleaf4b_Po49\n   no shutdown\n   switchport\n   switchport
+    mode trunk\n   switchport trunk group MLAG\n!\ninterface Port-Channel56\n   description
+    ACCESSLEAF3_Po48\n   no shutdown\n   switchport\n   switchport trunk allowed vlan
+    10,20\n   switchport mode trunk\n   mlag 56\n!\ninterface Ethernet1\n   description
+    ap1_LAN1\n   no shutdown\n   speed auto 1000full\n   switchport access vlan 10\n
+    \  switchport mode access\n   channel-group 1 mode active\n!\ninterface Ethernet2\n
+    \  description ap2_LAN1\n   no shutdown\n   speed auto 1000full\n   switchport
+    access vlan 10\n   switchport mode access\n   channel-group 2 mode active\n!\ninterface
+    Ethernet3\n   description pc1_LAN1\n   no shutdown\n   switchport access vlan
+    10\n   switchport mode access\n   switchport\n   spanning-tree portfast\n!\ninterface
+    Ethernet49\n   description MLAG_PEER_vx-subleaf4b_Ethernet49\n   no shutdown\n
+    \  channel-group 49 mode active\n!\ninterface Ethernet50\n   description MLAG_PEER_vx-subleaf4b_Ethernet50\n
+    \  no shutdown\n   channel-group 49 mode active\n!\ninterface Ethernet55\n   description
+    VX-ACCESSLEAF3B_Ethernet48\n   no shutdown\n   channel-group 56 mode active\n!\ninterface
+    Ethernet56\n   description VX-ACCESSLEAF3A_Ethernet48\n   no shutdown\n   channel-group
+    56 mode active\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.15/26\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.128/31\nno ip routing vrf MGMT\n!\nmlag configuration\n   domain-id
+    VX-SUBLEAF4\n   local-interface Vlan4094\n   peer-address 10.100.54.129\n   peer-link
+    Port-Channel49\n   reload-delay mlag 300\n   reload-delay non-mlag 330\n!\nip
+    route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nmanagement api http-commands\n   protocol
+    https\n   no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nend\n"
   AVD-VXLAN_vx-subleaf4b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -853,36 +893,36 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
-    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel1\n   description ap1_PortChannel
-    AP1\n   no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel
-    lacp fallback individual\n   mlag 1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n
-    \  description ap2_PortChannel AP2\n   no shutdown\n   switchport\n   switchport
-    access vlan 10\n   port-channel lacp fallback individual\n   mlag 2\n   spanning-tree
-    portfast\n!\ninterface Port-Channel49\n   description MLAG_PEER_vx-subleaf4a_Po49\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    MLAG\n!\ninterface Port-Channel56\n   description ACCESSLEAF3_Po48\n   no shutdown\n
-    \  switchport\n   switchport trunk allowed vlan 10\n   switchport mode trunk\n
-    \  mlag 56\n!\ninterface Ethernet1\n   description ap1_LAN2\n   no shutdown\n
-    \  speed auto 1000full\n   switchport access vlan 10\n   switchport mode access\n
-    \  channel-group 1 mode active\n!\ninterface Ethernet2\n   description ap2_LAN2\n
-    \  no shutdown\n   speed auto 1000full\n   switchport access vlan 10\n   switchport
-    mode access\n   channel-group 2 mode active\n!\ninterface Ethernet3\n   description
-    pc2_LAN1\n   no shutdown\n   switchport access vlan 10\n   switchport mode access\n
-    \  switchport\n   spanning-tree portfast\n!\ninterface Ethernet49\n   description
-    MLAG_PEER_vx-subleaf4a_Ethernet49\n   no shutdown\n   channel-group 49 mode active\n!\ninterface
-    Ethernet50\n   description MLAG_PEER_vx-subleaf4a_Ethernet50\n   no shutdown\n
-    \  channel-group 49 mode active\n!\ninterface Ethernet55\n   description VX-ACCESSLEAF3B_Ethernet47\n
-    \  no shutdown\n   channel-group 56 mode active\n!\ninterface Ethernet56\n   description
-    VX-ACCESSLEAF3A_Ethernet47\n   no shutdown\n   channel-group 56 mode active\n!\ninterface
-    Management1\n   description oob_management\n   no shutdown\n   vrf MGMT\n   ip
-    address 10.151.11.16/26\n!\ninterface Vlan4094\n   description MLAG_PEER\n   no
-    shutdown\n   mtu 9214\n   no autostate\n   ip address 10.100.54.129/31\nno ip
-    routing vrf MGMT\n!\nmlag configuration\n   domain-id VX-SUBLEAF4\n   local-interface
-    Vlan4094\n   peer-address 10.100.54.128\n   peer-link Port-Channel49\n   reload-delay
-    mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nmanagement
-    api http-commands\n   protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no
-    shutdown\n!\nend\n"
+    10\n   name VLAN10-Access_Points-borderleaf\n!\nvlan 20\n   name VLAN20-Access_Points-wifi-leaf\n!\nvlan
+    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
+    Port-Channel1\n   description ap1_PortChannel AP1\n   no shutdown\n   switchport\n
+    \  switchport access vlan 10\n   port-channel lacp fallback individual\n   mlag
+    1\n   spanning-tree portfast\n!\ninterface Port-Channel2\n   description ap2_PortChannel
+    AP2\n   no shutdown\n   switchport\n   switchport access vlan 10\n   port-channel
+    lacp fallback individual\n   mlag 2\n   spanning-tree portfast\n!\ninterface Port-Channel49\n
+    \  description MLAG_PEER_vx-subleaf4a_Po49\n   no shutdown\n   switchport\n   switchport
+    mode trunk\n   switchport trunk group MLAG\n!\ninterface Port-Channel56\n   description
+    ACCESSLEAF3_Po48\n   no shutdown\n   switchport\n   switchport trunk allowed vlan
+    10,20\n   switchport mode trunk\n   mlag 56\n!\ninterface Ethernet1\n   description
+    ap1_LAN2\n   no shutdown\n   speed auto 1000full\n   switchport access vlan 10\n
+    \  switchport mode access\n   channel-group 1 mode active\n!\ninterface Ethernet2\n
+    \  description ap2_LAN2\n   no shutdown\n   speed auto 1000full\n   switchport
+    access vlan 10\n   switchport mode access\n   channel-group 2 mode active\n!\ninterface
+    Ethernet3\n   description pc2_LAN1\n   no shutdown\n   switchport access vlan
+    10\n   switchport mode access\n   switchport\n   spanning-tree portfast\n!\ninterface
+    Ethernet49\n   description MLAG_PEER_vx-subleaf4a_Ethernet49\n   no shutdown\n
+    \  channel-group 49 mode active\n!\ninterface Ethernet50\n   description MLAG_PEER_vx-subleaf4a_Ethernet50\n
+    \  no shutdown\n   channel-group 49 mode active\n!\ninterface Ethernet55\n   description
+    VX-ACCESSLEAF3B_Ethernet47\n   no shutdown\n   channel-group 56 mode active\n!\ninterface
+    Ethernet56\n   description VX-ACCESSLEAF3A_Ethernet47\n   no shutdown\n   channel-group
+    56 mode active\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.16/26\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.129/31\nno ip routing vrf MGMT\n!\nmlag configuration\n   domain-id
+    VX-SUBLEAF4\n   local-interface Vlan4094\n   peer-address 10.100.54.128\n   peer-link
+    Port-Channel49\n   reload-delay mlag 300\n   reload-delay non-mlag 330\n!\nip
+    route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nmanagement api http-commands\n   protocol
+    https\n   no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nend\n"
   AVD-VXLAN_vx-subleaf5a: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
     /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
     -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
@@ -907,18 +947,19 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
-    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel11\n   description ACCESSLEAF3_Po46\n
-    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
-    mode trunk\n   mlag 11\n!\ninterface Port-Channel13\n   description MLAG_PEER_vx-subleaf5b_Po13\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    MLAG\n!\ninterface Port-Channel31\n   description ap3_PortChannel AP3\n   no shutdown\n
-    \  switchport\n   switchport access vlan 10\n   port-channel lacp fallback individual\n
-    \  mlag 31\n   spanning-tree portfast\n!\ninterface Port-Channel32\n   description
-    ap4_PortChannel AP4\n   no shutdown\n   switchport\n   switchport access vlan
-    10\n   port-channel lacp fallback individual\n   mlag 32\n   spanning-tree portfast\n!\ninterface
-    Ethernet1/1\n   description VX-ACCESSLEAF3A_Ethernet46\n   no shutdown\n   channel-group
-    11 mode active\n!\ninterface Ethernet1/2\n   description VX-ACCESSLEAF3B_Ethernet46\n
+    10\n   name VLAN10-Access_Points-borderleaf\n!\nvlan 20\n   name VLAN20-Access_Points-wifi-leaf\n!\nvlan
+    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
+    Port-Channel11\n   description ACCESSLEAF3_Po46\n   no shutdown\n   switchport\n
+    \  switchport trunk allowed vlan 10,20\n   switchport mode trunk\n   mlag 11\n!\ninterface
+    Port-Channel13\n   description MLAG_PEER_vx-subleaf5b_Po13\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group MLAG\n!\ninterface Port-Channel31\n
+    \  description ap3_PortChannel AP3\n   no shutdown\n   switchport\n   switchport
+    access vlan 20\n   port-channel lacp fallback individual\n   mlag 31\n   spanning-tree
+    portfast\n!\ninterface Port-Channel32\n   description ap4_PortChannel AP4\n   no
+    shutdown\n   switchport\n   switchport access vlan 20\n   port-channel lacp fallback
+    individual\n   mlag 32\n   spanning-tree portfast\n!\ninterface Ethernet1/1\n
+    \  description VX-ACCESSLEAF3A_Ethernet46\n   no shutdown\n   channel-group 11
+    mode active\n!\ninterface Ethernet1/2\n   description VX-ACCESSLEAF3B_Ethernet46\n
     \  no shutdown\n   channel-group 11 mode active\n!\ninterface Ethernet1/3\n   description
     MLAG_PEER_vx-subleaf5b_Ethernet1/3\n   no shutdown\n   channel-group 13 mode active\n!\ninterface
     Ethernet1/4\n   description MLAG_PEER_vx-subleaf5b_Ethernet1/4\n   no shutdown\n
@@ -958,18 +999,19 @@ cvp_configlets:
     accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
     aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
     $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
-    10\n   name VLAN10-Access_Points\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group
-    MLAG\n!\nvrf instance MGMT\n!\ninterface Port-Channel11\n   description ACCESSLEAF3_Po46\n
-    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 10\n   switchport
-    mode trunk\n   mlag 11\n!\ninterface Port-Channel13\n   description MLAG_PEER_vx-subleaf5a_Po13\n
-    \  no shutdown\n   switchport\n   switchport mode trunk\n   switchport trunk group
-    MLAG\n!\ninterface Port-Channel31\n   description ap3_PortChannel AP3\n   no shutdown\n
-    \  switchport\n   switchport access vlan 10\n   port-channel lacp fallback individual\n
-    \  mlag 31\n   spanning-tree portfast\n!\ninterface Port-Channel32\n   description
-    ap4_PortChannel AP4\n   no shutdown\n   switchport\n   switchport access vlan
-    10\n   port-channel lacp fallback individual\n   mlag 32\n   spanning-tree portfast\n!\ninterface
-    Ethernet1/1\n   description VX-ACCESSLEAF3A_Ethernet45\n   no shutdown\n   channel-group
-    11 mode active\n!\ninterface Ethernet1/2\n   description VX-ACCESSLEAF3B_Ethernet45\n
+    10\n   name VLAN10-Access_Points-borderleaf\n!\nvlan 20\n   name VLAN20-Access_Points-wifi-leaf\n!\nvlan
+    4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance MGMT\n!\ninterface
+    Port-Channel11\n   description ACCESSLEAF3_Po46\n   no shutdown\n   switchport\n
+    \  switchport trunk allowed vlan 10,20\n   switchport mode trunk\n   mlag 11\n!\ninterface
+    Port-Channel13\n   description MLAG_PEER_vx-subleaf5a_Po13\n   no shutdown\n   switchport\n
+    \  switchport mode trunk\n   switchport trunk group MLAG\n!\ninterface Port-Channel31\n
+    \  description ap3_PortChannel AP3\n   no shutdown\n   switchport\n   switchport
+    access vlan 20\n   port-channel lacp fallback individual\n   mlag 31\n   spanning-tree
+    portfast\n!\ninterface Port-Channel32\n   description ap4_PortChannel AP4\n   no
+    shutdown\n   switchport\n   switchport access vlan 20\n   port-channel lacp fallback
+    individual\n   mlag 32\n   spanning-tree portfast\n!\ninterface Ethernet1/1\n
+    \  description VX-ACCESSLEAF3A_Ethernet45\n   no shutdown\n   channel-group 11
+    mode active\n!\ninterface Ethernet1/2\n   description VX-ACCESSLEAF3B_Ethernet45\n
     \  no shutdown\n   channel-group 11 mode active\n!\ninterface Ethernet1/3\n   description
     MLAG_PEER_vx-subleaf5a_Ethernet1/3\n   no shutdown\n   channel-group 13 mode active\n!\ninterface
     Ethernet1/4\n   description MLAG_PEER_vx-subleaf5a_Ethernet1/4\n   no shutdown\n
@@ -985,6 +1027,213 @@ cvp_configlets:
     \  peer-link Port-Channel13\n   reload-delay mlag 300\n   reload-delay non-mlag
     330\n!\nip route vrf MGMT 0.0.0.0/0 10.151.11.1\n!\nmanagement api http-commands\n
     \  protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\nend\n"
+  AVD-VXLAN_vx-wifi1a: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
+    /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
+    -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+    -taillogs\n   no shutdown\n!\nvlan internal order ascending range 1006 1199\n!\ntransceiver
+    qsfp default-mode 4x10G\n!\nservice routing protocols model multi-agent\n!\nhostname
+    vx-wifi1a\nip name-server vrf MGMT 10.148.30.200\nip name-server vrf MGMT 10.149.30.200\ndns
+    domain sdn.lego.com\n!\nntp local-interface vrf MGMT Management1\nntp server vrf
+    MGMT utc1.corp.lego.com\nntp server vrf MGMT utc2.corp.lego.com\nntp server vrf
+    MGMT utcd.corp.lego.com\n!\nradius-server host 10.148.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\nradius-server
+    host 10.149.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\nradius-server host
+    10.150.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\n!\nsflow sample 16384\nsflow
+    polling-interval 10\nsflow destination 127.0.0.1\nsflow extension bgp\nsflow run\n!\nspanning-tree
+    mode mstp\nno spanning-tree vlan-id 4093-4094\nspanning-tree mst 0 priority 4096\n!\ntacacs-server
+    host 10.148.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\ntacacs-server host
+    10.149.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\ntacacs-server host 10.150.56.50
+    vrf MGMT key 7 070D2E5E41075422240A284D\n!\naaa authentication login default group
+    tacacs+ local\naaa authentication enable default group tacacs+ local\naaa authentication
+    dot1x default group radius\naaa authorization exec default group tacacs+ local\naaa
+    authorization commands all default group tacacs+ local\naaa accounting exec default
+    start-stop group tacacs+\naaa accounting dot1x default start-stop group radius\naaa
+    accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
+    aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
+    $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
+    12\n   name VLAN12-Firewall_Linknet-wifi-leaf\n!\nvlan 1214\n   name mobile-prod-device\n!\nvlan
+    1251\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
+    LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
+    MGMT\n!\ninterface Port-Channel21\n   description palo1-wifi_PortChannel palo1-wifi\n
+    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 12,1214,1251\n
+    \  switchport mode trunk\n   mlag 21\n   spanning-tree portfast\n!\ninterface
+    Port-Channel22\n   description palo2-wifi_PortChannel palo2-wifi\n   no shutdown\n
+    \  switchport\n   switchport trunk allowed vlan 12,1214,1251\n   switchport mode
+    trunk\n   mlag 22\n   spanning-tree portfast\n!\ninterface Port-Channel23\n   description
+    MLAG_PEER_vx-wifi1b_Po23\n   no shutdown\n   switchport\n   switchport mode trunk\n
+    \  switchport trunk group LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface
+    Ethernet21\n   description palo1-wifi_Ethernet1/10\n   no shutdown\n   channel-group
+    21 mode active\n!\ninterface Ethernet22\n   description palo2-wifi_Ethernet1/10\n
+    \  no shutdown\n   channel-group 22 mode active\n!\ninterface Ethernet23\n   description
+    MLAG_PEER_vx-wifi1b_Ethernet23\n   no shutdown\n   channel-group 23 mode active\n!\ninterface
+    Ethernet24\n   description MLAG_PEER_vx-wifi1b_Ethernet24\n   no shutdown\n   channel-group
+    23 mode active\n!\ninterface Ethernet27\n   description P2P_LINK_TO_VX-SPINE1_Ethernet7\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.57/31\n!\ninterface
+    Ethernet28\n   description P2P_LINK_TO_VX-SPINE2_Ethernet7\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.59/31\n!\ninterface Loopback0\n
+    \  description EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.9/32\n!\ninterface
+    Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
+    10.100.54.25/32\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.25/26\n!\ninterface Vlan12\n   description
+    VLAN12-Firewall_Linknet-wifi-leaf\n   no shutdown\n   mtu 9214\n   ip address
+    virtual 10.100.55.2/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    \  no shutdown\n   mtu 9214\n   ip address 10.100.54.124/31\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.108/31\n!\ninterface Vxlan1\n   description vx-wifi1a_VTEP\n
+    \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan vlan 12 vni 12\n   vxlan vlan
+    1214 vni 1214\n   vxlan vlan 1251 vni 1251\n   vxlan vrf default vni 1010\n!\nip
+    virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf
+    MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27
+    eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n
+    \  seq 10 permit 10.100.55.0/27\n!\nmlag configuration\n   domain-id WIFILEAF1\n
+    \  local-interface Vlan4094\n   peer-address 10.100.54.109\n   peer-link Port-Channel23\n
+    \  reload-delay mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0
+    10.151.11.1\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address
+    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT permit
+    20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map
+    RM-CONN-2-BGP permit 30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-EVPN-EXPORT-VRF-DEFAULT permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-MLAG-PEER-IN permit 10\n   description Make routes learned over MLAG Peer-link
+    less preferred on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter
+    bfd\n   multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65104\n   router-id
+    10.100.160.9\n   graceful-restart restart-time 300\n   graceful-restart\n   maximum-paths
+    4 ecmp 4\n   update wait-install\n   no bgp default ipv4-unicast\n   neighbor
+    EVPN-OVERLAY-PEERS peer group\n   neighbor EVPN-OVERLAY-PEERS update-source Loopback0\n
+    \  neighbor EVPN-OVERLAY-PEERS bfd\n   neighbor EVPN-OVERLAY-PEERS ebgp-multihop
+    3\n   neighbor EVPN-OVERLAY-PEERS password 7 Q4fqtbqcZ7oQuKfuWtNGRQ==\n   neighbor
+    EVPN-OVERLAY-PEERS send-community\n   neighbor EVPN-OVERLAY-PEERS maximum-routes
+    0\n   neighbor IPv4-UNDERLAY-PEERS peer group\n   neighbor IPv4-UNDERLAY-PEERS
+    password 7 7x4B4rnJhZB438m9+BrBfQ==\n   neighbor IPv4-UNDERLAY-PEERS send-community\n
+    \  neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000\n   neighbor IPv4-UNDERLAY-PEERS
+    route-map RM-BGP-UNDERLAY-PEERS-OUT out\n   neighbor MLAG-IPv4-UNDERLAY-PEER peer
+    group\n   neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65104\n   neighbor MLAG-IPv4-UNDERLAY-PEER
+    next-hop-self\n   neighbor MLAG-IPv4-UNDERLAY-PEER description vx-wifi1b\n   neighbor
+    MLAG-IPv4-UNDERLAY-PEER password 7 4b21pAdCvWeAqpcKDFMdWw==\n   neighbor MLAG-IPv4-UNDERLAY-PEER
+    send-community\n   neighbor MLAG-IPv4-UNDERLAY-PEER maximum-routes 12000\n   neighbor
+    MLAG-IPv4-UNDERLAY-PEER route-map RM-MLAG-PEER-IN in\n   neighbor 10.100.54.56
+    peer group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.56 remote-as 65100\n   neighbor
+    10.100.54.56 description vx-spine1_Ethernet7\n   neighbor 10.100.54.58 peer group
+    IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.58 remote-as 65100\n   neighbor 10.100.54.58
+    description vx-spine2_Ethernet7\n   neighbor 10.100.54.125 peer group MLAG-IPv4-UNDERLAY-PEER\n
+    \  neighbor 10.100.54.125 description vx-wifi1b\n   neighbor 10.100.160.1 peer
+    group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.1 remote-as 65100\n   neighbor
+    10.100.160.1 description vx-spine1\n   neighbor 10.100.160.2 peer group EVPN-OVERLAY-PEERS\n
+    \  neighbor 10.100.160.2 remote-as 65100\n   neighbor 10.100.160.2 description
+    vx-spine2\n   redistribute connected route-map RM-CONN-2-BGP\n   !\n   vlan 12\n
+    \     rd 10.100.160.9:12\n      route-target both 12:12\n      redistribute learned\n
+    \  !\n   vlan 1214\n      rd 10.100.160.9:1214\n      route-target both 1214:1214\n
+    \     redistribute learned\n   !\n   vlan 1251\n      rd 10.100.160.9:1251\n      route-target
+    both 1251:1251\n      redistribute learned\n   !\n   address-family evpn\n      neighbor
+    EVPN-OVERLAY-PEERS activate\n   !\n   address-family ipv4\n      no neighbor EVPN-OVERLAY-PEERS
+    activate\n      neighbor IPv4-UNDERLAY-PEERS activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER
+    activate\n!\nmanagement api http-commands\n   protocol https\n   no shutdown\n
+    \  !\n   vrf MGMT\n      no shutdown\n!\ninterface Vxlan1\n  vxlan bridging vtep-to-vtep\n
+    \ vxlan flood vtep learned data-plane\n  no vxlan vlan 12 vni 12\nrouter bgp 65104\n
+    \ no vlan 12\n  no vlan 1214\n  no vlan 1251\n!\nend\n"
+  AVD-VXLAN_vx-wifi1b: "!RANCID-CONTENT-TYPE: arista\n!\ndaemon TerminAttr\n   exec
+    /usr/bin/TerminAttr -cvaddr=apiserver.arista.io:443 -cvauth=token-secure,/tmp/cv-onboarding-token
+    -cvvrf=MGMT -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+    -taillogs\n   no shutdown\n!\nvlan internal order ascending range 1006 1199\n!\ntransceiver
+    qsfp default-mode 4x10G\n!\nservice routing protocols model multi-agent\n!\nhostname
+    vx-wifi1b\nip name-server vrf MGMT 10.148.30.200\nip name-server vrf MGMT 10.149.30.200\ndns
+    domain sdn.lego.com\n!\nntp local-interface vrf MGMT Management1\nntp server vrf
+    MGMT utc1.corp.lego.com\nntp server vrf MGMT utc2.corp.lego.com\nntp server vrf
+    MGMT utcd.corp.lego.com\n!\nradius-server host 10.148.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\nradius-server
+    host 10.149.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\nradius-server host
+    10.150.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\n!\nsflow sample 16384\nsflow
+    polling-interval 10\nsflow destination 127.0.0.1\nsflow extension bgp\nsflow run\n!\nspanning-tree
+    mode mstp\nno spanning-tree vlan-id 4093-4094\nspanning-tree mst 0 priority 4096\n!\ntacacs-server
+    host 10.148.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\ntacacs-server host
+    10.149.56.50 vrf MGMT key 7 070D2E5E41075422240A284D\ntacacs-server host 10.150.56.50
+    vrf MGMT key 7 070D2E5E41075422240A284D\n!\naaa authentication login default group
+    tacacs+ local\naaa authentication enable default group tacacs+ local\naaa authentication
+    dot1x default group radius\naaa authorization exec default group tacacs+ local\naaa
+    authorization commands all default group tacacs+ local\naaa accounting exec default
+    start-stop group tacacs+\naaa accounting dot1x default start-stop group radius\naaa
+    accounting commands 15 default start-stop group tacacs+\n!\nno enable password\nno
+    aaa root\n!\nusername netmanager privilege 15 role network-admin secret sha512
+    $6$7.i.vB4dmKv6ge8p$i/ZZJ.PwF3JTSvIXrEo14xh/r0CSkKI8EC4XhexDcm7FRLig1mFh5UKMlPYdmIDhJVnAsKYNulRQWzhhiqqa5.\n!\nvlan
+    12\n   name VLAN12-Firewall_Linknet-wifi-leaf\n!\nvlan 1214\n   name mobile-prod-device\n!\nvlan
+    1251\n   name enterprisenet\n!\nvlan 4093\n   name LEAF_PEER_L3\n   trunk group
+    LEAF_PEER_L3\n!\nvlan 4094\n   name MLAG_PEER\n   trunk group MLAG\n!\nvrf instance
+    MGMT\n!\ninterface Port-Channel21\n   description palo1-wifi_PortChannel palo1-wifi\n
+    \  no shutdown\n   switchport\n   switchport trunk allowed vlan 12,1214,1251\n
+    \  switchport mode trunk\n   mlag 21\n   spanning-tree portfast\n!\ninterface
+    Port-Channel22\n   description palo2-wifi_PortChannel palo2-wifi\n   no shutdown\n
+    \  switchport\n   switchport trunk allowed vlan 12,1214,1251\n   switchport mode
+    trunk\n   mlag 22\n   spanning-tree portfast\n!\ninterface Port-Channel23\n   description
+    MLAG_PEER_vx-wifi1a_Po23\n   no shutdown\n   switchport\n   switchport mode trunk\n
+    \  switchport trunk group LEAF_PEER_L3\n   switchport trunk group MLAG\n!\ninterface
+    Ethernet21\n   description palo1-wifi_Ethernet1/9\n   no shutdown\n   channel-group
+    21 mode active\n!\ninterface Ethernet22\n   description palo2-wifi_Ethernet1/9\n
+    \  no shutdown\n   channel-group 22 mode active\n!\ninterface Ethernet23\n   description
+    MLAG_PEER_vx-wifi1a_Ethernet23\n   no shutdown\n   channel-group 23 mode active\n!\ninterface
+    Ethernet24\n   description MLAG_PEER_vx-wifi1a_Ethernet24\n   no shutdown\n   channel-group
+    23 mode active\n!\ninterface Ethernet27\n   description P2P_LINK_TO_VX-SPINE1_Ethernet8\n
+    \  no shutdown\n   mtu 9214\n   no switchport\n   ip address 10.100.54.61/31\n!\ninterface
+    Ethernet28\n   description P2P_LINK_TO_VX-SPINE2_Ethernet8\n   no shutdown\n   mtu
+    9214\n   no switchport\n   ip address 10.100.54.63/31\n!\ninterface Loopback0\n
+    \  description EVPN_Overlay_Peering\n   no shutdown\n   ip address 10.100.160.10/32\n!\ninterface
+    Loopback1\n   description VTEP_VXLAN_Tunnel_Source\n   no shutdown\n   ip address
+    10.100.54.25/32\n!\ninterface Management1\n   description oob_management\n   no
+    shutdown\n   vrf MGMT\n   ip address 10.151.11.26/26\n!\ninterface Vlan12\n   description
+    VLAN12-Firewall_Linknet-wifi-leaf\n   no shutdown\n   mtu 9214\n   ip address
+    virtual 10.100.55.2/27\n!\ninterface Vlan4093\n   description MLAG_PEER_L3_PEERING\n
+    \  no shutdown\n   mtu 9214\n   ip address 10.100.54.125/31\n!\ninterface Vlan4094\n
+    \  description MLAG_PEER\n   no shutdown\n   mtu 9214\n   no autostate\n   ip
+    address 10.100.54.109/31\n!\ninterface Vxlan1\n   description vx-wifi1b_VTEP\n
+    \  vxlan source-interface Loopback1\n   vxlan virtual-router encapsulation mac-address
+    mlag-system-id\n   vxlan udp-port 4789\n   vxlan vlan 12 vni 12\n   vxlan vlan
+    1214 vni 1214\n   vxlan vlan 1251 vni 1251\n   vxlan vrf default vni 1010\n!\nip
+    virtual-router mac-address 00:1c:73:00:00:99\n!\nip routing\nno ip routing vrf
+    MGMT\n!\nip prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n   seq 10 permit 10.100.160.0/27
+    eq 32\n   seq 20 permit 10.100.54.16/28 eq 32\n!\nip prefix-list PL-SVI-VRF-DEFAULT\n
+    \  seq 10 permit 10.100.55.0/27\n!\nmlag configuration\n   domain-id WIFILEAF1\n
+    \  local-interface Vlan4094\n   peer-address 10.100.54.108\n   peer-link Port-Channel23\n
+    \  reload-delay mlag 300\n   reload-delay non-mlag 330\n!\nip route vrf MGMT 0.0.0.0/0
+    10.151.11.1\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT deny 10\n   match ip address
+    prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map RM-BGP-UNDERLAY-PEERS-OUT permit
+    20\n!\nroute-map RM-CONN-2-BGP permit 10\n   match ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY\n!\nroute-map
+    RM-CONN-2-BGP permit 30\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-EVPN-EXPORT-VRF-DEFAULT permit 10\n   match ip address prefix-list PL-SVI-VRF-DEFAULT\n!\nroute-map
+    RM-MLAG-PEER-IN permit 10\n   description Make routes learned over MLAG Peer-link
+    less preferred on spines to ensure optimal routing\n   set origin incomplete\n!\nrouter
+    bfd\n   multihop interval 300 min-rx 300 multiplier 3\n!\nrouter bgp 65104\n   router-id
+    10.100.160.10\n   graceful-restart restart-time 300\n   graceful-restart\n   maximum-paths
+    4 ecmp 4\n   update wait-install\n   no bgp default ipv4-unicast\n   neighbor
+    EVPN-OVERLAY-PEERS peer group\n   neighbor EVPN-OVERLAY-PEERS update-source Loopback0\n
+    \  neighbor EVPN-OVERLAY-PEERS bfd\n   neighbor EVPN-OVERLAY-PEERS ebgp-multihop
+    3\n   neighbor EVPN-OVERLAY-PEERS password 7 Q4fqtbqcZ7oQuKfuWtNGRQ==\n   neighbor
+    EVPN-OVERLAY-PEERS send-community\n   neighbor EVPN-OVERLAY-PEERS maximum-routes
+    0\n   neighbor IPv4-UNDERLAY-PEERS peer group\n   neighbor IPv4-UNDERLAY-PEERS
+    password 7 7x4B4rnJhZB438m9+BrBfQ==\n   neighbor IPv4-UNDERLAY-PEERS send-community\n
+    \  neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000\n   neighbor IPv4-UNDERLAY-PEERS
+    route-map RM-BGP-UNDERLAY-PEERS-OUT out\n   neighbor MLAG-IPv4-UNDERLAY-PEER peer
+    group\n   neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65104\n   neighbor MLAG-IPv4-UNDERLAY-PEER
+    next-hop-self\n   neighbor MLAG-IPv4-UNDERLAY-PEER description vx-wifi1a\n   neighbor
+    MLAG-IPv4-UNDERLAY-PEER password 7 4b21pAdCvWeAqpcKDFMdWw==\n   neighbor MLAG-IPv4-UNDERLAY-PEER
+    send-community\n   neighbor MLAG-IPv4-UNDERLAY-PEER maximum-routes 12000\n   neighbor
+    MLAG-IPv4-UNDERLAY-PEER route-map RM-MLAG-PEER-IN in\n   neighbor 10.100.54.60
+    peer group IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.60 remote-as 65100\n   neighbor
+    10.100.54.60 description vx-spine1_Ethernet8\n   neighbor 10.100.54.62 peer group
+    IPv4-UNDERLAY-PEERS\n   neighbor 10.100.54.62 remote-as 65100\n   neighbor 10.100.54.62
+    description vx-spine2_Ethernet8\n   neighbor 10.100.54.124 peer group MLAG-IPv4-UNDERLAY-PEER\n
+    \  neighbor 10.100.54.124 description vx-wifi1a\n   neighbor 10.100.160.1 peer
+    group EVPN-OVERLAY-PEERS\n   neighbor 10.100.160.1 remote-as 65100\n   neighbor
+    10.100.160.1 description vx-spine1\n   neighbor 10.100.160.2 peer group EVPN-OVERLAY-PEERS\n
+    \  neighbor 10.100.160.2 remote-as 65100\n   neighbor 10.100.160.2 description
+    vx-spine2\n   redistribute connected route-map RM-CONN-2-BGP\n   !\n   vlan 12\n
+    \     rd 10.100.160.10:12\n      route-target both 12:12\n      redistribute learned\n
+    \  !\n   vlan 1214\n      rd 10.100.160.10:1214\n      route-target both 1214:1214\n
+    \     redistribute learned\n   !\n   vlan 1251\n      rd 10.100.160.10:1251\n
+    \     route-target both 1251:1251\n      redistribute learned\n   !\n   address-family
+    evpn\n      neighbor EVPN-OVERLAY-PEERS activate\n   !\n   address-family ipv4\n
+    \     no neighbor EVPN-OVERLAY-PEERS activate\n      neighbor IPv4-UNDERLAY-PEERS
+    activate\n      neighbor MLAG-IPv4-UNDERLAY-PEER activate\n!\nmanagement api http-commands\n
+    \  protocol https\n   no shutdown\n   !\n   vrf MGMT\n      no shutdown\n!\ninterface
+    Vxlan1\n  vxlan bridging vtep-to-vtep\n  vxlan flood vtep learned data-plane\n
+    \ no vxlan vlan 12 vni 12\nrouter bgp 65104\n  no vlan 12\n  no vlan 1214\n  no
+    vlan 1251\n!\nend\n"
 cvp_topology:
   DC1:
     devices: []
@@ -1004,6 +1253,8 @@ cvp_topology:
     - vx-borderleaf2b
     - vx-accessleaf3a
     - vx-accessleaf3b
+    - vx-wifi1a
+    - vx-wifi1b
     parent_container: DC1
   DC1_SPINES:
     devices:

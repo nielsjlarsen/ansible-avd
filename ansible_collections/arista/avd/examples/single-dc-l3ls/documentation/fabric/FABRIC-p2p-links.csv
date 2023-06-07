@@ -11,3 +11,7 @@ l3leaf,vx-borderleaf2a,Ethernet1,10.100.54.41/31,spine,vx-spine1,Ethernet3,10.10
 l3leaf,vx-borderleaf2a,Ethernet2,10.100.54.43/31,spine,vx-spine2,Ethernet3,10.100.54.42/31
 l3leaf,vx-borderleaf2b,Ethernet1,10.100.54.45/31,spine,vx-spine1,Ethernet4,10.100.54.44/31
 l3leaf,vx-borderleaf2b,Ethernet2,10.100.54.47/31,spine,vx-spine2,Ethernet4,10.100.54.46/31
+spine,vx-spine1,Ethernet7,10.100.54.56/31,l3leaf,vx-wifi1a,Ethernet27,10.100.54.57/31
+spine,vx-spine1,Ethernet8,10.100.54.60/31,l3leaf,vx-wifi1b,Ethernet27,10.100.54.61/31
+spine,vx-spine2,Ethernet7,10.100.54.58/31,l3leaf,vx-wifi1a,Ethernet28,10.100.54.59/31
+spine,vx-spine2,Ethernet8,10.100.54.62/31,l3leaf,vx-wifi1b,Ethernet28,10.100.54.63/31

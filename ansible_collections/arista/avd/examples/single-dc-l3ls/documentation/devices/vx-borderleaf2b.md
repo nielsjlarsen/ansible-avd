@@ -398,7 +398,7 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 11 | VLAN11-Firewall_Linknet | - |
+| 11 | VLAN11-Firewall_Linknet-borderleaf | - |
 | 1213 | mobile-prod-device | - |
 | 1250 | enterprisenet | - |
 | 4093 | LEAF_PEER_L3 | LEAF_PEER_L3 |
@@ -409,7 +409,7 @@ vlan internal order ascending range 1006 1199
 ```eos
 !
 vlan 11
-   name VLAN11-Firewall_Linknet
+   name VLAN11-Firewall_Linknet-borderleaf
 !
 vlan 1213
    name mobile-prod-device
@@ -556,7 +556,7 @@ interface Loopback1
 
 | Interface | Description | VRF |  MTU | Shutdown |
 | --------- | ----------- | --- | ---- | -------- |
-| Vlan11 | VLAN11-Firewall_Linknet | default | 9214 | False |
+| Vlan11 | VLAN11-Firewall_Linknet-borderleaf | default | 9214 | False |
 | Vlan4093 | MLAG_PEER_L3_PEERING | default | 9214 | False |
 | Vlan4094 | MLAG_PEER | default | 9214 | False |
 
@@ -573,7 +573,7 @@ interface Loopback1
 ```eos
 !
 interface Vlan11
-   description VLAN11-Firewall_Linknet
+   description VLAN11-Firewall_Linknet-borderleaf
    no shutdown
    mtu 9214
    ip address virtual 10.100.54.226/27
@@ -996,6 +996,16 @@ router bgp 65102
   no vlan 1213
   no vlan 1250
 interface Vxlan1
+  no vxlan vlan 11 vni 11
   no vxlan vrf default vni 1010
-  vxlan flood vtep 10.100.54.19
+interface ethernet45-46
+  description Borderleaf cross-site trunk
+  channel-group 45 mode active
+  no shut
+interface Port-Channel45
+  description Borderleaf cross-site trunk
+  switchport
+  switchport trunk allowed vlan 11,1213,1250
+  switchport mode trunk
+  mlag 45
 ```

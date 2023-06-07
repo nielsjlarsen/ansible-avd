@@ -391,7 +391,8 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 10 | VLAN10-Access_Points | - |
+| 10 | VLAN10-Access_Points-borderleaf | - |
+| 20 | VLAN20-Access_Points-wifi-leaf | - |
 | 4094 | MLAG_PEER | MLAG |
 
 ### VLANs Device Configuration
@@ -399,7 +400,10 @@ vlan internal order ascending range 1006 1199
 ```eos
 !
 vlan 10
-   name VLAN10-Access_Points
+   name VLAN10-Access_Points-borderleaf
+!
+vlan 20
+   name VLAN20-Access_Points-wifi-leaf
 !
 vlan 4094
    name MLAG_PEER
@@ -421,8 +425,8 @@ vlan 4094
 | Ethernet3 |  pc2_LAN1 | access | 10 | - | - | - |
 | Ethernet49 | MLAG_PEER_vx-subleaf4a_Ethernet49 | *trunk | *- | *- | *['MLAG'] | 49 |
 | Ethernet50 | MLAG_PEER_vx-subleaf4a_Ethernet50 | *trunk | *- | *- | *['MLAG'] | 49 |
-| Ethernet55 | VX-ACCESSLEAF3B_Ethernet47 | *trunk | *10 | *- | *- | 56 |
-| Ethernet56 | VX-ACCESSLEAF3A_Ethernet47 | *trunk | *10 | *- | *- | 56 |
+| Ethernet55 | VX-ACCESSLEAF3B_Ethernet47 | *trunk | *10,20 | *- | *- | 56 |
+| Ethernet56 | VX-ACCESSLEAF3A_Ethernet47 | *trunk | *10,20 | *- | *- | 56 |
 
 *Inherited from Port-Channel Interface
 
@@ -486,7 +490,7 @@ interface Ethernet56
 | Port-Channel1 | ap1_PortChannel AP1 | switched | access | 10 | - | - | - | individual | 1 | - |
 | Port-Channel2 | ap2_PortChannel AP2 | switched | access | 10 | - | - | - | individual | 2 | - |
 | Port-Channel49 | MLAG_PEER_vx-subleaf4a_Po49 | switched | trunk | - | - | ['MLAG'] | - | - | - | - |
-| Port-Channel56 | ACCESSLEAF3_Po48 | switched | trunk | 10 | - | - | - | - | 56 | - |
+| Port-Channel56 | ACCESSLEAF3_Po48 | switched | trunk | 10,20 | - | - | - | - | 56 | - |
 
 #### Port-Channel Interfaces Device Configuration
 
@@ -521,7 +525,7 @@ interface Port-Channel56
    description ACCESSLEAF3_Po48
    no shutdown
    switchport
-   switchport trunk allowed vlan 10
+   switchport trunk allowed vlan 10,20
    switchport mode trunk
    mlag 56
 ```

@@ -22,7 +22,7 @@ tenants:
           # SVI definitions.
           "10":
             # SVI Description
-            name: VLAN10-Access_Points
+            name: VLAN10-Access_Points-borderleaf
             enabled: true
             # vxlan: false
             # IP anycast gateway to be used in the SVI in every leaf.
@@ -33,12 +33,31 @@ tenants:
             tags: [ accessleaf ]
           "11":
             # SVI Description
-            name: VLAN11-Firewall_Linknet
+            name: VLAN11-Firewall_Linknet-borderleaf
             enabled: true
             # IP anycast gateway to be used in the SVI in every leaf.
             ip_address_virtual: 10.100.54.226/27
             mtu: 9214
             tags: [ borderleaf ]
+          "12":
+            # SVI Description
+            name: VLAN12-Firewall_Linknet-wifi-leaf
+            enabled: true
+            # IP anycast gateway to be used in the SVI in every leaf.
+            ip_address_virtual: 10.100.55.2/27
+            mtu: 9214
+            tags: [ wifi ]
+          "20":
+            # SVI Description
+            name: VLAN20-Access_Points-wifi-leaf
+            enabled: true
+            # vxlan: false
+            # IP anycast gateway to be used in the SVI in every leaf.
+            ip_address_virtual: 10.100.5.161/27
+            mtu: 9214
+            ip_helpers:
+              10.100.55.1:
+            tags: [ accessleaf ]
       # VRF11:
       #   vrf_vni: 11
       #   vtep_diagnostic:
@@ -60,3 +79,9 @@ tenants:
       "1250":
         name: enterprisenet
         tags: [ borderleaf ]
+      "1214":
+        name: mobile-prod-device
+        tags: [ wifi ]
+      "1251":
+        name: enterprisenet
+        tags: [ wifi ]

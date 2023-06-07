@@ -1,4 +1,4 @@
-# vx-borderleaf1a
+# vx-wifi1a
 
 ## Table of Contents
 
@@ -65,7 +65,7 @@
 
 | Management Interface | description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1 | oob_management | oob | MGMT | 10.151.11.23/26 | 10.151.11.1 |
+| Management1 | oob_management | oob | MGMT | 10.151.11.25/26 | 10.151.11.1 |
 
 ##### IPv6
 
@@ -81,7 +81,7 @@ interface Management1
    description oob_management
    no shutdown
    vrf MGMT
-   ip address 10.151.11.23/26
+   ip address 10.151.11.25/26
 ```
 
 ### DNS Domain
@@ -335,7 +335,7 @@ sflow run
 
 | Domain-id | Local-interface | Peer-address | Peer-link |
 | --------- | --------------- | ------------ | --------- |
-| BORDERLEAF1 | Vlan4094 | 10.100.54.97 | Port-Channel491 |
+| WIFILEAF1 | Vlan4094 | 10.100.54.109 | Port-Channel23 |
 
 Dual primary detection is disabled.
 
@@ -344,10 +344,10 @@ Dual primary detection is disabled.
 ```eos
 !
 mlag configuration
-   domain-id BORDERLEAF1
+   domain-id WIFILEAF1
    local-interface Vlan4094
-   peer-address 10.100.54.97
-   peer-link Port-Channel491
+   peer-address 10.100.54.109
+   peer-link Port-Channel23
    reload-delay mlag 300
    reload-delay non-mlag 330
 ```
@@ -398,9 +398,9 @@ vlan internal order ascending range 1006 1199
 
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
-| 11 | VLAN11-Firewall_Linknet-borderleaf | - |
-| 1213 | mobile-prod-device | - |
-| 1250 | enterprisenet | - |
+| 12 | VLAN12-Firewall_Linknet-wifi-leaf | - |
+| 1214 | mobile-prod-device | - |
+| 1251 | enterprisenet | - |
 | 4093 | LEAF_PEER_L3 | LEAF_PEER_L3 |
 | 4094 | MLAG_PEER | MLAG |
 
@@ -408,13 +408,13 @@ vlan internal order ascending range 1006 1199
 
 ```eos
 !
-vlan 11
-   name VLAN11-Firewall_Linknet-borderleaf
+vlan 12
+   name VLAN12-Firewall_Linknet-wifi-leaf
 !
-vlan 1213
+vlan 1214
    name mobile-prod-device
 !
-vlan 1250
+vlan 1251
    name enterprisenet
 !
 vlan 4093
@@ -436,10 +436,10 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet3 |  pc3_LAN1 | access | 1250 | - | - | - |
-| Ethernet48 | palo1_Ethernet1/11 | *trunk | *11,1213,1250 | *- | *- | 48 |
-| Ethernet49/1 | MLAG_PEER_vx-borderleaf1b_Ethernet49/1 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 491 |
-| Ethernet50/1 | MLAG_PEER_vx-borderleaf1b_Ethernet50/1 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 491 |
+| Ethernet21 | palo1-wifi_Ethernet1/10 | *trunk | *12,1214,1251 | *- | *- | 21 |
+| Ethernet22 | palo2-wifi_Ethernet1/10 | *trunk | *12,1214,1251 | *- | *- | 22 |
+| Ethernet23 | MLAG_PEER_vx-wifi1b_Ethernet23 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 23 |
+| Ethernet24 | MLAG_PEER_vx-wifi1b_Ethernet24 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 23 |
 
 *Inherited from Port-Channel Interface
 
@@ -447,49 +447,46 @@ vlan 4094
 
 | Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
-| Ethernet1 | P2P_LINK_TO_VX-SPINE1_Ethernet5 | routed | - | 10.100.54.33/31 | default | 9214 | False | - | - |
-| Ethernet2 | P2P_LINK_TO_VX-SPINE2_Ethernet5 | routed | - | 10.100.54.35/31 | default | 9214 | False | - | - |
+| Ethernet27 | P2P_LINK_TO_VX-SPINE1_Ethernet7 | routed | - | 10.100.54.57/31 | default | 9214 | False | - | - |
+| Ethernet28 | P2P_LINK_TO_VX-SPINE2_Ethernet7 | routed | - | 10.100.54.59/31 | default | 9214 | False | - | - |
 
 #### Ethernet Interfaces Device Configuration
 
 ```eos
 !
-interface Ethernet1
-   description P2P_LINK_TO_VX-SPINE1_Ethernet5
+interface Ethernet21
+   description palo1-wifi_Ethernet1/10
+   no shutdown
+   channel-group 21 mode active
+!
+interface Ethernet22
+   description palo2-wifi_Ethernet1/10
+   no shutdown
+   channel-group 22 mode active
+!
+interface Ethernet23
+   description MLAG_PEER_vx-wifi1b_Ethernet23
+   no shutdown
+   channel-group 23 mode active
+!
+interface Ethernet24
+   description MLAG_PEER_vx-wifi1b_Ethernet24
+   no shutdown
+   channel-group 23 mode active
+!
+interface Ethernet27
+   description P2P_LINK_TO_VX-SPINE1_Ethernet7
    no shutdown
    mtu 9214
    no switchport
-   ip address 10.100.54.33/31
+   ip address 10.100.54.57/31
 !
-interface Ethernet2
-   description P2P_LINK_TO_VX-SPINE2_Ethernet5
+interface Ethernet28
+   description P2P_LINK_TO_VX-SPINE2_Ethernet7
    no shutdown
    mtu 9214
    no switchport
-   ip address 10.100.54.35/31
-!
-interface Ethernet3
-   description pc3_LAN1
-   no shutdown
-   switchport access vlan 1250
-   switchport mode access
-   switchport
-   spanning-tree portfast
-!
-interface Ethernet48
-   description palo1_Ethernet1/11
-   no shutdown
-   channel-group 48 mode active
-!
-interface Ethernet49/1
-   description MLAG_PEER_vx-borderleaf1b_Ethernet49/1
-   no shutdown
-   channel-group 491 mode active
-!
-interface Ethernet50/1
-   description MLAG_PEER_vx-borderleaf1b_Ethernet50/1
-   no shutdown
-   channel-group 491 mode active
+   ip address 10.100.54.59/31
 ```
 
 ### Port-Channel Interfaces
@@ -500,24 +497,34 @@ interface Ethernet50/1
 
 | Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
 | --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel48 | palo1_PortChannel palo1 | switched | trunk | 11,1213,1250 | - | - | - | - | 48 | - |
-| Port-Channel491 | MLAG_PEER_vx-borderleaf1b_Po491 | switched | trunk | - | - | ['LEAF_PEER_L3', 'MLAG'] | - | - | - | - |
+| Port-Channel21 | palo1-wifi_PortChannel palo1-wifi | switched | trunk | 12,1214,1251 | - | - | - | - | 21 | - |
+| Port-Channel22 | palo2-wifi_PortChannel palo2-wifi | switched | trunk | 12,1214,1251 | - | - | - | - | 22 | - |
+| Port-Channel23 | MLAG_PEER_vx-wifi1b_Po23 | switched | trunk | - | - | ['LEAF_PEER_L3', 'MLAG'] | - | - | - | - |
 
 #### Port-Channel Interfaces Device Configuration
 
 ```eos
 !
-interface Port-Channel48
-   description palo1_PortChannel palo1
+interface Port-Channel21
+   description palo1-wifi_PortChannel palo1-wifi
    no shutdown
    switchport
-   switchport trunk allowed vlan 11,1213,1250
+   switchport trunk allowed vlan 12,1214,1251
    switchport mode trunk
-   mlag 48
+   mlag 21
    spanning-tree portfast
 !
-interface Port-Channel491
-   description MLAG_PEER_vx-borderleaf1b_Po491
+interface Port-Channel22
+   description palo2-wifi_PortChannel palo2-wifi
+   no shutdown
+   switchport
+   switchport trunk allowed vlan 12,1214,1251
+   switchport mode trunk
+   mlag 22
+   spanning-tree portfast
+!
+interface Port-Channel23
+   description MLAG_PEER_vx-wifi1b_Po23
    no shutdown
    switchport
    switchport mode trunk
@@ -533,8 +540,8 @@ interface Port-Channel491
 
 | Interface | Description | VRF | IP Address |
 | --------- | ----------- | --- | ---------- |
-| Loopback0 | EVPN_Overlay_Peering | default | 10.100.160.3/32 |
-| Loopback1 | VTEP_VXLAN_Tunnel_Source | default | 10.100.54.19/32 |
+| Loopback0 | EVPN_Overlay_Peering | default | 10.100.160.9/32 |
+| Loopback1 | VTEP_VXLAN_Tunnel_Source | default | 10.100.54.25/32 |
 
 ##### IPv6
 
@@ -551,12 +558,12 @@ interface Port-Channel491
 interface Loopback0
    description EVPN_Overlay_Peering
    no shutdown
-   ip address 10.100.160.3/32
+   ip address 10.100.160.9/32
 !
 interface Loopback1
    description VTEP_VXLAN_Tunnel_Source
    no shutdown
-   ip address 10.100.54.19/32
+   ip address 10.100.54.25/32
 ```
 
 ### VLAN Interfaces
@@ -565,7 +572,7 @@ interface Loopback1
 
 | Interface | Description | VRF |  MTU | Shutdown |
 | --------- | ----------- | --- | ---- | -------- |
-| Vlan11 | VLAN11-Firewall_Linknet-borderleaf | default | 9214 | False |
+| Vlan12 | VLAN12-Firewall_Linknet-wifi-leaf | default | 9214 | False |
 | Vlan4093 | MLAG_PEER_L3_PEERING | default | 9214 | False |
 | Vlan4094 | MLAG_PEER | default | 9214 | False |
 
@@ -573,32 +580,32 @@ interface Loopback1
 
 | Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan11 |  default  |  -  |  10.100.54.226/27  |  -  |  -  |  -  |  -  |
-| Vlan4093 |  default  |  10.100.54.112/31  |  -  |  -  |  -  |  -  |  -  |
-| Vlan4094 |  default  |  10.100.54.96/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan12 |  default  |  -  |  10.100.55.2/27  |  -  |  -  |  -  |  -  |
+| Vlan4093 |  default  |  10.100.54.124/31  |  -  |  -  |  -  |  -  |  -  |
+| Vlan4094 |  default  |  10.100.54.108/31  |  -  |  -  |  -  |  -  |  -  |
 
 #### VLAN Interfaces Device Configuration
 
 ```eos
 !
-interface Vlan11
-   description VLAN11-Firewall_Linknet-borderleaf
+interface Vlan12
+   description VLAN12-Firewall_Linknet-wifi-leaf
    no shutdown
    mtu 9214
-   ip address virtual 10.100.54.226/27
+   ip address virtual 10.100.55.2/27
 !
 interface Vlan4093
    description MLAG_PEER_L3_PEERING
    no shutdown
    mtu 9214
-   ip address 10.100.54.112/31
+   ip address 10.100.54.124/31
 !
 interface Vlan4094
    description MLAG_PEER
    no shutdown
    mtu 9214
    no autostate
-   ip address 10.100.54.96/31
+   ip address 10.100.54.108/31
 ```
 
 ### VXLAN Interface
@@ -610,15 +617,14 @@ interface Vlan4094
 | Source Interface | Loopback1 |
 | UDP port | 4789 |
 | EVPN MLAG Shared Router MAC | mlag-system-id |
-| VXLAN flood-lists learning from data-plane | Enabled |
 
 ##### VLAN to VNI, Flood List and Multicast Group Mappings
 
 | VLAN | VNI | Flood List | Multicast Group |
 | ---- | --- | ---------- | --------------- |
-| 11 | 11 | - | - |
-| 1213 | 1213 | - | - |
-| 1250 | 1250 | - | - |
+| 12 | 12 | - | - |
+| 1214 | 1214 | - | - |
+| 1251 | 1251 | - | - |
 
 ##### VRF to VNI and Multicast Group Mappings
 
@@ -631,16 +637,14 @@ interface Vlan4094
 ```eos
 !
 interface Vxlan1
-   description vx-borderleaf1a_VTEP
+   description vx-wifi1a_VTEP
    vxlan source-interface Loopback1
    vxlan virtual-router encapsulation mac-address mlag-system-id
    vxlan udp-port 4789
-   vxlan flood vtep learned data-plane
-   vxlan vlan 11 vni 11
-   vxlan vlan 1213 vni 1213
-   vxlan vlan 1250 vni 1250
+   vxlan vlan 12 vni 12
+   vxlan vlan 1214 vni 1214
+   vxlan vlan 1251 vni 1251
    vxlan vrf default vni 1010
-   vxlan bridging vtep-to-vtep source-vtep tx disabled 10.100.54.21
 ```
 
 ## Routing
@@ -700,14 +704,12 @@ no ip routing vrf MGMT
 | VRF | Destination Prefix | Next Hop IP             | Exit interface      | Administrative Distance       | Tag               | Route Name                    | Metric         |
 | --- | ------------------ | ----------------------- | ------------------- | ----------------------------- | ----------------- | ----------------------------- | -------------- |
 | MGMT | 0.0.0.0/0 | 10.151.11.1 | - | 1 | - | - | - |
-| default | 0.0.0.0/0 | 10.100.54.225 | - | 1 | - | - | - |
 
 #### Static Routes Device Configuration
 
 ```eos
 !
 ip route vrf MGMT 0.0.0.0/0 10.151.11.1
-ip route 0.0.0.0/0 10.100.54.225
 ```
 
 ### Router BGP
@@ -716,7 +718,7 @@ ip route 0.0.0.0/0 10.100.54.225
 
 | BGP AS | Router ID |
 | ------ | --------- |
-| 65101|  10.100.160.3 |
+| 65104|  10.100.160.9 |
 
 | BGP Tuning |
 | ---------- |
@@ -752,7 +754,7 @@ ip route 0.0.0.0/0 10.100.54.225
 | Settings | Value |
 | -------- | ----- |
 | Address Family | ipv4 |
-| Remote AS | 65101 |
+| Remote AS | 65104 |
 | Next-hop self | True |
 | Send community | all |
 | Maximum routes | 12000 |
@@ -761,9 +763,9 @@ ip route 0.0.0.0/0 10.100.54.225
 
 | Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain | Route-Reflector Client | Passive |
 | -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- | ---------------------- | ------- |
-| 10.100.54.32 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
-| 10.100.54.34 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
-| 10.100.54.113 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | default | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
+| 10.100.54.56 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
+| 10.100.54.58 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - | - |
+| 10.100.54.125 | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | default | - | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | Inherited from peer group MLAG-IPv4-UNDERLAY-PEER | - | - | - | - | - |
 | 10.100.160.1 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 | 10.100.160.2 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - | - |
 
@@ -779,22 +781,16 @@ ip route 0.0.0.0/0 10.100.54.225
 
 | VLAN | Route-Distinguisher | Both Route-Target | Import Route Target | Export Route-Target | Redistribute |
 | ---- | ------------------- | ----------------- | ------------------- | ------------------- | ------------ |
-| 11 | 10.100.160.3:11 | 11:11 | - | - | learned |
-| 1213 | 10.100.160.3:1213 | 1213:1213 | - | - | learned |
-| 1250 | 10.100.160.3:1250 | 1250:1250 | - | - | learned |
-
-#### Router BGP VRFs
-
-| VRF | Route-Distinguisher | Redistribute |
-| --- | ------------------- | ------------ |
-| default | - | static |
+| 12 | 10.100.160.9:12 | 12:12 | - | - | learned |
+| 1214 | 10.100.160.9:1214 | 1214:1214 | - | - | learned |
+| 1251 | 10.100.160.9:1251 | 1251:1251 | - | - | learned |
 
 #### Router BGP Device Configuration
 
 ```eos
 !
-router bgp 65101
-   router-id 10.100.160.3
+router bgp 65104
+   router-id 10.100.160.9
    graceful-restart restart-time 300
    graceful-restart
    maximum-paths 4 ecmp 4
@@ -813,21 +809,21 @@ router bgp 65101
    neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000
    neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
    neighbor MLAG-IPv4-UNDERLAY-PEER peer group
-   neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65101
+   neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65104
    neighbor MLAG-IPv4-UNDERLAY-PEER next-hop-self
-   neighbor MLAG-IPv4-UNDERLAY-PEER description vx-borderleaf1b
+   neighbor MLAG-IPv4-UNDERLAY-PEER description vx-wifi1b
    neighbor MLAG-IPv4-UNDERLAY-PEER password 7 <removed>
    neighbor MLAG-IPv4-UNDERLAY-PEER send-community
    neighbor MLAG-IPv4-UNDERLAY-PEER maximum-routes 12000
    neighbor MLAG-IPv4-UNDERLAY-PEER route-map RM-MLAG-PEER-IN in
-   neighbor 10.100.54.32 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.100.54.32 remote-as 65100
-   neighbor 10.100.54.32 description vx-spine1_Ethernet5
-   neighbor 10.100.54.34 peer group IPv4-UNDERLAY-PEERS
-   neighbor 10.100.54.34 remote-as 65100
-   neighbor 10.100.54.34 description vx-spine2_Ethernet5
-   neighbor 10.100.54.113 peer group MLAG-IPv4-UNDERLAY-PEER
-   neighbor 10.100.54.113 description vx-borderleaf1b
+   neighbor 10.100.54.56 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.100.54.56 remote-as 65100
+   neighbor 10.100.54.56 description vx-spine1_Ethernet7
+   neighbor 10.100.54.58 peer group IPv4-UNDERLAY-PEERS
+   neighbor 10.100.54.58 remote-as 65100
+   neighbor 10.100.54.58 description vx-spine2_Ethernet7
+   neighbor 10.100.54.125 peer group MLAG-IPv4-UNDERLAY-PEER
+   neighbor 10.100.54.125 description vx-wifi1b
    neighbor 10.100.160.1 peer group EVPN-OVERLAY-PEERS
    neighbor 10.100.160.1 remote-as 65100
    neighbor 10.100.160.1 description vx-spine1
@@ -836,19 +832,19 @@ router bgp 65101
    neighbor 10.100.160.2 description vx-spine2
    redistribute connected route-map RM-CONN-2-BGP
    !
-   vlan 11
-      rd 10.100.160.3:11
-      route-target both 11:11
+   vlan 12
+      rd 10.100.160.9:12
+      route-target both 12:12
       redistribute learned
    !
-   vlan 1213
-      rd 10.100.160.3:1213
-      route-target both 1213:1213
+   vlan 1214
+      rd 10.100.160.9:1214
+      route-target both 1214:1214
       redistribute learned
    !
-   vlan 1250
-      rd 10.100.160.3:1250
-      route-target both 1250:1250
+   vlan 1251
+      rd 10.100.160.9:1251
+      route-target both 1251:1251
       redistribute learned
    !
    address-family evpn
@@ -858,9 +854,6 @@ router bgp 65101
       no neighbor EVPN-OVERLAY-PEERS activate
       neighbor IPv4-UNDERLAY-PEERS activate
       neighbor MLAG-IPv4-UNDERLAY-PEER activate
-   !
-   vrf default
-      redistribute static
 ```
 
 ## BFD
@@ -913,7 +906,7 @@ router bfd
 
 | Sequence | Action |
 | -------- | ------ |
-| 10 | permit 10.100.54.224/27 |
+| 10 | permit 10.100.55.0/27 |
 
 #### Prefix-lists Device Configuration
 
@@ -924,7 +917,7 @@ ip prefix-list PL-LOOPBACKS-EVPN-OVERLAY
    seq 20 permit 10.100.54.16/28 eq 32
 !
 ip prefix-list PL-SVI-VRF-DEFAULT
-   seq 10 permit 10.100.54.224/27
+   seq 10 permit 10.100.55.0/27
 ```
 
 ### Route-maps
@@ -999,22 +992,12 @@ vrf instance MGMT
 
 ```eos
 !
-router bgp 65101
-  no neighbor IPv4-UNDERLAY-PEERS route-map RM-BGP-UNDERLAY-PEERS-OUT out
-  no vlan 11
-  no vlan 1213
-  no vlan 1250
 interface Vxlan1
-  no vxlan vlan 11 vni 11
-  no vxlan vrf default vni 1010
-interface ethernet45-46
-  description Borderleaf cross-site trunk
-  channel-group 45 mode active
-  no shut
-interface Port-Channel45
-  description Borderleaf cross-site trunk
-  switchport
-  switchport trunk allowed vlan 11,1213,1250
-  switchport mode trunk
-  mlag 45
+  vxlan bridging vtep-to-vtep
+  vxlan flood vtep learned data-plane
+  no vxlan vlan 12 vni 12
+router bgp 65104
+  no vlan 12
+  no vlan 1214
+  no vlan 1251
 ```

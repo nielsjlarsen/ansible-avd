@@ -189,7 +189,7 @@ vlan_interfaces:
   description: VLAN20-Access_Points-wifi-leaf
   shutdown: false
   mtu: 9214
-  ip_address_virtual: 10.100.5.161/27
+  ip_address_virtual: 10.100.55.161/27
   ip_helpers:
   - ip_helper: 10.100.55.1
 port_channel_interfaces:
@@ -354,7 +354,7 @@ prefix_lists:
   - sequence: 10
     action: permit 10.100.54.192/27
   - sequence: 20
-    action: permit 10.100.5.160/27
+    action: permit 10.100.55.160/27
 router_bfd:
   multihop:
     interval: 300

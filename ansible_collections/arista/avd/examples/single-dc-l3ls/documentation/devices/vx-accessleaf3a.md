@@ -588,7 +588,7 @@ interface Loopback1
 | Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
 | --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
 | Vlan10 |  default  |  -  |  10.100.54.193/27  |  -  |  -  |  -  |  -  |
-| Vlan20 |  default  |  -  |  10.100.5.161/27  |  -  |  -  |  -  |  -  |
+| Vlan20 |  default  |  -  |  10.100.55.161/27  |  -  |  -  |  -  |  -  |
 | Vlan4093 |  default  |  10.100.54.120/31  |  -  |  -  |  -  |  -  |  -  |
 | Vlan4094 |  default  |  10.100.54.104/31  |  -  |  -  |  -  |  -  |  -  |
 
@@ -608,7 +608,7 @@ interface Vlan20
    no shutdown
    mtu 9214
    ip helper-address 10.100.55.1
-   ip address virtual 10.100.5.161/27
+   ip address virtual 10.100.55.161/27
 !
 interface Vlan4093
    description MLAG_PEER_L3_PEERING
@@ -915,7 +915,7 @@ router bfd
 | Sequence | Action |
 | -------- | ------ |
 | 10 | permit 10.100.54.192/27 |
-| 20 | permit 10.100.5.160/27 |
+| 20 | permit 10.100.55.160/27 |
 
 #### Prefix-lists Device Configuration
 
@@ -927,7 +927,7 @@ ip prefix-list PL-LOOPBACKS-EVPN-OVERLAY
 !
 ip prefix-list PL-SVI-VRF-DEFAULT
    seq 10 permit 10.100.54.192/27
-   seq 20 permit 10.100.5.160/27
+   seq 20 permit 10.100.55.160/27
 ```
 
 ### Route-maps

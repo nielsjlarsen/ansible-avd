@@ -53,7 +53,7 @@ tenants:
             enabled: true
             # vxlan: false
             # IP anycast gateway to be used in the SVI in every leaf.
-            ip_address_virtual: 10.100.5.161/27
+            ip_address_virtual: 10.100.55.161/27
             mtu: 9214
             ip_helpers:
               10.100.55.1:
